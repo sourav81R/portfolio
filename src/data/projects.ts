@@ -155,28 +155,29 @@ export const projects: Project[] = [
   },
 
   {
-    title: 'Quiz App',
-    role: 'Frontend Developer',
-    description:
-      'Interactive quiz application with scoring and feedback.',
-    problem:
-      'Static quizzes lacked engagement and feedback.',
-    solution:
-      'Created a dynamic quiz with scoring logic and.
-    points: [
-      'Dynamic question loading',
-      'Score tracking',
-      'User-friendly UI',
-    ],
-    learnings: [
-      'Conditional rendering',
-      'State-driven UI',
-    ],
-    tech: ['JavaScript', 'HTML', 'CSS'],
-    category: 'JavaScript',
-    github: 'https://github.com/sourav81R/Quiz-App',
-    image: QuizApp,
-  },
+  title: 'Quiz App',
+  role: 'Frontend Developer',
+  description:
+    'Interactive quiz application with scoring and feedback.',
+  problem:
+    'Static quizzes lacked engagement and feedback.',
+  solution:
+    'Created a dynamic quiz with scoring logic and instant feedback.',
+  points: [
+    'Dynamic question loading',
+    'Score tracking',
+    'User-friendly UI',
+  ],
+  learnings: [
+    'Conditional rendering',
+    'State-driven UI',
+  ],
+  tech: ['JavaScript', 'HTML', 'CSS'],
+  category: 'JavaScript',
+  github: 'https://github.com/sourav81R/Quiz-App',
+  image: QuizApp,
+},
+
 
   {
     title: 'Rock-Paper-Scissor Game',
