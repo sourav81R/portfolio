@@ -1,0 +1,61 @@
+@keyframes color-change {
+  0% {
+    color: #ff0000;
+  }
+  14% {
+    color: #ff7f00;
+  }
+  28% {
+    color: #ffff00;
+  }
+  42% {
+    color: #00ff00;
+  }
+  57% {
+    color: #0000ff;
+  }
+  71% {
+    color: #4b0082;
+  }
+  85% {
+    color: #9400d3;
+  }
+  100% {
+    color: #ff0000;
+  }
+}
+
+.animated-text span {
+  animation: color-change 5s infinite;
+}
+
+@keyframes border-color-change {
+  0% {
+    border-color: #ff0000;
+  }
+  14% {
+    border-color: #ff7f00;
+  }
+  28% {
+    border-color: #ffff00;
+  }
+  42% {
+    border-color: #00ff00;
+  }
+  57% {
+    border-color: #0000ff;
+  }
+  71% {
+    border-color: #4b0082;
+  }
+  85% {
+    border-color: #9400d3;
+  }
+  100% {
+    border-color: #ff0000;
+  }
+}
+
+.animated-border {
+  animation: border-color-change 5s infinite;
+}

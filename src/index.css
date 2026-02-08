@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* LIGHT MODE */
+body {
+  @apply bg-white text-gray-900;
+}
+
+/* DARK MODE */
+.dark body {
+  @apply bg-black text-gray-300;
+}
+
+/* Terminal selection */
+::selection {
+  background: #22c55e;
+  color: black;
+}
+body {
+  @apply transition-colors duration-300;
+}
+
+/* Better reading rhythm */
+section {
+  scroll-margin-top: 96px;
+}
+
+/* Smooth font rendering */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Subtle transitions everywhere */
+* {
+  transition-property: color, background-color, border-color;
+  transition-duration: 200ms;
+}
+/* Animated gradient border */
+.animated-border {
+  background: linear-gradient(
+    120deg,
+    #22c55e,
+    #3b82f6,
+    #22c55e
+  );
+  background-size: 300% 300%;
+  animation: borderMove 6s ease infinite;
+}
+
+@keyframes borderMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+@keyframes borderMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+.animate-border {
+  background-size: 200% 200%;
+  animation: borderMove 6s linear infinite;
+}
+@keyframes borderMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+.animate-border {
+  background-size: 200% 200%;
+  animation: borderMove 6s linear infinite;
+}
