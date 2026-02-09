@@ -263,15 +263,6 @@ const Projects = () => {
   }, [])
 
   const text = 'Projects'
-  const colors = [
-    '#ff0000',
-    '#ff7f00',
-    '#ffff00',
-    '#00ff00',
-    '#0000ff',
-    '#4b0082',
-    '#9400d3',
-  ]
 
   const filteredProjects =
     activeFilter === 'All'
@@ -282,18 +273,8 @@ const Projects = () => {
     <section id="projects" className="px-6 py-28">
       <AnimatedBorder>
         <div className="max-w-6xl mx-auto font-mono p-6 md:p-10">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-10 tracking-tight animated-text">
-            {text.split('').map((char, index) => (
-              <span
-                key={index}
-                style={{
-                  color: colors[index % colors.length],
-                  animationDelay: `${index * 0.1}s`,
-                }}
-              >
-                {char}
-              </span>
-            ))}
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-10 tracking-tight">
+            {text}
           </h2>
 
           {/* Filters */}
@@ -302,36 +283,53 @@ const Projects = () => {
               <button
                 key={filter}
                 onClick={() => setActiveFilter(filter)}
-                className={`px-4 py-1 rounded-full border text-sm transition ${
-                  activeFilter === filter
-                    ? 'border-green-500 text-green-500'
-                    : 'border-gray-300 dark:border-gray-700 text-gray-600 dark:text-gray-400'
-                }`}
+                className="relative px-4 py-2 rounded-full text-sm font-medium transition focus:outline-none"
               >
-                {filter}
+                {activeFilter === filter && (
+                  <motion.div
+                    layoutId="activeFilter"
+                    className="absolute inset-0 bg-green-500 rounded-full"
+                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                  />
+                )}
+                <span className={`relative z-10 ${activeFilter === filter ? 'text-white' : 'text-gray-600 dark:text-gray-400 hover:text-green-500 dark:hover:text-green-400'}`}>
+                  {filter}
+                </span>
+                {activeFilter !== filter && (
+                  <div className="absolute inset-0 rounded-full border border-gray-300 dark:border-gray-700" />
+                )}
               </button>
             ))}
           </div>
 
           {/* Grid */}
           <motion.div layout className="grid md:grid-cols-2 gap-10">
-            <AnimatePresence>
+            <AnimatePresence mode="popLayout">
               {filteredProjects.map((project, index) => (
                 <motion.div
                   key={project.title}
                   layout
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-50px" }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  exit={{ opacity: 0, y: 20 }}
-                  className="relative border border-white/10 rounded-xl bg-gray-900/50 backdrop-blur-md overflow-hidden group shadow-lg"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ duration: 0.3 }}
+                  className="
+                    flex flex-col h-full
+                    rounded-xl
+                    bg-gray-50 dark:bg-gray-900/50
+                    border border-gray-200 dark:border-gray-800
+                    hover:border-green-500 dark:hover:border-green-500
+                    transition-all duration-300
+                    shadow-sm hover:shadow-md
+                    group overflow-hidden
+                  "
                 >
-                  <div className="absolute inset-0 z-0">
+                  <div className="relative h-48 w-full overflow-hidden">
                     <img
                       src={project.bgImage}
                       alt={project.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                     {project.video && (
                       <video
@@ -343,50 +341,54 @@ const Projects = () => {
                         className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                       />
                     )}
-                    <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] group-hover:backdrop-blur-none transition-all duration-500" />
+                    {project.featured && (
+                      <div className="absolute top-3 right-3 z-10">
+                        <span className="text-xs px-2 py-1 font-medium border border-green-500/30 text-green-600 dark:text-green-400 rounded-full bg-white/90 dark:bg-black/80 backdrop-blur-sm">
+                          Featured
+                        </span>
+                      </div>
+                    )}
                   </div>
 
-                  <div className="relative z-10 p-6">
-                    {project.featured && (
-                      <span className="absolute top-4 right-4 text-xs px-2 py-1 border border-green-500 text-green-500 rounded-full bg-gray-50/90 dark:bg-gray-950/90 backdrop-blur-sm">
-                        Featured
-                      </span>
-                    )}
-
-                    <h3 className="text-xl font-semibold mb-1 animated-text">
-                      {project.title.split('').map((char, i) => (
-                        <span
-                          key={i}
-                          style={{
-                            color: colors[i % colors.length],
-                            animationDelay: `${i * 0.1}s`,
-                          }}
-                        >
-                          {char === ' ' ? '\u00A0' : char}
-                        </span>
-                      ))}
-                    </h3>
-                    <p className="text-green-400 text-sm mb-3">
-                      {project.role}
-                    </p>
-
-                    <p className="text-gray-300 mb-4">
-                      {project.description}
-                    </p>
-
-                    <div className="flex justify-between items-center">
-                      <button
-                        onClick={() => setSelectedProject(project)}
-                        className="text-green-400 text-sm hover:underline"
-                      >
-                        View Case Study →
-                      </button>
+                  <div className="p-6 flex flex-col flex-grow">
+                    <div className="flex justify-between items-start mb-2">
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                        {project.title}
+                      </h3>
                       {stars[project.title] !== undefined && (
-                        <div className="flex items-center gap-1 text-yellow-400 text-xs font-medium bg-black/40 px-2 py-1 rounded-full backdrop-blur-sm border border-yellow-500/30">
+                        <div className="flex items-center gap-1 text-yellow-500 dark:text-yellow-400 text-xs font-medium bg-yellow-500/10 px-2 py-1 rounded-full border border-yellow-500/20">
                           <Star size={12} fill="currentColor" />
                           <span>{stars[project.title]}</span>
                         </div>
                       )}
+                    </div>
+
+                    <p className="text-green-600 dark:text-green-400 text-sm font-medium mb-4">
+                      {project.role}
+                    </p>
+
+                    <p className="text-gray-600 dark:text-gray-400 mb-6 flex-grow leading-relaxed text-sm">
+                      {project.description}
+                    </p>
+
+                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-200 dark:border-gray-800">
+                      <button
+                        onClick={() => setSelectedProject(project)}
+                        className="text-sm font-medium text-gray-900 dark:text-white hover:text-green-500 dark:hover:text-green-400 transition-colors"
+                      >
+                        View Case Study →
+                      </button>
+                      
+                      <div className="flex gap-3">
+                         <a href={project.github} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
+                            <Github size={18} />
+                         </a>
+                         {project.demo && (
+                            <a href={project.demo} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
+                                <ExternalLink size={18} />
+                            </a>
+                         )}
+                      </div>
                     </div>
                   </div>
                 </motion.div>

@@ -21,32 +21,13 @@ const experienceData = [
 
 const Experience = () => {
   const text = 'Experience'
-  const colors = [
-    '#ff0000',
-    '#ff7f00',
-    '#ffff00',
-    '#00ff00',
-    '#0000ff',
-    '#4b0082',
-    '#9400d3',
-  ]
   return (
     <section id="experience" className="px-6 py-28">
       <AnimatedBorder>
         <div className="max-w-5xl mx-auto font-mono p-6 md:p-10">
           {/* Section Title */}
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-14 tracking-tight animated-text">
-            {text.split('').map((char, index) => (
-              <span
-                key={index}
-                style={{
-                  color: colors[index % colors.length],
-                  animationDelay: `${index * 0.1}s`,
-                }}
-              >
-                {char}
-              </span>
-            ))}
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-14 tracking-tight">
+            {text}
           </h2>
 
           <div className="relative border-l-2 border-gray-200 dark:border-gray-800 ml-3 md:ml-6 space-y-12">

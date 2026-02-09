@@ -47,16 +47,6 @@ const LINE_DELAY = 600
 /* ---------------- NAME ANIMATION ---------------- */
 const fullName = 'SOURAV CHOWDHURY'
 
-const colors = [
-  '#ff0000',
-  '#ff7f00',
-  '#ffff00',
-  '#00ff00',
-  '#0000ff',
-  '#4b0082',
-  '#9400d3',
-]
-
 const Hero = () => {
   const { open } = useCommandPalette()
 
@@ -161,14 +151,13 @@ const Hero = () => {
           {/* NAME */}
           <motion.h1
             style={{ y: nameY }}
-            className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-tight mb-6"
+            className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-tight mb-6 text-gray-900 dark:text-white"
           >
             {fullName.split('').map((char, i) => (
               <span
                 key={i}
                 className="inline-block hover:text-green-500 transition-colors duration-300 cursor-default"
                 style={{
-                  color: colors[i % colors.length],
                   marginRight: char === ' ' ? '0.35rem' : '0.05rem',
                   textShadow: '0 0 20px rgba(0,0,0,0.1)',
                 }}

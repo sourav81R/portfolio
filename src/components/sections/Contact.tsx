@@ -95,15 +95,6 @@ const Contact = () => {
   }
 
   const text = 'Get In Touch'
-  const colors = [
-    '#ff0000',
-    '#ff7f00',
-    '#ffff00',
-    '#00ff00',
-    '#0000ff',
-    '#4b0082',
-    '#9400d3',
-  ]
 
   const directContact = contactLinks.filter((link) =>
     ['Email', 'Phone', 'WhatsApp', 'Location'].includes(link.name)
@@ -117,18 +108,8 @@ const Contact = () => {
       <AnimatedBorder>
         <div className="max-w-6xl mx-auto font-mono p-6 md:p-10">
           {/* Section Title */}
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-10 text-center tracking-tight animated-text">
-            {text.split('').map((char, index) => (
-              <span
-                key={index}
-                style={{
-                  color: colors[index % colors.length],
-                  animationDelay: `${index * 0.1}s`,
-                }}
-              >
-                {char}
-              </span>
-            ))}
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-10 text-center tracking-tight">
+            {text}
           </h2>
 
           <div className="grid lg:grid-cols-2 gap-12 items-start">
