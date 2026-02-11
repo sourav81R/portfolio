@@ -1,5 +1,12 @@
-import { Code, Database, Server, Wrench } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { useState, useCallback } from 'react'
+import { 
+  Code, Database, Server, Wrench, 
+  Music, Music2, Music3, Music4,
+  Coffee, FileCode, Atom, Smartphone, Layout, 
+  GitBranch, Github, Terminal, Globe, 
+  FileJson, Layers, Box
+} from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import AnimatedBorder from '../common/AnimatedBorder'
 import './About.css'
 
@@ -8,103 +15,252 @@ const skillCategories = [
     title: 'Programming & Frontend',
     icon: Code,
     skills: [
-      'Java',
-      'C',
-      'JavaScript (ES6+)',
-      'TypeScript (Basic)',
-      'React.js',
-      'React Native',
-      'HTML5',
-      'CSS3',
+      { name: 'Java', icon: Coffee, color: '#f89820' },
+      { name: 'C', icon: FileCode, color: '#00599C' },
+      { name: 'JavaScript (ES6+)', icon: FileJson, color: '#F7DF1E' },
+      { name: 'TypeScript (Basic)', icon: FileCode, color: '#3178C6' },
+      { name: 'React.js', icon: Atom, color: '#61DAFB' },
+      { name: 'React Native', icon: Smartphone, color: '#61DAFB' },
+      { name: 'HTML5', icon: Layout, color: '#E34F26' },
+      { name: 'CSS3', icon: Layers, color: '#1572B6' },
     ],
   },
   {
     title: 'Backend & APIs',
     icon: Server,
     skills: [
-      'Node.js',
-      'REST API Development',
-      'Authentication Workflows',
-      'API Debugging',
+      { name: 'Node.js', icon: Server, color: '#339933' },
+      { name: 'REST API', icon: Globe, color: '#009688' },
+      { name: 'Auth Workflows', icon: Wrench, color: '#FF6C37' },
+      { name: 'API Debugging', icon: Terminal, color: '#10b981' },
     ],
   },
   {
     title: 'Databases',
     icon: Database,
-    skills: ['MongoDB', 'SQL (Basic Queries)'],
+    skills: [
+      { name: 'MongoDB', icon: Database, color: '#47A248' },
+      { name: 'SQL', icon: Database, color: '#4479A1' },
+    ],
   },
   {
     title: 'Tools & Platforms',
     icon: Wrench,
     skills: [
-      'Git',
-      'GitHub',
-      'Postman',
-      'VS Code',
-      'Firebase',
-      'Vercel',
-      'Expo',
+      { name: 'Git', icon: GitBranch, color: '#F05032' },
+      { name: 'GitHub', icon: Github, color: '#6e5494' },
+      { name: 'Postman', icon: Globe, color: '#FF6C37' },
+      { name: 'VS Code', icon: Code, color: '#007ACC' },
+      { name: 'Firebase', icon: Database, color: '#FFCA28' },
+      { name: 'Vercel', icon: Server, color: '#0070f3' },
+      { name: 'Expo', icon: Smartphone, color: '#4630EB' },
     ],
   },
 ]
 
+const playSkillSound = (index: number) => {
+  const AudioContext = window.AudioContext || (window as any).webkitAudioContext
+  if (!AudioContext) return
+
+  const ctx = new AudioContext()
+  const osc = ctx.createOscillator()
+  const gain = ctx.createGain()
+
+  osc.connect(gain)
+  gain.connect(ctx.destination)
+
+  const scale = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25] // C major
+  osc.frequency.value = scale[index % scale.length]
+  osc.type = 'sine'
+
+  gain.gain.setValueAtTime(0.1, ctx.currentTime)
+  gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.5)
+
+  osc.start()
+  osc.stop(ctx.currentTime + 0.5)
+}
+
 const Skills = () => {
-  const text = 'Skills'
+  const [soundEnabled, setSoundEnabled] = useState(true)
+  const [hoveredSkill, setHoveredSkill] = useState<string | null>(null)
+  const [musicNotes, setMusicNotes] = useState<{ id: number; icon: any; x: number; y: number }[]>([])
+  const [noteId, setNoteId] = useState(0)
+
+  const musicIcons = [Music, Music2, Music3, Music4]
+
+  const handleSkillHover = useCallback((categoryIndex: number, skillIndex: number, skillName: string) => {
+    setHoveredSkill(skillName)
+
+    if (!soundEnabled) return
+
+    // Calculate a unique index for each skill across all categories
+    let globalIndex = 0
+    for (let i = 0; i < categoryIndex; i++) {
+      globalIndex += skillCategories[i].skills.length
+    }
+    globalIndex += skillIndex
+
+    playSkillSound(globalIndex)
+
+    // Generate ONE music note
+    const newNote = {
+      id: Date.now(),
+      icon: musicIcons[Math.floor(Math.random() * musicIcons.length)],
+      x: Math.random() * 40 - 20, // Random x offset between -20 and 20
+      y: 0,
+    }
+
+    setMusicNotes(prev => [...prev, newNote])
+
+    // Remove note after animation (3.5 seconds)
+    setTimeout(() => {
+      setMusicNotes(prev => prev.filter(note => note.id !== newNote.id))
+    }, 3500)
+  }, [soundEnabled])
+
   return (
     <section id="skills" className="px-6 py-28">
       <AnimatedBorder>
         <div className="max-w-6xl mx-auto font-mono p-6 md:p-10">
-          {/* Section Title */}
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-14 tracking-tight">
-            {text}
-          </h2>
+          <motion.div 
+            className="text-center mb-16"
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white tracking-tight">
+                My Skills
+              </h2>
+              <button
+                onClick={() => setSoundEnabled(!soundEnabled)}
+                className="text-2xl hover:scale-110 transition-transform p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
+                title={soundEnabled ? 'Mute sounds' : 'Enable sounds'}
+                aria-label={soundEnabled ? 'Mute sounds' : 'Enable sounds'}
+              >
+                {soundEnabled ? '🔊' : '🔇'}
+              </button>
+            </div>
+            <p className="mt-4 max-w-2xl mx-auto text-base sm:text-lg text-gray-600 dark:text-gray-400 px-4">
+              Powers and tools I use to build amazing things.
+              <span className="block text-sm mt-2 text-green-500 font-medium">
+                {soundEnabled ? '🎵 Hover over skills to hear marimba notes!' : ''}
+              </span>
+            </p>
+          </motion.div>
 
-          {/* Skill Categories */}
-          <div className="grid md:grid-cols-2 gap-6">
-            {skillCategories.map((category, index) => (
+          <div className="space-y-16">
+            {skillCategories.map((category, categoryIndex) => (
               <motion.div
                 key={category.title}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
-                className="
-                  border border-gray-300 dark:border-gray-800
-                  bg-gray-50/50 dark:bg-gray-900/50
-                  backdrop-blur-sm
-                  rounded-xl p-6
-                  hover:border-green-500 dark:hover:border-green-500
-                  transition-colors duration-300
-                  group
-                "
+                transition={{ delay: categoryIndex * 0.1, duration: 0.5 }}
               >
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="p-3 bg-green-500/10 rounded-lg text-green-500 group-hover:bg-green-500 group-hover:text-white transition-colors duration-300">
-                    <category.icon size={24} />
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                    {category.title}
-                  </h3>
-                </div>
+                <h3 className="text-2xl font-bold text-green-600 dark:text-green-400 tracking-wider mb-8 text-center flex items-center justify-center gap-3">
+                  <category.icon className="w-6 h-6" />
+                  {category.title}
+                </h3>
+                
+                <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
+                  {category.skills.map((skill, skillIndex) => {
+                    const IconComponent = skill.icon || Box
 
-                <div className="flex flex-wrap gap-2">
-                  {category.skills.map((skill) => (
-                    <span
-                      key={skill}
-                      className="
-                        px-3 py-1 text-sm
-                        bg-white dark:bg-gray-800
-                        border border-gray-200 dark:border-gray-700
-                        rounded-full
-                        text-gray-700 dark:text-gray-300
-                        hover:border-green-500 hover:text-green-500
-                        dark:hover:border-green-500 dark:hover:text-green-400
-                        transition-colors cursor-default
-                      "
-                    >
-                      {skill}
-                    </span>
-                  ))}
+                    return (
+                      <motion.div
+                        key={skill.name}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{
+                          delay: skillIndex * 0.05,
+                          duration: 0.4,
+                          ease: 'easeOut',
+                        }}
+                        whileHover={{
+                          y: -8,
+                          scale: 1.1,
+                          transition: { type: 'spring', stiffness: 400, damping: 10 },
+                        }}
+                        onMouseEnter={() => handleSkillHover(categoryIndex, skillIndex, skill.name)}
+                        onMouseLeave={() => setHoveredSkill(null)}
+                        className="
+                          flex flex-col items-center justify-center gap-3 text-center 
+                          w-24 h-24 sm:w-28 sm:h-28 
+                          bg-white dark:bg-gray-900 
+                          p-3 rounded-xl 
+                          border border-gray-200 dark:border-gray-800 
+                          shadow-sm hover:shadow-xl hover:border-green-500 dark:hover:border-green-500
+                          transition-all cursor-pointer group relative overflow-visible
+                        "
+                      >
+                        {/* Floating Music Note - Realistic Animation */}
+                        <AnimatePresence>
+                          {hoveredSkill === skill.name && musicNotes
+                            .filter(note => hoveredSkill === skill.name) // This logic might need adjustment if notes are global, but for now we filter by hover state to only show notes for current skill or we need to track skill on note. 
+                            // Actually, the input code filters by hoveredSkill === skill.name. 
+                            // But musicNotes are global. Let's just show the last added note if it belongs to this skill interaction?
+                            // The input code logic: {hoveredSkill === skill.name && musicNotes...}
+                            // This implies notes disappear when mouse leaves. That's acceptable.
+                            .slice(-1)
+                            .map((note) => {
+                              const NoteIcon = note.icon
+                              return (
+                                <motion.div
+                                  key={note.id}
+                                  initial={{
+                                    opacity: 0,
+                                    y: 0,
+                                    x: 0,
+                                    scale: 0.3,
+                                    rotate: -20
+                                  }}
+                                  animate={{
+                                    opacity: [0, 1, 1, 1, 0],
+                                    y: [-10, -30, -60, -90, -120],
+                                    x: [0, note.x * 0.3, note.x * 0.6, note.x * 0.8, note.x],
+                                    scale: [0.3, 0.8, 1.1, 1.2, 0.9],
+                                    rotate: [-20, 0, 10, 5, 15]
+                                  }}
+                                  exit={{ opacity: 0, scale: 0.5 }}
+                                  transition={{
+                                    duration: 2,
+                                    ease: "easeOut"
+                                  }}
+                                  className="absolute pointer-events-none z-50"
+                                  style={{
+                                    left: '50%',
+                                    top: '50%',
+                                    color: skill.color || '#22c55e',
+                                    filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
+                                    transformOrigin: 'center',
+                                    marginLeft: '-12px', // Center the note (w-6 = 24px)
+                                    marginTop: '-12px'
+                                  }}
+                                >
+                                  <NoteIcon className="w-6 h-6" strokeWidth={2.5} />
+                                </motion.div>
+                              )
+                            })}
+                        </AnimatePresence>
+
+                        <motion.div
+                          whileHover={{ rotate: [0, -10, 10, -10, 0] }}
+                          transition={{ duration: 0.5 }}
+                        >
+                          <IconComponent
+                            className="h-8 w-8 sm:h-10 sm:w-10 transition-colors"
+                            style={{ color: skill.color }}
+                          />
+                        </motion.div>
+                        <span className="text-xs font-bold text-gray-700 dark:text-gray-300 leading-tight">
+                          {skill.name}
+                        </span>
+                      </motion.div>
+                    )
+                  })}
                 </div>
               </motion.div>
             ))}

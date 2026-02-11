@@ -92,7 +92,7 @@ const Navbar = () => {
         </a>
 
         {/* Desktop Menu */}
-        <ul className="hidden md:flex gap-6 text-sm items-center">
+        <ul className="hidden lg:flex gap-6 text-sm items-center">
           {sections.map((item) => (
             <li key={item}>
               <a
@@ -130,7 +130,7 @@ const Navbar = () => {
         </ul>
 
         {/* Mobile Controls */}
-        <div className="md:hidden flex items-center gap-4">
+        <div className="lg:hidden flex items-center gap-4">
           <button
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
             className="text-gray-600 dark:text-gray-400"
@@ -149,7 +149,7 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden bg-white dark:bg-black border-t border-gray-200 dark:border-gray-800">
+        <div className="lg:hidden bg-white dark:bg-black border-t border-gray-200 dark:border-gray-800 max-h-[calc(100vh-73px)] overflow-y-auto">
           <ul className="flex flex-col items-center gap-5 py-6 font-mono">
             {sections.map((item) => (
               <li key={item}>

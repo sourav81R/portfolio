@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { Github, ExternalLink, X, Star } from 'lucide-react'
+import { useState } from 'react'
+import { Github, ExternalLink, X, Eye, ChevronDown, ChevronUp } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import AnimatedBorder from '../common/AnimatedBorder'
 import './About.css'
@@ -233,168 +233,169 @@ const projects: Project[] = [
   },
 ]
 
-const filters: Category[] = ['All', 'React', 'JavaScript', 'Mobile']
-
 const Projects = () => {
-  const [activeFilter, setActiveFilter] = useState<Category>('All')
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
-  const [stars, setStars] = useState<Record<string, number>>({})
+  const [showAll, setShowAll] = useState(false)
 
-  useEffect(() => {
-    const fetchStars = async () => {
-      const newStars: Record<string, number> = {}
-      await Promise.all(
-        projects.map(async (project) => {
-          try {
-            const repo = project.github.split('/').slice(-2).join('/')
-            const res = await fetch(`https://api.github.com/repos/${repo}`)
-            const data = await res.json()
-            if (typeof data.stargazers_count === 'number') {
-              newStars[project.title] = data.stargazers_count
-            }
-          } catch (e) {
-            console.error(e)
-          }
-        })
-      )
-      setStars(newStars)
-    }
-    fetchStars()
-  }, [])
-
-  const text = 'Projects'
-
-  const filteredProjects =
-    activeFilter === 'All'
-      ? projects
-      : projects.filter((p) => p.category === activeFilter)
+  const INITIAL_PROJECTS_COUNT = 6
+  const displayedProjects = showAll ? projects : projects.slice(0, INITIAL_PROJECTS_COUNT)
+  const hasMoreProjects = projects.length > INITIAL_PROJECTS_COUNT
 
   return (
-    <section id="projects" className="px-6 py-28">
+    <section id="projects" className="section-padding relative overflow-hidden py-28 px-6">
+      {/* Background decoration */}
+      <div className="absolute top-20 right-10 w-64 h-64 bg-green-500/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-20 left-10 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
+
       <AnimatedBorder>
-        <div className="max-w-6xl mx-auto font-mono p-6 md:p-10">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-10 tracking-tight">
-            {text}
+        <div className="max-w-6xl mx-auto relative z-10 font-mono p-6 md:p-10">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-12 md:mb-16"
+        >
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 dark:text-white tracking-wider mb-4">
+             Projects
           </h2>
+          <p className="max-w-2xl mx-auto text-sm sm:text-base md:text-lg text-gray-600 dark:text-gray-400">
+            A selection of my work, from full-stack applications to fun experiments.
+          </p>
+        </motion.div>
 
-          {/* Filters */}
-          <div className="flex flex-wrap gap-3 mb-14">
-            {filters.map((filter) => (
-              <button
-                key={filter}
-                onClick={() => setActiveFilter(filter)}
-                className="relative px-4 py-2 rounded-full text-sm font-medium transition focus:outline-none"
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          {displayedProjects.map((project, index) => (
+            <motion.div
+              key={project.title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              className="h-full"
+            >
+              <motion.div
+                className="h-full flex flex-col overflow-hidden bg-white dark:bg-gray-900 rounded-lg shadow-lg group"
+                whileHover={{ y: -8 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
               >
-                {activeFilter === filter && (
-                  <motion.div
-                    layoutId="activeFilter"
-                    className="absolute inset-0 bg-green-500 rounded-full"
-                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                  />
-                )}
-                <span className={`relative z-10 ${activeFilter === filter ? 'text-white' : 'text-gray-600 dark:text-gray-400 hover:text-green-500 dark:hover:text-green-400'}`}>
-                  {filter}
-                </span>
-                {activeFilter !== filter && (
-                  <div className="absolute inset-0 rounded-full border border-gray-300 dark:border-gray-700" />
-                )}
-              </button>
-            ))}
-          </div>
-
-          {/* Grid */}
-          <motion.div layout className="grid md:grid-cols-2 gap-10">
-            <AnimatePresence mode="popLayout">
-              {filteredProjects.map((project, index) => (
-                <motion.div
-                  key={project.title}
-                  layout
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  transition={{ duration: 0.3 }}
-                  className="
-                    flex flex-col h-full
-                    rounded-xl
-                    bg-gray-50 dark:bg-gray-900/50
-                    border border-gray-200 dark:border-gray-800
-                    hover:border-green-500 dark:hover:border-green-500
-                    transition-all duration-300
-                    shadow-sm hover:shadow-md
-                    group overflow-hidden
-                  "
+                {/* Project Image */}
+                <div
+                  className="relative w-full h-48 sm:h-52 md:h-56 overflow-hidden cursor-pointer"
+                  onClick={() => setSelectedProject(project)}
                 >
-                  <div className="relative h-48 w-full overflow-hidden">
-                    <img
-                      src={project.bgImage}
-                      alt={project.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                    {project.video && (
-                      <video
-                        src={project.video}
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                      />
-                    )}
-                    {project.featured && (
-                      <div className="absolute top-3 right-3 z-10">
-                        <span className="text-xs px-2 py-1 font-medium border border-green-500/30 text-green-600 dark:text-green-400 rounded-full bg-white/90 dark:bg-black/80 backdrop-blur-sm">
-                          Featured
-                        </span>
-                      </div>
+                  <img
+                    src={project.bgImage}
+                    alt={project.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                  {/* Gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+
+                  {/* Shine effect on hover */}
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full"
+                    whileHover={{ x: '200%' }}
+                    transition={{ duration: 0.6 }}
+                  />
+
+                  {/* Title overlay */}
+                  <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white tracking-wide drop-shadow-lg line-clamp-1">
+                      {project.title}
+                    </h3>
+                  </div>
+
+                  {/* View icon hint */}
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    whileHover={{ opacity: 1, scale: 1 }}
+                    className="absolute top-3 right-3 bg-white/90 dark:bg-black/90 p-2 rounded-full border-2 border-gray-900 dark:border-white text-gray-900 dark:text-white"
+                  >
+                    <Eye className="h-4 w-4 sm:h-5 sm:w-5" />
+                  </motion.div>
+                </div>
+
+                {/* Project Content */}
+                <div className="p-3 sm:p-4 md:p-5 flex flex-col flex-grow">
+                  {/* Description */}
+                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-3 flex-grow">
+                    {project.description}
+                  </p>
+
+                  {/* Tags */}
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-3 sm:mb-4">
+                    {project.tech.slice(0, 4).map((tag) => (
+                      <span
+                        key={tag}
+                        className="px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white rounded border border-gray-900/30 dark:border-white/30"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                    {project.tech.length > 4 && (
+                      <span className="px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs font-medium border border-gray-900/30 dark:border-white/30 rounded text-gray-500">
+                        +{project.tech.length - 4}
+                      </span>
                     )}
                   </div>
 
-                  <div className="p-6 flex flex-col flex-grow">
-                    <div className="flex justify-between items-start mb-2">
-                      <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                        {project.title}
-                      </h3>
-                      {stars[project.title] !== undefined && (
-                        <div className="flex items-center gap-1 text-yellow-500 dark:text-yellow-400 text-xs font-medium bg-yellow-500/10 px-2 py-1 rounded-full border border-yellow-500/20">
-                          <Star size={12} fill="currentColor" />
-                          <span>{stars[project.title]}</span>
-                        </div>
-                      )}
-                    </div>
-
-                    <p className="text-green-600 dark:text-green-400 text-sm font-medium mb-4">
-                      {project.role}
-                    </p>
-
-                    <p className="text-gray-600 dark:text-gray-400 mb-6 flex-grow leading-relaxed text-sm">
-                      {project.description}
-                    </p>
-
-                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-200 dark:border-gray-800">
+                  {/* Action Buttons */}
+                  <div className="flex flex-col gap-2 mt-auto">
+                    {/* Top row: Details and Demo side by side */}
+                    <div className="flex gap-2">
                       <button
                         onClick={() => setSelectedProject(project)}
-                        className="text-sm font-medium text-gray-900 dark:text-white hover:text-green-500 dark:hover:text-green-400 transition-colors"
+                        className="flex-1 h-9 sm:h-10 flex items-center justify-center gap-2 px-3 text-xs sm:text-sm font-bold border-2 border-gray-900 dark:border-white rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-900 dark:text-white"
                       >
-                        View Case Study →
+                        <Eye className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                        Details
                       </button>
-                      
-                      <div className="flex gap-3">
-                         <a href={project.github} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
-                            <Github size={18} />
-                         </a>
-                         {project.demo && (
-                            <a href={project.demo} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
-                                <ExternalLink size={18} />
-                            </a>
-                         )}
-                      </div>
+                      <a
+                        href={project.demo || '#'}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`flex-1 h-9 sm:h-10 flex items-center justify-center gap-2 px-3 text-xs sm:text-sm font-bold border-2 border-gray-900 dark:border-white rounded-md transition-colors bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 ${!project.demo ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        onClick={(e) => !project.demo && e.preventDefault()}
+                      >
+                        <ExternalLink className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                        <span className="hidden sm:inline">Live Demo</span>
+                        <span className="sm:hidden">Demo</span>
+                      </a>
                     </div>
                   </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
+                </div>
+              </motion.div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* View More Projects Button */}
+        {hasMoreProjects && (
+          <motion.div
+            className="flex justify-center mt-12"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+          >
+            <button
+              onClick={() => setShowAll(!showAll)}
+              className="group flex items-center gap-2 text-base font-bold text-gray-900 dark:text-white hover:text-green-500 dark:hover:text-green-400 transition-colors duration-300"
+            >
+              {showAll ? (
+                <>
+                  <ChevronUp className="w-5 h-5 group-hover:-translate-y-0.5 transition-transform" />
+                  <span>Show Less Projects</span>
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="w-5 h-5 group-hover:translate-y-0.5 transition-transform" />
+                  <span>View More Projects ({projects.length - INITIAL_PROJECTS_COUNT} more)</span>
+                </>
+              )}
+            </button>
           </motion.div>
+        )}
         </div>
       </AnimatedBorder>
 

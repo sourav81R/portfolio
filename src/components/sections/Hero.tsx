@@ -47,6 +47,48 @@ const LINE_DELAY = 600
 /* ---------------- NAME ANIMATION ---------------- */
 const fullName = 'SOURAV CHOWDHURY'
 
+const BADGE_WORDS = ['COMPUTER SCIENCE ENGINEER', 'FULL STACK DEVELOPER', 'MERN STACK DEVELOPER']
+
+const TypingBadge = () => {
+  const [index, setIndex] = useState(0)
+  const [subIndex, setSubIndex] = useState(0)
+  const [reverse, setReverse] = useState(false)
+  const [blink, setBlink] = useState(true)
+
+  useEffect(() => {
+    const timeout = setInterval(() => {
+      setBlink((prev) => !prev)
+    }, 500)
+    return () => clearInterval(timeout)
+  }, [])
+
+  useEffect(() => {
+    if (subIndex === BADGE_WORDS[index].length + 1 && !reverse) {
+      const timeout = setTimeout(() => setReverse(true), 1000)
+      return () => clearTimeout(timeout)
+    }
+
+    if (subIndex === 0 && reverse) {
+      setReverse(false)
+      setIndex((prev) => (prev + 1) % BADGE_WORDS.length)
+      return
+    }
+
+    const timeout = setTimeout(() => {
+      setSubIndex((prev) => prev + (reverse ? -1 : 1))
+    }, reverse ? 75 : 150)
+
+    return () => clearTimeout(timeout)
+  }, [subIndex, index, reverse])
+
+  return (
+    <span className="whitespace-nowrap">
+      {BADGE_WORDS[index].substring(0, subIndex)}
+      <span className={`ml-1 ${blink ? 'opacity-100' : 'opacity-0'}`}>|</span>
+    </span>
+  )
+}
+
 const Hero = () => {
   const { open } = useCommandPalette()
 
@@ -139,13 +181,13 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-600 dark:text-green-400 text-xs font-medium mb-6"
+            className="flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 text-gray-900 dark:text-white text-lg font-medium mb-6"
           >
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
             </span>
-            Available for Work
+            <TypingBadge />
           </motion.div>
 
           {/* NAME */}
