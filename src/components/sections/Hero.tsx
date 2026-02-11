@@ -82,7 +82,7 @@ const TypingBadge = () => {
   }, [subIndex, index, reverse])
 
   return (
-    <span className="whitespace-nowrap">
+    <span className="inline-block max-w-[180px] sm:max-w-none overflow-hidden text-ellipsis whitespace-nowrap align-bottom">
       {BADGE_WORDS[index].substring(0, subIndex)}
       <span className={`ml-1 ${blink ? 'opacity-100' : 'opacity-0'}`}>|</span>
     </span>
@@ -148,7 +148,7 @@ const Hero = () => {
         filter: open ? 'blur(2px)' : 'blur(0px)',
       }}
       transition={{ duration: 0.3 }}
-      className="relative min-h-screen flex items-center px-6 overflow-hidden"
+      className="relative min-h-screen flex items-center px-4 sm:px-6 pt-24 sm:pt-28 pb-14 sm:pb-10 overflow-hidden"
     >
       {/* Background Elements */}
       <div className="absolute inset-0 z-0 pointer-events-none">
@@ -158,7 +158,7 @@ const Hero = () => {
 
       <div className="max-w-[98%] mx-auto w-full relative z-10">
         <AnimatedBorder>
-          <div className="grid lg:grid-cols-2 gap-16 items-center p-8 md:p-12 min-h-[70vh] border border-gray-200 dark:border-gray-800 rounded-xl">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center p-4 sm:p-6 md:p-10 lg:p-12 min-h-[70vh] border border-gray-200 dark:border-gray-800 rounded-xl">
             {/* ---------------- LEFT SIDE ---------------- */}
             <div className="font-mono flex flex-col items-start">
           {/* AVATAR */}
@@ -166,13 +166,13 @@ const Hero = () => {
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
-            className="relative mb-8"
+            className="relative mb-6 sm:mb-8"
           >
             <div className="absolute inset-0 rounded-full blur-xl bg-green-500/30 animate-pulse" />
             <img
               src="/profile.jpg"
               alt="Sourav Chowdhury"
-              className="relative w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-2 border-green-500/50 shadow-lg"
+              className="relative w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 rounded-full object-cover border-2 border-green-500/50 shadow-lg"
             />
           </motion.div>
 
@@ -181,7 +181,7 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 text-gray-900 dark:text-white text-lg font-medium mb-6"
+            className="max-w-full flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 text-gray-900 dark:text-white text-[11px] sm:text-sm md:text-base font-medium mb-6"
           >
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -193,7 +193,7 @@ const Hero = () => {
           {/* NAME */}
           <motion.h1
             style={{ y: nameY }}
-            className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-tight mb-6 text-gray-900 dark:text-white"
+            className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-tight mb-4 sm:mb-6 text-gray-900 dark:text-white"
           >
             {fullName.split('').map((char, i) => (
               <span
@@ -213,7 +213,7 @@ const Hero = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
-            className="text-lg text-gray-600 dark:text-gray-400 mb-10 max-w-lg leading-relaxed"
+            className="text-base sm:text-lg text-gray-600 dark:text-gray-400 mb-8 sm:mb-10 max-w-lg leading-relaxed"
           >
             Building{' '}
             <span className="text-gray-900 dark:text-white font-semibold">
@@ -224,11 +224,11 @@ const Hero = () => {
           </motion.p>
 
           {/* BUTTONS */}
-          <div className="flex flex-wrap gap-4">
+          <div className="flex w-full flex-wrap gap-3 sm:gap-4">
             <MagneticButton>
               <a
                 href="#projects"
-                className="group flex items-center gap-2 px-6 py-3 bg-gray-900 dark:bg-white text-white dark:text-black rounded-full font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition-all shadow-lg hover:shadow-xl"
+                className="group flex w-full sm:w-auto justify-center items-center gap-2 px-5 sm:px-6 py-3 bg-gray-900 dark:bg-white text-white dark:text-black rounded-full font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition-all shadow-lg hover:shadow-xl"
               >
                 View Projects
                 <ArrowRight
@@ -243,7 +243,7 @@ const Hero = () => {
                 href="/resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center gap-2 px-6 py-3 border border-gray-300 dark:border-gray-700 rounded-full font-medium hover:border-gray-900 dark:hover:border-white transition-colors bg-white/50 dark:bg-black/50 backdrop-blur-sm"
+                className="group flex w-full sm:w-auto justify-center items-center gap-2 px-5 sm:px-6 py-3 border border-gray-300 dark:border-gray-700 rounded-full font-medium hover:border-gray-900 dark:hover:border-white transition-colors bg-white/50 dark:bg-black/50 backdrop-blur-sm"
               >
                 <Eye size={18} />
                 View Resume
@@ -253,7 +253,7 @@ const Hero = () => {
             <MagneticButton>
               <button
                 onClick={() => setShowResume(true)}
-                className="group flex items-center gap-2 px-6 py-3 border border-gray-300 dark:border-gray-700 rounded-full font-medium hover:border-green-500 text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all bg-white/50 dark:bg-black/50 backdrop-blur-sm"
+                className="group flex w-full sm:w-auto justify-center items-center gap-2 px-5 sm:px-6 py-3 border border-gray-300 dark:border-gray-700 rounded-full font-medium hover:border-green-500 text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all bg-white/50 dark:bg-black/50 backdrop-blur-sm"
               >
                 <Download size={18} />
                 Download
@@ -346,7 +346,7 @@ const Hero = () => {
       {/* SCROLL INDICATOR */}
       <motion.div
         style={{ opacity }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-gray-400 dark:text-gray-500"
+        className="absolute bottom-5 sm:bottom-8 left-1/2 -translate-x-1/2 hidden sm:flex flex-col items-center gap-2 text-gray-400 dark:text-gray-500"
         animate={{ y: [0, 10, 0] }}
         transition={{ duration: 2, repeat: Infinity }}
       >

@@ -104,21 +104,21 @@ const Contact = () => {
   )
 
   return (
-    <section id="contact" className="px-6 py-28">
+    <section id="contact" className="px-4 sm:px-6 py-20 sm:py-24 lg:py-28">
       <AnimatedBorder>
-        <div className="max-w-6xl mx-auto font-mono p-6 md:p-10">
+        <div className="max-w-6xl mx-auto font-mono p-4 sm:p-6 md:p-10">
           {/* Section Title */}
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-10 text-center tracking-tight">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-8 sm:mb-10 text-center tracking-tight">
             {text}
           </h2>
 
           <div className="grid lg:grid-cols-2 gap-12 items-start">
             {/* Left: Contact Info */}
             <div>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-5 sm:mb-6">
                 Let's Connect
               </h3>
-              <p className="text-gray-700 dark:text-gray-400 mb-8 text-lg leading-relaxed">
+              <p className="text-gray-700 dark:text-gray-400 mb-8 text-base sm:text-lg leading-relaxed">
                 I’m currently looking for entry-level software developer
                 opportunities. Whether you have a question, a project idea, or
                 just want to say hi, I’ll try my best to get back to you!
@@ -130,20 +130,20 @@ const Contact = () => {
                     key={link.name}
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
+                    viewport={{ once: true, amount: 0.12 }}
+                    transition={{ duration: 0.2 }}
                     className={`
-                      flex items-center justify-between p-4 rounded-xl
+                      flex items-center justify-between gap-3 p-3 sm:p-4 rounded-xl
                       border border-gray-200 dark:border-gray-800
                       bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-sm
                       ${link.borderColor} hover:shadow-md transition-all duration-300
                     `}
                   >
-                    <div className="flex items-center gap-4">
+                    <div className="min-w-0 flex items-center gap-3 sm:gap-4">
                       <div className={`p-3 rounded-full ${link.bg} ${link.color}`}>
                         <link.icon size={20} />
                       </div>
-                      <div>
+                      <div className="min-w-0">
                         <p className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wider">
                           {link.name}
                         </p>
@@ -151,7 +151,7 @@ const Contact = () => {
                           href={link.href}
                           target={link.href.startsWith('http') ? '_blank' : undefined}
                           rel="noopener noreferrer"
-                          className="text-gray-900 dark:text-white font-medium hover:underline"
+                          className="text-gray-900 dark:text-white font-medium hover:underline break-all"
                         >
                           {link.value}
                         </a>
@@ -199,10 +199,11 @@ const Contact = () => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="bg-gray-50 dark:bg-gray-900/50 p-8 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-lg"
+              viewport={{ once: true, amount: 0.12 }}
+              transition={{ duration: 0.2 }}
+              className="bg-gray-50 dark:bg-gray-900/50 p-4 sm:p-6 lg:p-8 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-lg"
             >
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-6">
                 Send a Message
               </h3>
               <form onSubmit={handleSubmit} className="space-y-6">

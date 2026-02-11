@@ -38,44 +38,51 @@ const Navbar = () => {
 
   /* ---------- SCROLL SPY ---------- */
   useEffect(() => {
-    const onScroll = () => {
-      const scrollY = window.scrollY + 140
+    let raf = 0
+    const sectionElements = sections
+      .map((id) => document.getElementById(id))
+      .filter(Boolean) as HTMLElement[]
+    const bar = document.getElementById('scroll-progress')
 
-      sections.forEach((id) => {
-        const section = document.getElementById(id)
-        if (
-          section &&
+    const updateOnScroll = () => {
+      const scrollY = window.scrollY + 140
+      const matchedSection = sectionElements.find(
+        (section) =>
           scrollY >= section.offsetTop &&
           scrollY < section.offsetTop + section.offsetHeight
-        ) {
-          setActive(id)
-        }
-      })
-    }
+      )
 
-    window.addEventListener('scroll', onScroll)
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+      if (matchedSection?.id) {
+        setActive((prev) => (prev === matchedSection.id ? prev : matchedSection.id))
+      }
 
-  /* ---------- SCROLL PROGRESS ---------- */
-  useEffect(() => {
-    const onScrollProgress = () => {
       const scrollTop = window.scrollY
       const docHeight =
         document.documentElement.scrollHeight -
         document.documentElement.clientHeight
-
-      const progress = (scrollTop / docHeight) * 100
-      const bar = document.getElementById('scroll-progress')
+      const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0
       if (bar) bar.style.width = `${progress}%`
+      raf = 0
     }
 
-    window.addEventListener('scroll', onScrollProgress)
-    return () => window.removeEventListener('scroll', onScrollProgress)
+    const onScroll = () => {
+      if (raf !== 0) return
+      raf = window.requestAnimationFrame(updateOnScroll)
+    }
+
+    updateOnScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      if (raf !== 0) {
+        window.cancelAnimationFrame(raf)
+      }
+    }
   }, [])
 
   return (
-    <nav className="fixed top-0 w-full z-50 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 ...">
+    <nav className="fixed top-0 w-full z-50 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
       {/* Scroll Progress Bar */}
       <div className="absolute bottom-0 left-0 h-[2px] w-full bg-transparent">
         <div
@@ -85,9 +92,9 @@ const Navbar = () => {
         />
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between font-mono">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between font-mono">
         {/* Logo */}
-        <a href="#home" className="font-bold text-gray-900 dark:text-white">
+        <a href="#home" className="font-bold text-sm sm:text-base text-gray-900 dark:text-white">
           sourav.dev
         </a>
 
@@ -130,17 +137,17 @@ const Navbar = () => {
         </ul>
 
         {/* Mobile Controls */}
-        <div className="lg:hidden flex items-center gap-4">
+        <div className="lg:hidden flex items-center gap-2 sm:gap-4">
           <button
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            className="text-gray-600 dark:text-gray-400"
+            className="p-2 rounded-md text-gray-600 dark:text-gray-400"
           >
             {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
           </button>
 
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="text-gray-700 dark:text-gray-300"
+            className="p-2 rounded-md text-gray-700 dark:text-gray-300"
           >
             {isOpen ? <X size={26} /> : <Menu size={26} />}
           </button>
@@ -149,17 +156,17 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="lg:hidden bg-white dark:bg-black border-t border-gray-200 dark:border-gray-800 max-h-[calc(100vh-73px)] overflow-y-auto">
-          <ul className="flex flex-col items-center gap-5 py-6 font-mono">
+        <div className="lg:hidden bg-white dark:bg-black border-t border-gray-200 dark:border-gray-800 max-h-[calc(100vh-65px)] overflow-y-auto">
+          <ul className="flex flex-col items-stretch gap-1 px-4 py-4 font-mono">
             {sections.map((item) => (
               <li key={item}>
                 <a
                   href={`#${item}`}
                   onClick={() => setIsOpen(false)}
-                  className={`text-lg transition ${
+                  className={`block px-3 py-2 rounded-md text-base transition ${
                     active === item
                       ? sectionColors[item]
-                      : 'text-gray-600 dark:text-gray-400'
+                      : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'
                   }`}
                 >
                   {item}

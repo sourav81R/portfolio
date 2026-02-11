@@ -33,8 +33,8 @@ const AnimatedBorder = ({ children }: AnimatedBorderProps) => {
     const observer = new IntersectionObserver(
       ([entry]) => setInView(entry.isIntersecting),
       {
-        threshold: 0.4,
-        rootMargin: '-80px 0px -80px 0px',
+        threshold: 0.15,
+        rootMargin: '-40px 0px -40px 0px',
       }
     )
 

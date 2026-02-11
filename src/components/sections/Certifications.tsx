@@ -25,11 +25,11 @@ const certifications = [
 const Certifications = () => {
   const text = 'Certifications'
   return (
-    <section id="certifications" className="px-6 py-28">
+    <section id="certifications" className="px-4 sm:px-6 py-20 sm:py-24 lg:py-28">
       <AnimatedBorder>
-        <div className="max-w-5xl mx-auto font-mono p-6 md:p-10">
+        <div className="max-w-5xl mx-auto font-mono p-4 sm:p-6 md:p-10">
           {/* Section Title */}
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-14 tracking-tight">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-10 sm:mb-14 tracking-tight">
             {text}
           </h2>
 
@@ -39,12 +39,12 @@ const Certifications = () => {
                 key={index}
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
+                viewport={{ once: true, amount: 0.12 }}
+                transition={{ duration: 0.25 }}
                 whileHover={{ scale: 1.02 }}
                 className="
                   relative
-                  p-6 rounded-xl
+                  p-4 sm:p-6 rounded-xl
                   bg-gray-50 dark:bg-gray-900/50
                   border border-gray-200 dark:border-gray-800
                   hover:border-green-500 dark:hover:border-green-500

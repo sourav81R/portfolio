@@ -71,8 +71,8 @@ const CommandPalette = () => {
   if (!open) return null
 
   return (
-    <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center px-4">
-      <div className="w-full max-w-md rounded-xl bg-white dark:bg-gray-950 border border-gray-300 dark:border-gray-800 shadow-lg font-mono">
+    <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center px-3 sm:px-4">
+      <div className="w-full max-w-md rounded-xl bg-white dark:bg-gray-950 border border-gray-300 dark:border-gray-800 shadow-lg font-mono max-h-[85vh] overflow-hidden">
         {/* Input */}
         <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-300 dark:border-gray-800">
           <Search size={16} className="text-gray-500" />
@@ -86,7 +86,7 @@ const CommandPalette = () => {
         </div>
 
         {/* Commands */}
-        <ul className="max-h-64 overflow-y-auto">
+        <ul className="max-h-[65vh] overflow-y-auto">
           {filtered.map((cmd, i) => (
             <li
               key={i}

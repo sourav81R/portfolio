@@ -42,7 +42,7 @@ const SmartResume = ({ open, onClose }: Props) => {
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center px-6"
+          className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center px-3 sm:px-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -56,9 +56,9 @@ const SmartResume = ({ open, onClose }: Props) => {
               rounded-xl
               bg-gray-950
               border border-gray-800
-              p-6
+              p-4 sm:p-6
               font-mono
-              text-sm
+              text-xs sm:text-sm
             "
           >
             {/* Terminal header */}

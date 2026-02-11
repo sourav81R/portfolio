@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { 
   Code, Database, Server, Wrench, 
   Music, Music2, Music3, Music4,
@@ -59,10 +59,10 @@ const skillCategories = [
 ]
 
 const playSkillSound = (index: number) => {
-  const AudioContext = window.AudioContext || (window as any).webkitAudioContext
-  if (!AudioContext) return
+  const AudioContextCtor = window.AudioContext || (window as any).webkitAudioContext
+  if (!AudioContextCtor) return null
 
-  const ctx = new AudioContext()
+  const ctx = new AudioContextCtor()
   const osc = ctx.createOscillator()
   const gain = ctx.createGain()
 
@@ -78,15 +78,28 @@ const playSkillSound = (index: number) => {
 
   osc.start()
   osc.stop(ctx.currentTime + 0.5)
+
+  return ctx
 }
 
 const Skills = () => {
   const [soundEnabled, setSoundEnabled] = useState(true)
   const [hoveredSkill, setHoveredSkill] = useState<string | null>(null)
-  const [musicNotes, setMusicNotes] = useState<{ id: number; icon: any; x: number; y: number }[]>([])
-  const [noteId, setNoteId] = useState(0)
+  const [musicNotes, setMusicNotes] = useState<{ id: number; icon: any; x: number; skill: string }[]>([])
+  const noteTimeoutsRef = useRef<number[]>([])
+  const soundCtxRef = useRef<AudioContext | null>(null)
 
   const musicIcons = [Music, Music2, Music3, Music4]
+
+  useEffect(() => {
+    return () => {
+      noteTimeoutsRef.current.forEach((timeoutId) => clearTimeout(timeoutId))
+      noteTimeoutsRef.current = []
+      if (soundCtxRef.current && soundCtxRef.current.state !== 'closed') {
+        soundCtxRef.current.close().catch(() => {})
+      }
+    }
+  }, [])
 
   const handleSkillHover = useCallback((categoryIndex: number, skillIndex: number, skillName: string) => {
     setHoveredSkill(skillName)
@@ -100,37 +113,52 @@ const Skills = () => {
     }
     globalIndex += skillIndex
 
-    playSkillSound(globalIndex)
+    if (!soundCtxRef.current || soundCtxRef.current.state === 'closed') {
+      soundCtxRef.current = playSkillSound(globalIndex)
+    } else {
+      const osc = soundCtxRef.current.createOscillator()
+      const gain = soundCtxRef.current.createGain()
+      osc.connect(gain)
+      gain.connect(soundCtxRef.current.destination)
+      const scale = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25]
+      osc.frequency.value = scale[globalIndex % scale.length]
+      osc.type = 'sine'
+      gain.gain.setValueAtTime(0.1, soundCtxRef.current.currentTime)
+      gain.gain.exponentialRampToValueAtTime(0.00001, soundCtxRef.current.currentTime + 0.5)
+      osc.start()
+      osc.stop(soundCtxRef.current.currentTime + 0.5)
+    }
 
     // Generate ONE music note
     const newNote = {
       id: Date.now(),
       icon: musicIcons[Math.floor(Math.random() * musicIcons.length)],
       x: Math.random() * 40 - 20, // Random x offset between -20 and 20
-      y: 0,
+      skill: skillName,
     }
 
-    setMusicNotes(prev => [...prev, newNote])
+    setMusicNotes((prev) => [...prev.slice(-4), newNote])
 
     // Remove note after animation (3.5 seconds)
-    setTimeout(() => {
-      setMusicNotes(prev => prev.filter(note => note.id !== newNote.id))
+    const timeoutId = window.setTimeout(() => {
+      setMusicNotes((prev) => prev.filter((note) => note.id !== newNote.id))
     }, 3500)
+    noteTimeoutsRef.current.push(timeoutId)
   }, [soundEnabled])
 
   return (
-    <section id="skills" className="px-6 py-28">
+    <section id="skills" className="px-4 sm:px-6 py-20 sm:py-24 lg:py-28">
       <AnimatedBorder>
-        <div className="max-w-6xl mx-auto font-mono p-6 md:p-10">
+        <div className="max-w-6xl mx-auto font-mono p-4 sm:p-6 md:p-10">
           <motion.div 
             className="text-center mb-16"
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            viewport={{ once: true, amount: 0.12 }}
+            transition={{ duration: 0.25 }}
           >
-            <div className="flex items-center justify-center gap-4 mb-4">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white tracking-tight">
+            <div className="flex items-center justify-center gap-3 sm:gap-4 mb-4">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white tracking-tight">
                 My Skills
               </h2>
               <button
@@ -156,10 +184,10 @@ const Skills = () => {
                 key={category.title}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: categoryIndex * 0.1, duration: 0.5 }}
+                viewport={{ once: true, amount: 0.12 }}
+                transition={{ duration: 0.25 }}
               >
-                <h3 className="text-2xl font-bold text-green-600 dark:text-green-400 tracking-wider mb-8 text-center flex items-center justify-center gap-3">
+                <h3 className="text-xl sm:text-2xl font-bold text-green-600 dark:text-green-400 tracking-wider mb-6 sm:mb-8 text-center flex items-center justify-center gap-3">
                   <category.icon className="w-6 h-6" />
                   {category.title}
                 </h3>
@@ -173,10 +201,9 @@ const Skills = () => {
                         key={skill.name}
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
+                        viewport={{ once: true, amount: 0.12 }}
                         transition={{
-                          delay: skillIndex * 0.05,
-                          duration: 0.4,
+                          duration: 0.2,
                           ease: 'easeOut',
                         }}
                         whileHover={{
@@ -199,11 +226,7 @@ const Skills = () => {
                         {/* Floating Music Note - Realistic Animation */}
                         <AnimatePresence>
                           {hoveredSkill === skill.name && musicNotes
-                            .filter(note => hoveredSkill === skill.name) // This logic might need adjustment if notes are global, but for now we filter by hover state to only show notes for current skill or we need to track skill on note. 
-                            // Actually, the input code filters by hoveredSkill === skill.name. 
-                            // But musicNotes are global. Let's just show the last added note if it belongs to this skill interaction?
-                            // The input code logic: {hoveredSkill === skill.name && musicNotes...}
-                            // This implies notes disappear when mouse leaves. That's acceptable.
+                            .filter((note) => note.skill === skill.name)
                             .slice(-1)
                             .map((note) => {
                               const NoteIcon = note.icon

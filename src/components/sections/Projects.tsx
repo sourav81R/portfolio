@@ -242,21 +242,21 @@ const Projects = () => {
   const hasMoreProjects = projects.length > INITIAL_PROJECTS_COUNT
 
   return (
-    <section id="projects" className="section-padding relative overflow-hidden py-28 px-6">
+    <section id="projects" className="section-padding relative overflow-hidden py-20 sm:py-24 lg:py-28 px-4 sm:px-6">
       {/* Background decoration */}
       <div className="absolute top-20 right-10 w-64 h-64 bg-green-500/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-20 left-10 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
 
       <AnimatedBorder>
-        <div className="max-w-6xl mx-auto relative z-10 font-mono p-6 md:p-10">
+        <div className="max-w-6xl mx-auto relative z-10 font-mono p-4 sm:p-6 md:p-10">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          viewport={{ once: true, amount: 0.12 }}
+          transition={{ duration: 0.25 }}
           className="text-center mb-12 md:mb-16"
         >
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 dark:text-white tracking-wider mb-4">
+          <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold text-gray-900 dark:text-white tracking-wider mb-4">
              Projects
           </h2>
           <p className="max-w-2xl mx-auto text-sm sm:text-base md:text-lg text-gray-600 dark:text-gray-400">
@@ -265,13 +265,13 @@ const Projects = () => {
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          {displayedProjects.map((project, index) => (
+          {displayedProjects.map((project) => (
             <motion.div
               key={project.title}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
+              viewport={{ once: true, amount: 0.12 }}
+              transition={{ duration: 0.2 }}
               className="h-full"
             >
               <motion.div
@@ -424,13 +424,13 @@ const ProjectModal = ({
   onClose: () => void
 }) => (
   <motion.div
-    className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center px-6"
+    className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center px-3 sm:px-6"
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     exit={{ opacity: 0 }}
   >
     <motion.div
-      className="relative max-w-3xl w-full bg-gray-50 dark:bg-gray-950 rounded-xl p-6 md:p-10 font-mono max-h-[90vh] overflow-y-auto"
+      className="relative max-w-3xl w-full bg-gray-50 dark:bg-gray-950 rounded-xl p-4 sm:p-6 md:p-10 font-mono max-h-[90vh] overflow-y-auto"
       initial={{ scale: 0.9, y: 40 }}
       animate={{ scale: 1, y: 0 }}
       exit={{ scale: 0.9, y: 40 }}
@@ -442,7 +442,7 @@ const ProjectModal = ({
         <X />
       </button>
 
-      <h2 className="text-2xl font-bold mb-2">{project.title}</h2>
+      <h2 className="pr-8 text-xl sm:text-2xl font-bold mb-2">{project.title}</h2>
       <p className="text-green-500 mb-6">{project.role}</p>
 
       <Section title="Problem" text={project.problem} />
@@ -450,12 +450,12 @@ const ProjectModal = ({
       <List title="Key Contributions" items={project.points} />
       <List title="What I Learned" items={project.learnings} />
 
-      <div className="flex gap-4 mt-6">
-        <a href={project.github} target="_blank" className="flex gap-2">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6">
+        <a href={project.github} target="_blank" className="flex items-center gap-2 break-all">
           <Github size={18} /> GitHub
         </a>
         {project.demo && (
-          <a href={project.demo} target="_blank" className="flex gap-2">
+          <a href={project.demo} target="_blank" className="flex items-center gap-2 break-all">
             <ExternalLink size={18} /> Live Demo
           </a>
         )}

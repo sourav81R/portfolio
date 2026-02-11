@@ -66,12 +66,12 @@ const About = () => {
   ]
 
   return (
-    <section id="about" className="px-6 py-28">
+    <section id="about" className="px-4 sm:px-6 py-20 sm:py-24 lg:py-28">
       <AnimatedBorder>
-        <div className="max-w-5xl mx-auto font-mono p-6 md:p-10">
+        <div className="max-w-5xl mx-auto font-mono p-4 sm:p-6 md:p-10">
           {/* Section Title */}
           <FadeIn>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-14 tracking-tight">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-10 sm:mb-14 tracking-tight">
               {text}
             </h2>
           </FadeIn>
@@ -79,7 +79,7 @@ const About = () => {
           <FadeIn delay={0.1}>
             <div className="grid md:grid-cols-2 gap-12 items-center">
               {/* Left: Description */}
-              <div className="text-gray-700 dark:text-gray-400 leading-relaxed space-y-6 text-lg">
+              <div className="text-gray-700 dark:text-gray-400 leading-relaxed space-y-5 sm:space-y-6 text-base sm:text-lg">
                 <p>
                   I am a{' '}
                   <span className="text-gray-900 dark:text-white font-semibold border-b-2 border-green-500/30">
@@ -157,7 +157,7 @@ const About = () => {
 
             {/* What I Bring */}
             <div className="mt-20">
-              <h3 className="text-2xl font-bold mb-8 text-center text-gray-900 dark:text-white">
+              <h3 className="text-xl sm:text-2xl font-bold mb-8 text-center text-gray-900 dark:text-white">
                 What I Bring to the Table
               </h3>
               <div className="grid md:grid-cols-3 gap-6">
@@ -166,8 +166,8 @@ const About = () => {
                     key={index}
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1, duration: 0.5 }}
+                    viewport={{ once: true, amount: 0.12 }}
+                    transition={{ duration: 0.25 }}
                     whileHover={{ y: -5 }}
                     className="
                       p-6 rounded-2xl
