@@ -83,7 +83,7 @@ const playSkillSound = (index: number) => {
 }
 
 const Skills = () => {
-  const [soundEnabled, setSoundEnabled] = useState(true)
+  const [soundEnabled, setSoundEnabled] = useState(false)
   const [hoveredSkill, setHoveredSkill] = useState<string | null>(null)
   const [musicNotes, setMusicNotes] = useState<{ id: number; icon: any; x: number; skill: string }[]>([])
   const noteTimeoutsRef = useRef<number[]>([])

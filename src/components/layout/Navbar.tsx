@@ -93,100 +93,108 @@ const Navbar = () => {
   }, [])
 
   return (
-    <nav className="fixed top-0 w-full z-50 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
-      {/* Scroll Progress Bar */}
-      <div className="absolute bottom-0 left-0 h-[2px] w-full bg-transparent">
-        <div
-          id="scroll-progress"
-          className={`h-full transition-[width] duration-150 ${sectionColors[active]}`}
-          style={{ width: '0%' }}
-        />
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between font-mono">
-        {/* Logo */}
-        <a href="#home" className="font-bold text-sm sm:text-base text-gray-900 dark:text-white">
-          sourav.dev
-        </a>
-
-        {/* Desktop Menu */}
-        <ul className="hidden lg:flex gap-6 text-sm items-center">
-          {sections.map((item) => (
-            <li key={item}>
-              <a
-                href={`#${item}`}
-                className={`relative transition ${
-                  active === item
-                    ? sectionColors[item]
-                    : 'text-gray-600 dark:text-gray-400 hover:text-green-500'
-                }`}
-              >
-                {item}
-
-                {/* Animated underline */}
-                <span
-                  className={`absolute left-0 -bottom-1 h-[2px] w-full origin-left scale-x-0 transition-transform duration-300
-                    ${active === item ? 'scale-x-100' : ''}
-                  `}
-                  style={{
-                    backgroundColor:
-                      active === item ? 'currentColor' : 'transparent',
-                  }}
-                />
-              </a>
-            </li>
-          ))}
-
-          {/* Theme Toggle */}
-          <button
-            aria-label="Toggle theme"
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            className="ml-4 text-gray-600 dark:text-gray-400 hover:text-green-500 transition"
-          >
-            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
-        </ul>
-
-        {/* Mobile Controls */}
-        <div className="lg:hidden flex items-center gap-2 sm:gap-4">
-          <button
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            className="p-2 rounded-md text-gray-600 dark:text-gray-400"
-          >
-            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
-
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="p-2 rounded-md text-gray-700 dark:text-gray-300"
-          >
-            {isOpen ? <X size={26} /> : <Menu size={26} />}
-          </button>
+    <nav className="fixed inset-x-0 top-2.5 z-50 px-4 sm:top-4 sm:px-6">
+      <div
+        className={`relative overflow-hidden border border-emerald-200/80 bg-gradient-to-r from-emerald-50/95 via-white/95 to-cyan-50/95 shadow-[0_16px_45px_-28px_rgba(0,0,0,0.8)] backdrop-blur-sm dark:border-emerald-500/30 dark:bg-gradient-to-r dark:from-gray-900/95 dark:via-gray-950/95 dark:to-gray-900/95 ${
+          isOpen ? 'rounded-2xl' : 'rounded-2xl sm:rounded-full'
+        }`}
+      >
+        {/* Scroll Progress Bar */}
+        <div className="absolute inset-x-0 bottom-0 h-[2px] bg-transparent">
+          <div
+            id="scroll-progress"
+            className={`h-full transition-[width] duration-150 ${sectionColors[active]}`}
+            style={{ width: '0%' }}
+          />
         </div>
-      </div>
 
-      {/* Mobile Menu */}
-      {isOpen && (
-        <div className="lg:hidden bg-white dark:bg-black border-t border-gray-200 dark:border-gray-800 max-h-[calc(100vh-65px)] overflow-y-auto">
-          <ul className="flex flex-col items-stretch gap-1 px-4 py-4 font-mono">
+        <div className="px-3 py-2.5 sm:px-5 sm:py-3 flex items-center justify-between font-mono">
+          {/* Logo */}
+          <a href="#home" className="font-bold text-sm sm:text-base text-gray-900 dark:text-white">
+            sourav.dev
+          </a>
+
+          {/* Desktop Menu */}
+          <ul className="hidden lg:flex gap-6 text-sm items-center">
             {sections.map((item) => (
               <li key={item}>
                 <a
                   href={`#${item}`}
-                  onClick={() => setIsOpen(false)}
-                  className={`block px-3 py-2 rounded-md text-base transition ${
+                  className={`relative transition ${
                     active === item
                       ? sectionColors[item]
-                      : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'
+                      : 'text-gray-600 dark:text-gray-400 hover:text-green-500'
                   }`}
                 >
                   {item}
+
+                  {/* Animated underline */}
+                  <span
+                    className={`absolute left-0 -bottom-1 h-[2px] w-full origin-left scale-x-0 transition-transform duration-300
+                      ${active === item ? 'scale-x-100' : ''}
+                    `}
+                    style={{
+                      backgroundColor:
+                        active === item ? 'currentColor' : 'transparent',
+                    }}
+                  />
                 </a>
               </li>
             ))}
+
+            {/* Theme Toggle */}
+            <button
+              aria-label="Toggle theme"
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className="ml-2 rounded-full p-2 text-gray-600 transition hover:text-green-500 dark:text-gray-400"
+            >
+              {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
           </ul>
+
+          {/* Mobile Controls */}
+          <div className="lg:hidden flex items-center gap-1.5 sm:gap-2">
+            <button
+              aria-label="Toggle theme"
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className="rounded-full p-2 text-gray-600 dark:text-gray-400"
+            >
+              {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+
+            <button
+              aria-label={isOpen ? 'Close menu' : 'Open menu'}
+              onClick={() => setIsOpen(!isOpen)}
+              className="rounded-full p-2 text-gray-700 dark:text-gray-300"
+            >
+              {isOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          </div>
         </div>
-      )}
+
+        {/* Mobile Menu */}
+        {isOpen && (
+          <div className="lg:hidden border-t border-emerald-200/80 bg-emerald-50/95 dark:border-emerald-500/30 dark:bg-gray-900/95 max-h-[min(70vh,28rem)] overflow-y-auto">
+            <ul className="flex flex-col items-stretch gap-1 px-3 py-3 font-mono">
+              {sections.map((item) => (
+                <li key={item}>
+                  <a
+                    href={`#${item}`}
+                    onClick={() => setIsOpen(false)}
+                    className={`block px-3 py-2 rounded-lg text-sm sm:text-base transition ${
+                      active === item
+                        ? sectionColors[item]
+                        : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'
+                    }`}
+                  >
+                    {item}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
     </nav>
   )
 }

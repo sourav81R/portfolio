@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { ArrowRight, Download, Eye, Terminal as TerminalIcon, Code2, Cpu, Globe } from 'lucide-react'
 import AnimatedBorder from '../common/AnimatedBorder'
 import MagneticButton from '../common/MagneticButton'
@@ -83,6 +83,7 @@ const TypingBadge = () => {
 
 const Hero = () => {
   const { open } = useCommandPalette()
+  const reduceMotion = useReducedMotion()
 
   /* ---------------- TERMINAL STATE ---------------- */
   const [displayedLines, setDisplayedLines] = useState<Line[]>([])
@@ -116,11 +117,6 @@ const Hero = () => {
     }
   }, [charIndex, lineIndex])
 
-  /* ---------------- PARALLAX ---------------- */
-  const { scrollY } = useScroll()
-  const nameY = useTransform(scrollY, [0, 400], [0, -40])
-  const opacity = useTransform(scrollY, [0, 300], [1, 0])
-
   const handleResumeClose = useCallback(() => setShowResume(false), [])
 
   return (
@@ -128,15 +124,15 @@ const Hero = () => {
       id="home"
       animate={{
         scale: open ? 0.96 : 1,
-        filter: open ? 'blur(2px)' : 'blur(0px)',
+        opacity: open ? 0.9 : 1,
       }}
       transition={{ duration: 0.3 }}
       className="relative min-h-screen flex items-center px-4 sm:px-6 pt-24 sm:pt-28 pb-14 sm:pb-10 overflow-hidden"
     >
       {/* Background Elements */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-green-500/10 rounded-full blur-[100px]" />
-        <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[100px]" />
+        <div className="absolute top-[-10%] right-[-5%] w-[360px] h-[360px] bg-green-500/10 rounded-full blur-[70px]" />
+        <div className="absolute bottom-[-10%] left-[-5%] w-[360px] h-[360px] bg-blue-500/10 rounded-full blur-[70px]" />
       </div>
 
       <div className="max-w-[98%] mx-auto w-full relative z-10">
@@ -175,7 +171,6 @@ const Hero = () => {
 
           {/* NAME */}
           <motion.h1
-            style={{ y: nameY }}
             className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-tight mb-4 sm:mb-6 text-gray-900 dark:text-white"
           >
             {fullName.split('').map((char, i) => (
@@ -249,32 +244,44 @@ const Hero = () => {
             <div className="relative hidden md:block">
           {/* Floating Icons */}
           <motion.div
-            animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+            animate={reduceMotion ? undefined : { y: [0, -10, 0] }}
+            transition={
+              reduceMotion
+                ? undefined
+                : { duration: 4, repeat: Infinity, ease: 'easeInOut' }
+            }
             className="absolute -top-12 -right-4 z-20 p-3 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700"
           >
             <Code2 className="text-blue-500" size={24} />
           </motion.div>
           <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{
-              duration: 5,
-              repeat: Infinity,
-              ease: 'easeInOut',
-              delay: 1,
-            }}
+            animate={reduceMotion ? undefined : { y: [0, 10, 0] }}
+            transition={
+              reduceMotion
+                ? undefined
+                : {
+                    duration: 5,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                    delay: 1,
+                  }
+            }
             className="absolute top-1/2 -left-8 z-20 p-3 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700"
           >
             <Cpu className="text-purple-500" size={24} />
           </motion.div>
           <motion.div
-            animate={{ y: [0, -8, 0] }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: 'easeInOut',
-              delay: 2,
-            }}
+            animate={reduceMotion ? undefined : { y: [0, -8, 0] }}
+            transition={
+              reduceMotion
+                ? undefined
+                : {
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                    delay: 2,
+                  }
+            }
             className="absolute -bottom-8 right-12 z-20 p-3 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700"
           >
             <Globe className="text-green-500" size={24} />
@@ -327,10 +334,9 @@ const Hero = () => {
 
       {/* SCROLL INDICATOR */}
       <motion.div
-        style={{ opacity }}
         className="absolute bottom-5 sm:bottom-8 left-1/2 -translate-x-1/2 hidden sm:flex flex-col items-center gap-2 text-gray-400 dark:text-gray-500"
-        animate={{ y: [0, 10, 0] }}
-        transition={{ duration: 2, repeat: Infinity }}
+        animate={reduceMotion ? undefined : { y: [0, 10, 0] }}
+        transition={reduceMotion ? undefined : { duration: 2, repeat: Infinity }}
       >
         <span className="text-xs uppercase tracking-widest">Scroll</span>
         <div className="w-[1px] h-12 bg-gradient-to-b from-gray-400 to-transparent dark:from-gray-600" />

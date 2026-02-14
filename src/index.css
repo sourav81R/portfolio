@@ -15,7 +15,7 @@ body,
 
 /* LIGHT MODE */
 body {
-  @apply bg-white text-gray-900;
+  @apply bg-white text-gray-900 transition-colors duration-300;
 }
 
 /* DARK MODE */
@@ -28,13 +28,10 @@ body {
   background: #22c55e;
   color: black;
 }
-body {
-  @apply transition-colors duration-300;
-}
 
 /* Better reading rhythm */
 section {
-  scroll-margin-top: 96px;
+  scroll-margin-top: 120px;
 }
 
 /* Smooth font rendering */
@@ -43,34 +40,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Subtle transitions everywhere */
-* {
-  transition-property: color, background-color, border-color;
-  transition-duration: 200ms;
-}
-/* Animated gradient border */
 .animated-border {
-  background: linear-gradient(
-    120deg,
-    #22c55e,
-    #3b82f6,
-    #22c55e
-  );
+  background: linear-gradient(120deg, #22c55e, #3b82f6, #22c55e);
   background-size: 300% 300%;
-  animation: borderMove 6s ease infinite;
+  animation: borderMove 6s linear infinite;
 }
 
-@keyframes borderMove {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
 @keyframes borderMove {
   0% {
     background-position: 0% 50%;
@@ -84,16 +59,14 @@ body {
   background-size: 200% 200%;
   animation: borderMove 6s linear infinite;
 }
-@keyframes borderMove {
-  0% {
-    background-position: 0% 50%;
-  }
-  100% {
-    background-position: 200% 50%;
-  }
-}
 
-.animate-border {
-  background-size: 200% 200%;
-  animation: borderMove 6s linear infinite;
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .animate-border,
+  .animated-border {
+    animation: none;
+  }
 }

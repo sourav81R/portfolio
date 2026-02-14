@@ -4,7 +4,6 @@ type AnimatedBorderProps = {
   children: ReactNode
 }
 
-/* 🔹 Single source of truth for section gradients */
 const sectionColorMap: Record<string, string> = {
   home: 'from-green-500 via-emerald-400 to-green-500',
   about: 'from-blue-500 via-cyan-400 to-blue-500',
@@ -19,15 +18,25 @@ const sectionColorMap: Record<string, string> = {
 const AnimatedBorder = ({ children }: AnimatedBorderProps) => {
   const ref = useRef<HTMLDivElement>(null)
   const [inView, setInView] = useState(false)
+  const [reduceMotion, setReduceMotion] = useState(false)
   const [gradient, setGradient] = useState(sectionColorMap.home)
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return
+
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const onChange = () => setReduceMotion(media.matches)
+    onChange()
+
+    media.addEventListener('change', onChange)
+    return () => media.removeEventListener('change', onChange)
+  }, [])
 
   useEffect(() => {
     if (!ref.current) return
 
-    /* 🔹 Detect nearest section */
     const section = ref.current.closest('section')
     const sectionId = section?.id ?? 'home'
-
     setGradient(sectionColorMap[sectionId] || sectionColorMap.home)
 
     const observer = new IntersectionObserver(
@@ -42,27 +51,20 @@ const AnimatedBorder = ({ children }: AnimatedBorderProps) => {
     return () => observer.disconnect()
   }, [])
 
+  const shouldAnimate = inView && !reduceMotion
+
   return (
-    <div
-      ref={ref}
-      className="relative rounded-2xl p-[1.5px] overflow-hidden"
-    >
-      {/* 🔹 Animated Gradient Border */}
+    <div ref={ref} className="relative rounded-2xl p-[1.5px] overflow-hidden">
       <div
         className={`
           absolute inset-0
           bg-gradient-to-r ${gradient}
-          animate-border
-          transition-all duration-700 ease-out
-          ${
-            inView
-              ? 'opacity-100 blur-[6px] scale-105'
-              : 'opacity-30 blur-[1px] scale-100'
-          }
+          ${shouldAnimate ? 'animate-border opacity-95' : 'opacity-55'}
+          transition-opacity duration-500 ease-out
         `}
+        style={shouldAnimate ? { willChange: 'background-position' } : undefined}
       />
 
-      {/* 🔹 Inner content */}
       <div className="relative rounded-2xl bg-white dark:bg-black">
         {children}
       </div>
