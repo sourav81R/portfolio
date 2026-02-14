@@ -39,12 +39,22 @@ const Navbar = () => {
   /* ---------- SCROLL SPY ---------- */
   useEffect(() => {
     let raf = 0
-    const sectionElements = sections
-      .map((id) => document.getElementById(id))
-      .filter(Boolean) as HTMLElement[]
+    let sectionElements = [] as HTMLElement[]
     const bar = document.getElementById('scroll-progress')
 
+    const readSections = () =>
+      sections
+        .map((id) => document.getElementById(id))
+        .filter(Boolean) as HTMLElement[]
+
     const updateOnScroll = () => {
+      if (
+        sectionElements.length === 0 ||
+        sectionElements.some((section) => !section.isConnected)
+      ) {
+        sectionElements = readSections()
+      }
+
       const scrollY = window.scrollY + 140
       const matchedSection = sectionElements.find(
         (section) =>
@@ -70,6 +80,7 @@ const Navbar = () => {
       raf = window.requestAnimationFrame(updateOnScroll)
     }
 
+    sectionElements = readSections()
     updateOnScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
 

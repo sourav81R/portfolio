@@ -53,14 +53,6 @@ const TypingBadge = () => {
   const [index, setIndex] = useState(0)
   const [subIndex, setSubIndex] = useState(0)
   const [reverse, setReverse] = useState(false)
-  const [blink, setBlink] = useState(true)
-
-  useEffect(() => {
-    const timeout = setInterval(() => {
-      setBlink((prev) => !prev)
-    }, 500)
-    return () => clearInterval(timeout)
-  }, [])
 
   useEffect(() => {
     if (subIndex === BADGE_WORDS[index].length + 1 && !reverse) {
@@ -84,7 +76,7 @@ const TypingBadge = () => {
   return (
     <span className="inline-block max-w-[180px] sm:max-w-none overflow-hidden text-ellipsis whitespace-nowrap align-bottom">
       {BADGE_WORDS[index].substring(0, subIndex)}
-      <span className={`ml-1 ${blink ? 'opacity-100' : 'opacity-0'}`}>|</span>
+      <span className="ml-1 inline-block animate-pulse">|</span>
     </span>
   )
 }
@@ -97,16 +89,7 @@ const Hero = () => {
   const [lineIndex, setLineIndex] = useState(0)
   const [charIndex, setCharIndex] = useState(0)
   const [currentText, setCurrentText] = useState('')
-  const [showCursor, setShowCursor] = useState(true)
   const [showResume, setShowResume] = useState(false)
-
-  /* Cursor blink */
-  useEffect(() => {
-    const blink = setInterval(() => {
-      setShowCursor((prev) => !prev)
-    }, 500)
-    return () => clearInterval(blink)
-  }, [])
 
   /* Typing animation */
   useEffect(() => {
@@ -330,8 +313,7 @@ const Hero = () => {
                     <span className="text-gray-100">
                       {currentText}
                       <span
-                        className="ml-1 animate-pulse inline-block w-2 h-4 bg-gray-400 align-middle"
-                        style={{ opacity: showCursor ? 1 : 0 }}
+                        className="ml-1 inline-block w-2 h-4 bg-gray-400 align-middle animate-pulse"
                       />
                     </span>
                   </div>
