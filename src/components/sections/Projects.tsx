@@ -43,7 +43,7 @@ const projects: Project[] = [
       'React Native architecture',
       'State management patterns',
     ],
-    tech: ['React Native', 'Expo', 'REST APIs'],
+    tech: ['React Native', 'Expo', 'TypeScript', 'Expo Router', 'React Native Web', 'React Navigation', 'Axios', 'React Native Maps'],
     category: 'Mobile',
     featured: true,
     github: 'https://github.com/sourav81R/EstatePerks',
@@ -70,10 +70,21 @@ const projects: Project[] = [
       'Auth systems',
       'Backend debugging',
     ],
-    tech: ['React', 'Node.js', 'MongoDB'],
+    tech: [
+      'React (Vite)',
+      'Redux Toolkit / Context API',
+      'Tailwind CSS',
+      'Socket.IO Client',
+      'Node.js',
+      'Express.js',
+      'MongoDB + Mongoose',
+      'JWT / Cookies',
+      'Stripe / Razorpay',
+      'Cloudinary / Multer',
+    ],
     category: 'React',
     github: 'https://github.com/sourav81R/Food-App',
-    demo: 'https://food-app-frontend-lh2k.onrender.com/signin',
+    demo: 'https://food-app-frontend-lh2k.onrender.com/',
     bgImage: '/images/food.jpeg',
   },
 
@@ -95,7 +106,7 @@ const projects: Project[] = [
       'Data modeling',
       'Form validation',
     ],
-    tech: ['JavaScript', 'HTML', 'CSS'],
+    tech: ['React 18', 'React Router', 'Axios', 'React Leaflet', 'Node.js', 'Express', 'Mongoose', 'JWT', 'bcryptjs', 'MongoDB', 'helmet', 'cors', 'express-rate-limit', 'nodemailer'],
     category: 'JavaScript',
     github: 'https://github.com/sourav81R/Employee-Management',
     demo: 'https://employee-management-ivory-mu.vercel.app/login',
@@ -176,7 +187,7 @@ const projects: Project[] = [
       'Conditional rendering',
       'State-driven UI',
     ],
-    tech: ['JavaScript', 'HTML', 'CSS'],
+    tech: ['React 18', 'React Router', 'Axios', 'React Leaflet', 'Node.js', 'Express', 'Mongoose', 'JWT', 'bcryptjs', 'MongoDB', 'helmet', 'cors', 'express-rate-limit', 'nodemailer'],
     category: 'JavaScript',
     github: 'https://github.com/sourav81R/Quiz-App',
     demo: 'https://quiz-app-ebon-five-26.vercel.app',
@@ -202,7 +213,7 @@ const projects: Project[] = [
       'API error handling',
       'Localization basics',
     ],
-    tech: ['JavaScript', 'HTML', 'CSS'],
+    tech: ['React 18', 'React Router', 'Axios', 'React Leaflet', 'Node.js', 'Express', 'Mongoose', 'JWT', 'bcryptjs', 'MongoDB', 'helmet', 'cors', 'express-rate-limit', 'nodemailer'],
     category: 'JavaScript',
     github:
       'https://github.com/sourav81R/weather-forecasting-religion-language',
@@ -227,7 +238,7 @@ const projects: Project[] = [
       'API data formatting',
       'User input validation',
     ],
-    tech: ['JavaScript', 'HTML', 'CSS'],
+    tech: ['React 18', 'React Router', 'Axios', 'React Leaflet', 'Node.js', 'Express', 'Mongoose', 'JWT', 'bcryptjs', 'MongoDB', 'helmet', 'cors', 'express-rate-limit', 'nodemailer'],
     category: 'JavaScript',
     github: 'https://github.com/sourav81R/Currency-Converter',
     demo: 'https://sourav81r.github.io/Currency-Converter/',
@@ -252,7 +263,7 @@ const projects: Project[] = [
       'Game logic design',
       'Event handling',
     ],
-    tech: ['JavaScript', 'HTML', 'CSS'],
+    tech: ['React 18', 'React Router', 'Axios', 'React Leaflet', 'Node.js', 'Express', 'Mongoose', 'JWT', 'bcryptjs', 'MongoDB', 'helmet', 'cors', 'express-rate-limit', 'nodemailer'],
     category: 'JavaScript',
     github: 'https://github.com/sourav81R/Rock-Paper-Scissor',
     demo: 'https://sourav81r.github.io/Rock-Paper-Scissor/',
@@ -510,3 +521,6 @@ const List = ({ title, items }: { title: string; items: string[] }) => (
     </ul>
   </div>
 )
+
+
+
