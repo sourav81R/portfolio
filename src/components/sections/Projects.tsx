@@ -25,35 +25,6 @@ type Project = {
 
 const projects: Project[] = [
   {
-    title: 'VerifyAI',
-    role: 'Team Member & Frontend Lead',
-    description:
-      'AI-powered platform to detect fake news and deepfake content.',
-    problem:
-      'AI-generated misinformation is difficult to verify quickly and reliably.',
-    solution:
-      'Built a real-time verification dashboard using React and API-driven validation.',
-    points: [
-      'Designed data-heavy UI components',
-      'Integrated verification APIs',
-      'Handled error states and edge cases',
-    ],
-    learnings: [
-      'Scalable UI design',
-      'API performance optimization',
-      'Team collaboration',
-    ],
-    tech: ['React', 'JavaScript', 'REST APIs'],
-    category: 'React',
-    featured: true,
-    github: 'https://github.com/sourav81R/VerifyAI',
-    demo: 'https://hakkanshah.github.io/VerifyAI/',
-    bgImage: '/images/verifyai.jpeg',
-    video:
-      'https://cdn.coverr.com/videos/coverr-typing-on-computer-keyboard-4643/1080p.mp4',
-  },
-
-  {
     title: 'EstatePerks',
     role: 'Mobile Application Developer',
     description:
@@ -104,6 +75,112 @@ const projects: Project[] = [
     github: 'https://github.com/sourav81R/Food-App',
     demo: 'https://food-app-frontend-lh2k.onrender.com/signin',
     bgImage: '/images/food.jpeg',
+  },
+
+  {
+    title: 'Employee Management',
+    role: 'Fullstack Learner',
+    description:
+      'Basic CRUD application for managing employee records.',
+    problem:
+      'Manual employee record management was inefficient.',
+    solution:
+      'Built a CRUD-based UI for managing employees.',
+    points: [
+      'CRUD operations',
+      'Form handling',
+      'State management',
+    ],
+    learnings: [
+      'Data modeling',
+      'Form validation',
+    ],
+    tech: ['JavaScript', 'HTML', 'CSS'],
+    category: 'JavaScript',
+    github: 'https://github.com/sourav81R/Employee-Management',
+    demo: 'https://employee-management-ivory-mu.vercel.app/login',
+    bgImage: '/images/employee.jpeg',
+  },
+
+  {
+    title: 'VerifyAI',
+    role: 'Team Member & Frontend Lead',
+    description:
+      'AI-powered platform to detect fake news and deepfake content.',
+    problem:
+      'AI-generated misinformation is difficult to verify quickly and reliably.',
+    solution:
+      'Built a real-time verification dashboard using React and API-driven validation.',
+    points: [
+      'Designed data-heavy UI components',
+      'Integrated verification APIs',
+      'Handled error states and edge cases',
+    ],
+    learnings: [
+      'Scalable UI design',
+      'API performance optimization',
+      'Team collaboration',
+    ],
+    tech: ['React', 'JavaScript', 'REST APIs'],
+    category: 'React',
+    featured: true,
+    github: 'https://github.com/sourav81R/VerifyAI',
+    demo: 'https://hakkanshah.github.io/VerifyAI/',
+    bgImage: '/images/verifyai.jpeg',
+    video:
+      'https://cdn.coverr.com/videos/coverr-typing-on-computer-keyboard-4643/1080p.mp4',
+  },
+
+  {
+    title: 'PollRoom',
+    role: 'Full Stack Developer',
+    description:
+      'Real-time polling application where users can create polls, vote, and see live updates.',
+    problem:
+      'Standard polling often lacks real-time interactivity and instant feedback.',
+    solution:
+      'Built a full-stack app with Socket.IO for real-time updates and robust auth.',
+    points: [
+      'Real-time result updates via Socket.IO',
+      'Secure Auth (JWT + Google OAuth)',
+      'Fairness mechanisms (1 vote/identity)',
+    ],
+    learnings: [
+      'WebSocket implementation',
+      'Authentication strategies',
+      'Database schema for polling',
+    ],
+    tech: ['React', 'Node.js', 'MongoDB', 'Socket.IO'],
+    category: 'React',
+    featured: true,
+    github: 'https://github.com/sourav81R/realtime-poll-app',
+    demo: 'https://realtime-poll-app-one.vercel.app',
+    bgImage: '/pollroom.jpg',
+  },
+
+  {
+    title: 'Quiz App',
+    role: 'Frontend Developer',
+    description:
+      'Interactive quiz application with scoring and feedback.',
+    problem:
+      'Static quizzes lacked engagement and feedback.',
+    solution:
+      'Created a dynamic quiz with scoring logic and feedback.',
+    points: [
+      'Dynamic question loading',
+      'Score tracking',
+      'User-friendly UI',
+    ],
+    learnings: [
+      'Conditional rendering',
+      'State-driven UI',
+    ],
+    tech: ['JavaScript', 'HTML', 'CSS'],
+    category: 'JavaScript',
+    github: 'https://github.com/sourav81R/Quiz-App',
+    demo: 'https://quiz-app-ebon-five-26.vercel.app',
+    bgImage: '/images/quiz.jpeg',
   },
 
   {
@@ -158,31 +235,6 @@ const projects: Project[] = [
   },
 
   {
-    title: 'Quiz App',
-    role: 'Frontend Developer',
-    description:
-      'Interactive quiz application with scoring and feedback.',
-    problem:
-      'Static quizzes lacked engagement and feedback.',
-    solution:
-      'Created a dynamic quiz with scoring logic and feedback.',
-    points: [
-      'Dynamic question loading',
-      'Score tracking',
-      'User-friendly UI',
-    ],
-    learnings: [
-      'Conditional rendering',
-      'State-driven UI',
-    ],
-    tech: ['JavaScript', 'HTML', 'CSS'],
-    category: 'JavaScript',
-    github: 'https://github.com/sourav81R/Quiz-App',
-    demo: 'https://quiz-app-ebon-five-26.vercel.app',
-    bgImage: '/images/quiz.jpeg',
-  },
-
-  {
     title: 'Rock-Paper-Scissor Game',
     role: 'Game UI Developer',
     description:
@@ -205,31 +257,6 @@ const projects: Project[] = [
     github: 'https://github.com/sourav81R/Rock-Paper-Scissor',
     demo: 'https://sourav81r.github.io/Rock-Paper-Scissor/',
     bgImage: '/images/game.jpeg',
-  },
-
-  {
-    title: 'Employee Management',
-    role: 'Fullstack Learner',
-    description:
-      'Basic CRUD application for managing employee records.',
-    problem:
-      'Manual employee record management was inefficient.',
-    solution:
-      'Built a CRUD-based UI for managing employees.',
-    points: [
-      'CRUD operations',
-      'Form handling',
-      'State management',
-    ],
-    learnings: [
-      'Data modeling',
-      'Form validation',
-    ],
-    tech: ['JavaScript', 'HTML', 'CSS'],
-    category: 'JavaScript',
-    github: 'https://github.com/sourav81R/Employee-Management',
-    demo: 'https://employee-management-ivory-mu.vercel.app/login',
-    bgImage: '/images/employee.jpeg',
   },
 ]
 
