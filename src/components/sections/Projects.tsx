@@ -193,7 +193,7 @@ const projects: Project[] = [
     featured: true,
     github: 'https://github.com/sourav81R/realtime-poll-app',
     demo: 'https://realtime-poll-app-one.vercel.app',
-    bgImage: '/pollroom.jpg',
+    bgImage: '/poll.webp',
   },
 
   {
@@ -218,7 +218,7 @@ const projects: Project[] = [
     category: 'JavaScript',
     github: 'https://github.com/sourav81R/Quiz-App',
     demo: 'https://quiz-app-ebon-five-26.vercel.app',
-    bgImage: '/images/quiz.jpeg',
+    bgImage: '/quiz.png',
   },
 
   {
