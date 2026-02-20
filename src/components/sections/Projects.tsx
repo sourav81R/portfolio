@@ -25,6 +25,33 @@ type Project = {
 
 const projects: Project[] = [
   {
+    title: 'ResumeIQ',
+    role: 'Full Stack Developer',
+    description:
+      'AI-powered resume analyzer and ATS optimizer built as a production-ready SaaS app.',
+    problem:
+      'Job seekers struggle to understand ATS compatibility, missing keywords, and section-level resume weaknesses.',
+    solution:
+      'Built a full-stack platform with secure auth, resume parsing, AI analysis, weighted ATS scoring, and downloadable reports.',
+    points: [
+      'Implemented Firebase Google Sign-In and protected routes with secure session cookies',
+      'Built PDF/DOCX upload flow with Firebase Storage and Firestore report history',
+      'Integrated OpenAI analysis for ATS score, keyword match, skill gaps, and improvements',
+    ],
+    learnings: [
+      'Designing production-ready App Router APIs in Next.js',
+      'Balancing AI outputs with deterministic scoring logic',
+      'Building secure and scalable Firebase-backed SaaS workflows',
+    ],
+    tech: ['Next.js 14', 'TypeScript', 'Tailwind CSS', 'Firebase', 'OpenAI'],
+    category: 'React',
+    featured: true,
+    github: 'https://resume-iq-coral.vercel.app',
+    demo: 'https://resume-iq-coral.vercel.app',
+    bgImage: '/resumeiq.jpeg',
+  },
+
+  {
     title: 'EstatePerks',
     role: 'Mobile Application Developer',
     description:
