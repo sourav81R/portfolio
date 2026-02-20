@@ -137,7 +137,7 @@ const projects: Project[] = [
     category: 'JavaScript',
     github: 'https://github.com/sourav81R/Employee-Management',
     demo: 'https://employee-management-ivory-mu.vercel.app/login',
-    bgImage: '/images/employee.jpeg',
+    bgImage: '/employee.jpeg',
   },
 
   {
