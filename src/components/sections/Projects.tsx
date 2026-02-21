@@ -19,7 +19,7 @@ type Project = {
   featured?: boolean
   github: string
   demo?: string
-   bgImage: string
+  bgImage: string
   video?: string
 }
 
@@ -244,7 +244,8 @@ const projects: Project[] = [
     category: 'JavaScript',
     github:
       'https://github.com/sourav81R/weather-forecasting-religion-language',
-      bgImage: '/images/weather.jpeg',
+    demo: 'https://weather-forecasting-religion-langua.vercel.app/',
+    bgImage: '/images/weather.jpeg',
   },
 
   {
@@ -314,155 +315,155 @@ const Projects = () => {
 
       <AnimatedBorder>
         <div className="max-w-6xl mx-auto relative z-10 font-mono p-4 sm:p-6 md:p-10">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, amount: 0.12 }}
-          transition={{ duration: 0.25 }}
-          className="text-center mb-12 md:mb-16"
-        >
-          <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold text-gray-900 dark:text-white tracking-wider mb-4">
-             Projects
-          </h2>
-          <p className="max-w-2xl mx-auto text-sm sm:text-base md:text-lg text-gray-600 dark:text-gray-400">
-            A selection of my work, from full-stack applications to fun experiments.
-          </p>
-        </motion.div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, amount: 0.12 }}
+            transition={{ duration: 0.25 }}
+            className="text-center mb-12 md:mb-16"
+          >
+            <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold text-gray-900 dark:text-white tracking-wider mb-4">
+              Projects
+            </h2>
+            <p className="max-w-2xl mx-auto text-sm sm:text-base md:text-lg text-gray-600 dark:text-gray-400">
+              A selection of my work, from full-stack applications to fun experiments.
+            </p>
+          </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          {displayedProjects.map((project) => (
-            <motion.div
-              key={project.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.12 }}
-              transition={{ duration: 0.2 }}
-              className="h-full"
-            >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {displayedProjects.map((project) => (
               <motion.div
-                className="h-full flex flex-col overflow-hidden bg-white dark:bg-gray-900 rounded-lg shadow-lg group"
-                whileHover={{ y: -8 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                key={project.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.12 }}
+                transition={{ duration: 0.2 }}
+                className="h-full"
               >
-                {/* Project Image */}
-                <div
-                  className="relative w-full h-48 sm:h-52 md:h-56 overflow-hidden cursor-pointer"
-                  onClick={() => setSelectedProject(project)}
+                <motion.div
+                  className="h-full flex flex-col overflow-hidden bg-white dark:bg-gray-900 rounded-lg shadow-lg group"
+                  whileHover={{ y: -8 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                 >
-                  <img
-                    src={project.bgImage}
-                    alt={project.title}
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  {/* Gradient overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-
-                  {/* Shine effect on hover */}
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full"
-                    whileHover={{ x: '200%' }}
-                    transition={{ duration: 0.6 }}
-                  />
-
-                  {/* Title overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
-                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white tracking-wide drop-shadow-lg line-clamp-1">
-                      {project.title}
-                    </h3>
-                  </div>
-
-                  {/* View icon hint */}
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    whileHover={{ opacity: 1, scale: 1 }}
-                    className="absolute top-3 right-3 bg-white/90 dark:bg-black/90 p-2 rounded-full border-2 border-gray-900 dark:border-white text-gray-900 dark:text-white"
+                  {/* Project Image */}
+                  <div
+                    className="relative w-full h-48 sm:h-52 md:h-56 overflow-hidden cursor-pointer"
+                    onClick={() => setSelectedProject(project)}
                   >
-                    <Eye className="h-4 w-4 sm:h-5 sm:w-5" />
-                  </motion.div>
-                </div>
+                    <img
+                      src={project.bgImage}
+                      alt={project.title}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
 
-                {/* Project Content */}
-                <div className="p-3 sm:p-4 md:p-5 flex flex-col flex-grow">
-                  {/* Description */}
-                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-3 flex-grow">
-                    {project.description}
-                  </p>
+                    {/* Shine effect on hover */}
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full"
+                      whileHover={{ x: '200%' }}
+                      transition={{ duration: 0.6 }}
+                    />
 
-                  {/* Tags */}
-                  <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-3 sm:mb-4">
-                    {project.tech.slice(0, 4).map((tag) => (
-                      <span
-                        key={tag}
-                        className="px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white rounded border border-gray-900/30 dark:border-white/30"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                    {project.tech.length > 4 && (
-                      <span className="px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs font-medium border border-gray-900/30 dark:border-white/30 rounded text-gray-500">
-                        +{project.tech.length - 4}
-                      </span>
-                    )}
+                    {/* Title overlay */}
+                    <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
+                      <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white tracking-wide drop-shadow-lg line-clamp-1">
+                        {project.title}
+                      </h3>
+                    </div>
+
+                    {/* View icon hint */}
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      whileHover={{ opacity: 1, scale: 1 }}
+                      className="absolute top-3 right-3 bg-white/90 dark:bg-black/90 p-2 rounded-full border-2 border-gray-900 dark:border-white text-gray-900 dark:text-white"
+                    >
+                      <Eye className="h-4 w-4 sm:h-5 sm:w-5" />
+                    </motion.div>
                   </div>
 
-                  {/* Action Buttons */}
-                  <div className="flex flex-col gap-2 mt-auto">
-                    {/* Top row: Details and Demo side by side */}
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => setSelectedProject(project)}
-                        className="flex-1 h-9 sm:h-10 flex items-center justify-center gap-2 px-3 text-xs sm:text-sm font-bold border-2 border-gray-900 dark:border-white rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-900 dark:text-white"
-                      >
-                        <Eye className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                        Details
-                      </button>
-                      <a
-                        href={project.demo || '#'}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`flex-1 h-9 sm:h-10 flex items-center justify-center gap-2 px-3 text-xs sm:text-sm font-bold border-2 border-gray-900 dark:border-white rounded-md transition-colors bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 ${!project.demo ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        onClick={(e) => !project.demo && e.preventDefault()}
-                      >
-                        <ExternalLink className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                        <span className="hidden sm:inline">Live Demo</span>
-                        <span className="sm:hidden">Demo</span>
-                      </a>
+                  {/* Project Content */}
+                  <div className="p-3 sm:p-4 md:p-5 flex flex-col flex-grow">
+                    {/* Description */}
+                    <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-3 flex-grow">
+                      {project.description}
+                    </p>
+
+                    {/* Tags */}
+                    <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-3 sm:mb-4">
+                      {project.tech.slice(0, 4).map((tag) => (
+                        <span
+                          key={tag}
+                          className="px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white rounded border border-gray-900/30 dark:border-white/30"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                      {project.tech.length > 4 && (
+                        <span className="px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs font-medium border border-gray-900/30 dark:border-white/30 rounded text-gray-500">
+                          +{project.tech.length - 4}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex flex-col gap-2 mt-auto">
+                      {/* Top row: Details and Demo side by side */}
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => setSelectedProject(project)}
+                          className="flex-1 h-9 sm:h-10 flex items-center justify-center gap-2 px-3 text-xs sm:text-sm font-bold border-2 border-gray-900 dark:border-white rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-900 dark:text-white"
+                        >
+                          <Eye className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                          Details
+                        </button>
+                        <a
+                          href={project.demo || '#'}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`flex-1 h-9 sm:h-10 flex items-center justify-center gap-2 px-3 text-xs sm:text-sm font-bold border-2 border-gray-900 dark:border-white rounded-md transition-colors bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 ${!project.demo ? 'opacity-50 cursor-not-allowed' : ''}`}
+                          onClick={(e) => !project.demo && e.preventDefault()}
+                        >
+                          <ExternalLink className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                          <span className="hidden sm:inline">Live Demo</span>
+                          <span className="sm:hidden">Demo</span>
+                        </a>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               </motion.div>
-            </motion.div>
-          ))}
-        </div>
+            ))}
+          </div>
 
-        {/* View More Projects Button */}
-        {hasMoreProjects && (
-          <motion.div
-            className="flex justify-center mt-12"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-          >
-            <button
-              onClick={() => setShowAll(!showAll)}
-              className="group flex items-center gap-2 text-base font-bold text-gray-900 dark:text-white hover:text-green-500 dark:hover:text-green-400 transition-colors duration-300"
+          {/* View More Projects Button */}
+          {hasMoreProjects && (
+            <motion.div
+              className="flex justify-center mt-12"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
             >
-              {showAll ? (
-                <>
-                  <ChevronUp className="w-5 h-5 group-hover:-translate-y-0.5 transition-transform" />
-                  <span>Show Less Projects</span>
-                </>
-              ) : (
-                <>
-                  <ChevronDown className="w-5 h-5 group-hover:translate-y-0.5 transition-transform" />
-                  <span>View More Projects ({projects.length - INITIAL_PROJECTS_COUNT} more)</span>
-                </>
-              )}
-            </button>
-          </motion.div>
-        )}
+              <button
+                onClick={() => setShowAll(!showAll)}
+                className="group flex items-center gap-2 text-base font-bold text-gray-900 dark:text-white hover:text-green-500 dark:hover:text-green-400 transition-colors duration-300"
+              >
+                {showAll ? (
+                  <>
+                    <ChevronUp className="w-5 h-5 group-hover:-translate-y-0.5 transition-transform" />
+                    <span>Show Less Projects</span>
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown className="w-5 h-5 group-hover:translate-y-0.5 transition-transform" />
+                    <span>View More Projects ({projects.length - INITIAL_PROJECTS_COUNT} more)</span>
+                  </>
+                )}
+              </button>
+            </motion.div>
+          )}
         </div>
       </AnimatedBorder>
 
