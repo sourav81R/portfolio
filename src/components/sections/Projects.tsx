@@ -79,7 +79,7 @@ const projects: Project[] = [
   },
 
   {
-    title: 'PetPooja (Food Delivery App)',
+    title: 'Foodooza (Food Delivery App)',
     role: 'Full Stack Developer',
     description:
       'Real-time food delivery app with authentication and database integration.',
