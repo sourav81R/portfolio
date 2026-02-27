@@ -20,6 +20,7 @@ const skillCategories = [
       { name: 'JavaScript (ES6+)', icon: FileJson, color: '#F7DF1E' },
       { name: 'TypeScript (Basic)', icon: FileCode, color: '#3178C6' },
       { name: 'React.js', icon: Atom, color: '#61DAFB' },
+      { name: 'Next.js 14', icon: Globe, color: '#111111' },
       { name: 'React Native', icon: Smartphone, color: '#61DAFB' },
       { name: 'HTML5', icon: Layout, color: '#E34F26' },
       { name: 'CSS3', icon: Layers, color: '#1572B6' },

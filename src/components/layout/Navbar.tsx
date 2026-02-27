@@ -4,6 +4,7 @@ import { sectionColors } from '../../constants/sectionColor'
 
 const sections = [
   'home',
+  'highlights',
   'about',
   'experience',
   'skills',

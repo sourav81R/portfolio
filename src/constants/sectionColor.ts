@@ -1,6 +1,7 @@
 // src/constants/sectionColor.ts
 export const sectionColors: Record<string, string> = {
   home: 'text-green-500',
+  highlights: 'text-emerald-500',
   about: 'text-blue-500',
   experience: 'text-orange-500',
   skills: 'text-purple-500',

@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Mail, Github, Linkedin, Phone, MessageCircle, Send, Copy, Check, MapPin } from 'lucide-react'
-import { motion } from "framer-motion";
-
+import { motion } from 'framer-motion'
 import AnimatedBorder from '../common/AnimatedBorder'
 import './About.css'
 
@@ -14,7 +13,6 @@ const contactLinks = [
     color: 'text-red-500',
     bg: 'bg-red-500/10',
     borderColor: 'hover:border-red-500/50',
-    shadowColor: 'hover:shadow-red-500/10',
   },
   {
     name: 'GitHub',
@@ -24,7 +22,6 @@ const contactLinks = [
     color: 'text-gray-900 dark:text-white',
     bg: 'bg-gray-200 dark:bg-gray-800',
     borderColor: 'hover:border-gray-500/50',
-    shadowColor: 'hover:shadow-gray-500/10',
   },
   {
     name: 'LinkedIn',
@@ -34,7 +31,6 @@ const contactLinks = [
     color: 'text-blue-600',
     bg: 'bg-blue-600/10',
     borderColor: 'hover:border-blue-500/50',
-    shadowColor: 'hover:shadow-blue-500/10',
   },
   {
     name: 'Phone',
@@ -44,17 +40,15 @@ const contactLinks = [
     color: 'text-emerald-500',
     bg: 'bg-emerald-500/10',
     borderColor: 'hover:border-emerald-500/50',
-    shadowColor: 'hover:shadow-emerald-500/10',
   },
   {
     name: 'WhatsApp',
-    value: ' 6294660381',
+    value: '6294660381',
     href: 'https://wa.me/6294660381',
     icon: MessageCircle,
     color: 'text-green-500',
     bg: 'bg-green-500/10',
     borderColor: 'hover:border-green-500/50',
-    shadowColor: 'hover:shadow-green-500/10',
   },
   {
     name: 'Location',
@@ -64,13 +58,12 @@ const contactLinks = [
     color: 'text-purple-500',
     bg: 'bg-purple-500/10',
     borderColor: 'hover:border-purple-500/50',
-    shadowColor: 'hover:shadow-purple-500/10',
   },
 ]
 
 const Contact = () => {
   const [form, setForm] = useState({ name: '', email: '', message: '' })
-  const [status, setStatus] = useState<'idle' | 'submitting' | 'success'>('idle')
+  const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [copied, setCopied] = useState<string | null>(null)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -79,19 +72,47 @@ const Contact = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    setStatus('submitting')
-    // Simulate form submission
-    setTimeout(() => {
+
+    const subject = `Portfolio inquiry from ${form.name}`
+    const body = [`Name: ${form.name}`, `Email: ${form.email}`, '', form.message].join('\n')
+
+    try {
+      window.location.href = `mailto:souravchowdhury0203@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
       setStatus('success')
       setForm({ name: '', email: '', message: '' })
       setTimeout(() => setStatus('idle'), 3000)
-    }, 1500)
+    } catch {
+      setStatus('error')
+      setTimeout(() => setStatus('idle'), 3000)
+    }
   }
 
-  const copyToClipboard = (text: string, key: string) => {
-    navigator.clipboard.writeText(text)
-    setCopied(key)
-    setTimeout(() => setCopied(null), 2000)
+  const copyToClipboard = async (text: string, key: string) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopied(key)
+      setTimeout(() => setCopied(null), 2000)
+    } catch {
+      setStatus('error')
+      setTimeout(() => setStatus('idle'), 3000)
+    }
+  }
+
+  const copyEmailTemplate = async () => {
+    const template = [
+      'Hi Sourav,',
+      '',
+      'I came across your portfolio and would like to discuss an opportunity.',
+      '',
+      'Role:',
+      'Company:',
+      'Next step:',
+      '',
+      'Best regards,',
+      '',
+    ].join('\n')
+
+    await copyToClipboard(template, 'template')
   }
 
   const text = 'Get In Touch'
@@ -107,25 +128,23 @@ const Contact = () => {
     <section id="contact" className="px-4 sm:px-6 py-20 sm:py-24 lg:py-28">
       <AnimatedBorder>
         <div className="max-w-6xl mx-auto font-mono p-4 sm:p-6 md:p-10">
-          {/* Section Title */}
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-8 sm:mb-10 text-center tracking-tight">
             {text}
           </h2>
 
           <div className="grid lg:grid-cols-2 gap-12 items-start">
-            {/* Left: Contact Info */}
             <div>
               <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-5 sm:mb-6">
                 Let's Connect
               </h3>
               <p className="text-gray-700 dark:text-gray-400 mb-8 text-base sm:text-lg leading-relaxed">
-                I’m currently looking for entry-level software developer
-                opportunities. Whether you have a question, a project idea, or
-                just want to say hi, I’ll try my best to get back to you!
+                I'm currently looking for entry-level software developer opportunities. Whether
+                you have a question, a project idea, or just want to say hi, I'll try my best to
+                get back to you.
               </p>
 
               <div className="space-y-4">
-                {directContact.map((link, index) => (
+                {directContact.map((link) => (
                   <motion.div
                     key={link.name}
                     initial={{ opacity: 0, x: -20 }}
@@ -147,14 +166,20 @@ const Contact = () => {
                         <p className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wider">
                           {link.name}
                         </p>
-                        <a
-                          href={link.href}
-                          target={link.href.startsWith('http') ? '_blank' : undefined}
-                          rel="noopener noreferrer"
-                          className="text-gray-900 dark:text-white font-medium hover:underline break-all"
-                        >
-                          {link.value}
-                        </a>
+                        {link.href === '#' ? (
+                          <span className="text-gray-900 dark:text-white font-medium break-all">
+                            {link.value}
+                          </span>
+                        ) : (
+                          <a
+                            href={link.href}
+                            target={link.href.startsWith('http') ? '_blank' : undefined}
+                            rel="noopener noreferrer"
+                            className="text-gray-900 dark:text-white font-medium hover:underline break-all"
+                          >
+                            {link.value}
+                          </a>
+                        )}
                       </div>
                     </div>
 
@@ -182,11 +207,11 @@ const Contact = () => {
                       href={social.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`
+                      className="
                         p-3 rounded-full border border-gray-200 dark:border-gray-800
                         bg-gray-50 dark:bg-gray-900 text-gray-600 dark:text-gray-400
                         hover:border-green-500 hover:text-green-500 transition-all duration-300
-                      `}
+                      "
                     >
                       <social.icon size={20} />
                     </a>
@@ -195,7 +220,6 @@ const Contact = () => {
               </div>
             </div>
 
-            {/* Right: Contact Form */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -206,6 +230,7 @@ const Contact = () => {
               <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-6">
                 Send a Message
               </h3>
+
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -253,39 +278,51 @@ const Contact = () => {
                   />
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={status === 'submitting' || status === 'success'}
-                  className={`
-                    w-full py-3 px-6 rounded-lg font-medium flex items-center justify-center gap-2
-                    transition-all duration-300
-                    ${
-                      status === 'success'
-                        ? 'bg-green-500 text-white'
-                        : 'bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200'
-                    }
-                    disabled:opacity-70 disabled:cursor-not-allowed
-                  `}
-                >
-                  {status === 'submitting' ? (
-                    'Sending...'
-                  ) : status === 'success' ? (
-                    <>
-                      <Check size={18} /> Sent Successfully
-                    </>
-                  ) : (
-                    <>
-                      <Send size={18} /> Send Message
-                    </>
-                  )}
-                </button>
+                <div className="grid gap-3">
+                  <button
+                    type="submit"
+                    className={`
+                      w-full py-3 px-6 rounded-lg font-medium flex items-center justify-center gap-2
+                      transition-all duration-300
+                      ${
+                        status === 'success'
+                          ? 'bg-green-500 text-white'
+                          : status === 'error'
+                            ? 'bg-red-500 text-white'
+                            : 'bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200'
+                      }
+                    `}
+                  >
+                    {status === 'success' ? (
+                      <>
+                        <Check size={18} /> Email Client Opened
+                      </>
+                    ) : status === 'error' ? (
+                      <>
+                        <Send size={18} /> Action Failed, Try Again
+                      </>
+                    ) : (
+                      <>
+                        <Send size={18} /> Send via Email App
+                      </>
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={copyEmailTemplate}
+                    className="w-full py-3 px-6 rounded-lg font-medium flex items-center justify-center gap-2 border border-gray-300 dark:border-gray-700 hover:border-green-500 transition-colors"
+                  >
+                    {copied === 'template' ? <Check size={18} /> : <Copy size={18} />}
+                    Copy Recruiter Email Template
+                  </button>
+                </div>
               </form>
             </motion.div>
           </div>
 
-          {/* Footer */}
           <p className="text-gray-600 dark:text-gray-500 text-sm mt-16">
-            © {new Date().getFullYear()} Sourav Chowdhury. All rights reserved.
+            Copyright {new Date().getFullYear()} Sourav Chowdhury. All rights reserved.
           </p>
         </div>
       </AnimatedBorder>

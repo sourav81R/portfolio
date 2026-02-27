@@ -6,6 +6,7 @@ type AnimatedBorderProps = {
 
 const sectionColorMap: Record<string, string> = {
   home: 'from-green-500 via-emerald-400 to-green-500',
+  highlights: 'from-emerald-500 via-teal-400 to-emerald-500',
   about: 'from-blue-500 via-cyan-400 to-blue-500',
   experience: 'from-orange-500 via-amber-400 to-orange-500',
   skills: 'from-purple-500 via-fuchsia-400 to-purple-500',

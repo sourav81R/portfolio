@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Github, ExternalLink, X, Eye, ChevronDown, ChevronUp } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 import AnimatedBorder from '../common/AnimatedBorder'
 import './About.css'
 
@@ -21,7 +22,10 @@ type Project = {
   demo?: string
   bgImage: string
   video?: string
+  caseStudySlug?: string
 }
+
+const categories: Category[] = ['All', 'React', 'JavaScript', 'Mobile']
 
 const projects: Project[] = [
   {
@@ -49,6 +53,7 @@ const projects: Project[] = [
     github: 'https://resume-iq-coral.vercel.app',
     demo: 'https://resume-iq-coral.vercel.app',
     bgImage: '/resumeiq.jpeg',
+    caseStudySlug: 'resumeiq',
   },
 
   {
@@ -76,6 +81,7 @@ const projects: Project[] = [
     github: 'https://github.com/sourav81R/EstatePerks',
     demo: 'https://estate-perks.vercel.app/auth/login',
     bgImage: '/images/estate.jpeg',
+    caseStudySlug: 'estateperks',
   },
 
   {
@@ -113,6 +119,7 @@ const projects: Project[] = [
     github: 'https://github.com/sourav81R/Food-App',
     demo: 'https://food-app-frontend-lh2k.onrender.com/',
     bgImage: '/images/food.jpeg',
+    caseStudySlug: 'foodooza',
   },
 
   {
@@ -194,6 +201,7 @@ const projects: Project[] = [
     github: 'https://github.com/sourav81R/realtime-poll-app',
     demo: 'https://realtime-poll-app-one.vercel.app',
     bgImage: '/poll.webp',
+    caseStudySlug: 'pollroom',
   },
 
   {
@@ -302,10 +310,32 @@ const projects: Project[] = [
 const Projects = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [showAll, setShowAll] = useState(false)
+  const [selectedCategory, setSelectedCategory] = useState<Category>('All')
+  const [featuredOnly, setFeaturedOnly] = useState(false)
+  const navigate = useNavigate()
 
   const INITIAL_PROJECTS_COUNT = 6
-  const displayedProjects = showAll ? projects : projects.slice(0, INITIAL_PROJECTS_COUNT)
-  const hasMoreProjects = projects.length > INITIAL_PROJECTS_COUNT
+  const filteredProjects = projects.filter(
+    (project) =>
+      (selectedCategory === 'All' || project.category === selectedCategory) &&
+      (!featuredOnly || Boolean(project.featured))
+  )
+  const displayedProjects = showAll
+    ? filteredProjects
+    : filteredProjects.slice(0, INITIAL_PROJECTS_COUNT)
+  const hasMoreProjects = filteredProjects.length > INITIAL_PROJECTS_COUNT
+
+  useEffect(() => {
+    setShowAll(false)
+  }, [selectedCategory, featuredOnly])
+
+  const openProjectDetails = (project: Project) => {
+    if (project.caseStudySlug) {
+      navigate(`/case-studies/${project.caseStudySlug}`)
+      return
+    }
+    setSelectedProject(project)
+  }
 
   return (
     <section id="projects" className="section-padding relative overflow-hidden py-20 sm:py-24 lg:py-28 px-4 sm:px-6">
@@ -330,6 +360,41 @@ const Projects = () => {
             </p>
           </motion.div>
 
+          <div className="flex flex-col gap-4 mb-8 sm:mb-10">
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`px-3 py-1.5 rounded-full text-xs sm:text-sm border transition-colors ${
+                    selectedCategory === category
+                      ? 'bg-gray-900 text-white dark:bg-white dark:text-black border-gray-900 dark:border-white'
+                      : 'bg-transparent border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-green-500'
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <button
+                onClick={() => setFeaturedOnly((prev) => !prev)}
+                className={`px-3 py-1.5 rounded-full text-xs sm:text-sm border transition-colors ${
+                  featuredOnly
+                    ? 'bg-green-600 text-white border-green-600'
+                    : 'bg-transparent border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-green-500'
+                }`}
+              >
+                {featuredOnly ? 'Featured Only: ON' : 'Featured Only: OFF'}
+              </button>
+              <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                Showing {filteredProjects.length} project
+                {filteredProjects.length === 1 ? '' : 's'}
+              </span>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {displayedProjects.map((project) => (
               <motion.div
@@ -348,7 +413,7 @@ const Projects = () => {
                   {/* Project Image */}
                   <div
                     className="relative w-full h-48 sm:h-52 md:h-56 overflow-hidden cursor-pointer"
-                    onClick={() => setSelectedProject(project)}
+                    onClick={() => openProjectDetails(project)}
                   >
                     <img
                       src={project.bgImage}
@@ -413,7 +478,7 @@ const Projects = () => {
                       {/* Top row: Details and Demo side by side */}
                       <div className="flex gap-2">
                         <button
-                          onClick={() => setSelectedProject(project)}
+                          onClick={() => openProjectDetails(project)}
                           className="flex-1 h-9 sm:h-10 flex items-center justify-center gap-2 px-3 text-xs sm:text-sm font-bold border-2 border-gray-900 dark:border-white rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-900 dark:text-white"
                         >
                           <Eye className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
@@ -438,6 +503,12 @@ const Projects = () => {
             ))}
           </div>
 
+          {filteredProjects.length === 0 && (
+            <div className="text-center py-10 text-gray-600 dark:text-gray-400">
+              No projects match this filter yet.
+            </div>
+          )}
+
           {/* View More Projects Button */}
           {hasMoreProjects && (
             <motion.div
@@ -458,7 +529,9 @@ const Projects = () => {
                 ) : (
                   <>
                     <ChevronDown className="w-5 h-5 group-hover:translate-y-0.5 transition-transform" />
-                    <span>View More Projects ({projects.length - INITIAL_PROJECTS_COUNT} more)</span>
+                    <span>
+                      View More Projects ({filteredProjects.length - INITIAL_PROJECTS_COUNT} more)
+                    </span>
                   </>
                 )}
               </button>
