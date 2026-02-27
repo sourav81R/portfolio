@@ -218,7 +218,7 @@ const Hero = () => {
 
             <MagneticButton>
               <a
-                href="/resume.pdf"
+                href="/images/resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group flex w-full sm:w-auto justify-center items-center gap-2 px-5 sm:px-6 py-3 border border-gray-300 dark:border-gray-700 rounded-full font-medium hover:border-gray-900 dark:hover:border-white transition-colors bg-white/50 dark:bg-black/50 backdrop-blur-sm"

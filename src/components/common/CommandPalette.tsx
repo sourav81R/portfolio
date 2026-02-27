@@ -44,13 +44,13 @@ const CommandPalette = () => {
     },
     {
       label: 'Open Resume',
-      action: () => window.open('/resume.pdf', '_blank'),
+      action: () => window.open('/images/resume.pdf', '_blank'),
     },
     {
       label: 'Download Resume',
       action: () => {
         const link = document.createElement('a')
-        link.href = '/resume.pdf'
+        link.href = '/images/resume.pdf'
         link.download = 'Sourav_Chowdhury_Resume.pdf'
         link.click()
       },

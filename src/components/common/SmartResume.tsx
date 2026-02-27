@@ -26,7 +26,7 @@ const SmartResume = ({ open, onClose }: Props) => {
     // auto download after animation
     const downloadTimer = setTimeout(() => {
       const link = document.createElement('a')
-      link.href = '/resume.pdf'
+      link.href = '/images/resume.pdf'
       link.download = 'Sourav_Chowdhury_Resume.pdf'
       link.click()
       onClose()
