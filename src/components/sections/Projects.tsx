@@ -307,6 +307,20 @@ const projects: Project[] = [
   },
 ]
 
+const prioritizedProjectOrder = [
+  'Foodooza (Food Delivery App)',
+  'ResumeIQ',
+  'EstatePerks',
+  'Employee Management',
+  'Weather App (Regional)',
+  'PollRoom',
+  'Quiz App',
+]
+
+const projectOrderMap = new Map(
+  prioritizedProjectOrder.map((title, index) => [title, index])
+)
+
 const Projects = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [showAll, setShowAll] = useState(false)
@@ -315,7 +329,23 @@ const Projects = () => {
   const navigate = useNavigate()
 
   const INITIAL_PROJECTS_COUNT = 6
-  const filteredProjects = projects.filter(
+  const sortedProjects = [...projects].sort((a, b) => {
+    const aOrder = projectOrderMap.get(a.title)
+    const bOrder = projectOrderMap.get(b.title)
+
+    if (aOrder !== undefined && bOrder !== undefined) {
+      return aOrder - bOrder
+    }
+    if (aOrder !== undefined) {
+      return -1
+    }
+    if (bOrder !== undefined) {
+      return 1
+    }
+    return 0
+  })
+
+  const filteredProjects = sortedProjects.filter(
     (project) =>
       (selectedCategory === 'All' || project.category === selectedCategory) &&
       (!featuredOnly || Boolean(project.featured))
