@@ -230,25 +230,25 @@ const projects: Project[] = [
   },
 
   {
-    title: 'Weather App (Regional)',
-    role: 'Frontend Developer',
+    title: 'Regional Weather Studio',
+    role: 'Full Stack + ML Developer',
     description:
-      'Weather application with regional language support.',
+      'Flask + JavaScript weather intelligence platform combining API weather data, ML prediction, sky vision, maps, alerts, and offline-ready PWA support.',
     problem:
-      'Most weather apps ignore local language accessibility.',
+      'Typical weather apps show raw data but lack unified decision support, hyperlocal fusion, and resilient offline behavior.',
     solution:
-      'Built a multilingual UI with weather API integration.',
+      'Engineered a dual-runtime weather studio with backend intelligence services and automatic static fallback when APIs/backend are unavailable.',
     points: [
-      'Responsive UI',
-      'Dynamic API data handling',
-      'Language preference storage',
+      'Built Flask APIs for weather, analytics, AI insights, alerts, travel planning, agriculture advisory, and rule-based chatbot workflows',
+      'Implemented ML next-day forecasting and vision-based sky condition detection (upload + live camera) with hyperlocal fusion scoring',
+      'Shipped storm-aware weather maps, PWA installability, service-worker caching, and offline forecast fallback engine',
     ],
     learnings: [
-      'Async JavaScript',
-      'API error handling',
-      'Localization basics',
+      'Designing reliable backend-first apps with graceful static-mode degradation',
+      'Combining probabilistic signals from API, ML, sky vision, and satellite/map inputs into a confidence-weighted forecast',
+      'Operationalizing model-dependent features with safe fallback logic when TensorFlow/OpenCV artifacts are unavailable',
     ],
-    tech: ['React 18', 'React Router', 'Axios', 'React Leaflet', 'Node.js', 'Express', 'Mongoose', 'JWT', 'bcryptjs', 'MongoDB', 'helmet', 'cors', 'express-rate-limit', 'nodemailer'],
+    tech: ['Python', 'Flask', 'JavaScript', 'SQLite', 'scikit-learn', 'TensorFlow/Keras', 'OpenCV', 'Chart.js', 'Leaflet', 'OpenWeather API', 'Open-Meteo API', 'PWA'],
     category: 'JavaScript',
     github:
       'https://github.com/sourav81R/weather-forecasting-religion-language',
@@ -312,7 +312,7 @@ const prioritizedProjectOrder = [
   'ResumeIQ',
   'EstatePerks',
   'Employee Management',
-  'Weather App (Regional)',
+  'Regional Weather Studio',
   'PollRoom',
   'Quiz App',
 ]
