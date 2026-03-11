@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { ArrowRight, Download, Eye, Terminal as TerminalIcon, Code2, Cpu, Globe } from 'lucide-react'
 import AnimatedBorder from '../common/AnimatedBorder'
@@ -13,7 +13,7 @@ type Line = {
   text: string
 }
 
-const lines: Line[] = [
+const terminalLines: Line[] = [
   { prompt: '➜ ~', text: 'whoami' },
   {
     prompt: '➜ ~',
@@ -84,19 +84,22 @@ const TypingBadge = () => {
 const Hero = () => {
   const { open } = useCommandPalette()
   const reduceMotion = useReducedMotion()
+  const terminalInputRef = useRef<HTMLInputElement | null>(null)
 
   /* ---------------- TERMINAL STATE ---------------- */
   const [displayedLines, setDisplayedLines] = useState<Line[]>([])
   const [lineIndex, setLineIndex] = useState(0)
   const [charIndex, setCharIndex] = useState(0)
   const [currentText, setCurrentText] = useState('')
+  const [commandInput, setCommandInput] = useState('')
   const [showResume, setShowResume] = useState(false)
 
   /* Typing animation */
   useEffect(() => {
-    if (lineIndex >= lines.length) return
+    if (lineIndex >= terminalLines.length) return
 
-    const fullText = lines[lineIndex].text
+    const activeLine = terminalLines[lineIndex]
+    const fullText = activeLine.text
 
     if (charIndex < fullText.length) {
       const timeout = setTimeout(() => {
@@ -107,7 +110,7 @@ const Hero = () => {
       return () => clearTimeout(timeout)
     } else {
       const timeout = setTimeout(() => {
-        setDisplayedLines((prev) => [...prev, lines[lineIndex]])
+        setDisplayedLines((prev) => [...prev, activeLine])
         setCurrentText('')
         setCharIndex(0)
         setLineIndex((prev) => prev + 1)
@@ -116,6 +119,22 @@ const Hero = () => {
       return () => clearTimeout(timeout)
     }
   }, [charIndex, lineIndex])
+
+  useEffect(() => {
+    if (lineIndex < terminalLines.length) return
+
+    terminalInputRef.current?.focus()
+  }, [lineIndex])
+
+  const handleTerminalInputChange = (value: string) => {
+    if (value.trim().toLowerCase() === 'clear') {
+      setDisplayedLines([])
+      setCommandInput('')
+      return
+    }
+
+    setCommandInput(value)
+  }
 
   const handleResumeClose = useCallback(() => setShowResume(false), [])
 
@@ -287,7 +306,10 @@ const Hero = () => {
             <Globe className="text-green-500" size={24} />
           </motion.div>
 
-              <div className="rounded-xl bg-gray-900/95 text-gray-300 p-1 font-mono shadow-2xl backdrop-blur-sm w-full max-w-lg mx-auto border border-gray-800/50">
+              <div
+                className="rounded-xl bg-gray-900/95 text-gray-300 p-1 font-mono shadow-2xl backdrop-blur-sm w-full max-w-lg mx-auto border border-gray-800/50"
+                onClick={() => terminalInputRef.current?.focus()}
+              >
               {/* Terminal Header */}
               <div className="flex items-center justify-between px-4 py-3 bg-gray-800/50 rounded-t-lg border-b border-gray-700/50">
                 <div className="flex gap-2">
@@ -312,10 +334,10 @@ const Hero = () => {
                   </div>
                 ))}
 
-                {lineIndex < lines.length && (
+                {lineIndex < terminalLines.length && (
                   <div className="break-words">
                     <span className="text-green-400 font-bold mr-2">
-                      {lines[lineIndex].prompt}
+                      {terminalLines[lineIndex].prompt}
                     </span>
                     <span className="text-gray-100">
                       {currentText}
@@ -324,6 +346,23 @@ const Hero = () => {
                       />
                     </span>
                   </div>
+                )}
+
+                {lineIndex >= terminalLines.length && (
+                  <label className="flex items-center gap-2 break-words">
+                    <span className="text-green-400 font-bold">➜ ~</span>
+                    <input
+                      ref={terminalInputRef}
+                      type="text"
+                      value={commandInput}
+                      onChange={(event) => handleTerminalInputChange(event.target.value)}
+                      spellCheck={false}
+                      autoComplete="off"
+                      autoCapitalize="off"
+                      className="min-w-0 flex-1 bg-transparent text-gray-100 outline-none placeholder:text-gray-500"
+                      aria-label="Terminal command input"
+                    />
+                  </label>
                 )}
               </div>
             </div>
