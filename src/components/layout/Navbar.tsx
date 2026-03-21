@@ -112,7 +112,7 @@ const Navbar = () => {
         <div className="px-3 py-2.5 sm:px-5 sm:py-3 flex items-center justify-between font-mono">
           {/* Logo */}
           <a href="#home" className="font-bold text-sm sm:text-base text-gray-900 dark:text-white">
-            sourav.dev
+            sourav.is-a.dev
           </a>
 
           {/* Desktop Menu */}
