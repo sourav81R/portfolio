@@ -7,6 +7,7 @@ import {
   Mail,
   MapPin,
   Rocket,
+  Share2,
 } from 'lucide-react'
 import AnimatedBorder from '../common/AnimatedBorder'
 
@@ -130,6 +131,62 @@ const RecruiterHighlights = () => {
               </div>
             </motion.div>
           </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.25 }}
+            className="mt-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-gray-50/70 dark:bg-gray-900/50 p-4 sm:p-5"
+          >
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-center">
+              <div className="lg:w-1/3">
+                <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-sky-600 dark:text-sky-400">
+                  <Share2 size={14} />
+                  Share Preview
+                </div>
+                <h3 className="mt-3 text-xl font-bold text-gray-900 dark:text-white">
+                  What people see when your portfolio link is shared
+                </h3>
+                <p className="mt-3 text-sm sm:text-base text-gray-700 dark:text-gray-300 leading-relaxed">
+                  This is the Open Graph preview image used by LinkedIn, Slack, and Twitter-style share cards.
+                </p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <a
+                    href="/og-preview.png"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-3 py-2 text-xs sm:text-sm text-white dark:bg-white dark:text-black"
+                  >
+                    Open Full Preview
+                  </a>
+                  <a
+                    href="/"
+                    className="inline-flex items-center gap-2 rounded-lg border border-gray-300 dark:border-gray-700 px-3 py-2 text-xs sm:text-sm text-gray-700 dark:text-gray-300"
+                  >
+                    Open Portfolio
+                  </a>
+                </div>
+              </div>
+
+              <a
+                href="/og-preview.png"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group block lg:w-2/3"
+              >
+                <div className="overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-800 bg-black shadow-lg">
+                  <img
+                    src="/og-preview.png"
+                    alt="Portfolio Open Graph preview"
+                    className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+              </a>
+            </div>
+          </motion.div>
         </div>
       </AnimatedBorder>
     </section>
