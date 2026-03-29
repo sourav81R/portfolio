@@ -21,7 +21,6 @@ type Project = {
   github: string
   liveUrl?: string
   bgImage: string
-  video?: string
   caseStudySlug?: string
 }
 
@@ -172,8 +171,6 @@ const projects: Project[] = [
     github: 'https://github.com/sourav81R/VerifyAI',
     liveUrl: 'https://hakkanshah.github.io/VerifyAI/',
     bgImage: '/images/verifyai.jpeg',
-    video:
-      'https://cdn.coverr.com/videos/coverr-typing-on-computer-keyboard-4643/1080p.mp4',
   },
 
   {
