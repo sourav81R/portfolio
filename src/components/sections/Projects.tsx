@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Github, ExternalLink, X, Eye, ChevronDown, ChevronUp } from 'lucide-react'
+import { Github, ExternalLink, X, Eye, ChevronDown, ChevronUp, LoaderCircle } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import AnimatedBorder from '../common/AnimatedBorder'
@@ -19,7 +19,7 @@ type Project = {
   category: Category
   featured?: boolean
   github: string
-  demo?: string
+  liveUrl?: string
   bgImage: string
   video?: string
   caseStudySlug?: string
@@ -51,7 +51,7 @@ const projects: Project[] = [
     category: 'React',
     featured: true,
     github: 'https://resume-iq-coral.vercel.app',
-    demo: 'https://resume-iq-coral.vercel.app',
+    liveUrl: 'https://resume-iq-coral.vercel.app',
     bgImage: '/resumeiq.jpeg',
     caseStudySlug: 'resumeiq',
   },
@@ -79,7 +79,7 @@ const projects: Project[] = [
     category: 'Mobile',
     featured: true,
     github: 'https://github.com/sourav81R/EstatePerks',
-    demo: 'https://estate-perks.vercel.app/auth/login',
+    liveUrl: 'https://estate-perks.vercel.app/auth/login',
     bgImage: '/images/estate.jpeg',
     caseStudySlug: 'estateperks',
   },
@@ -117,7 +117,7 @@ const projects: Project[] = [
     ],
     category: 'React',
     github: 'https://github.com/sourav81R/Food-App',
-    demo: 'https://food-app-frontend-lh2k.onrender.com/',
+    liveUrl: 'https://food-app-frontend-lh2k.onrender.com/',
     bgImage: '/images/food.jpeg',
     caseStudySlug: 'foodooza',
   },
@@ -143,7 +143,7 @@ const projects: Project[] = [
     tech: ['React 18', 'React Router', 'Axios', 'React Leaflet', 'Node.js', 'Express', 'Mongoose', 'JWT', 'bcryptjs', 'MongoDB', 'helmet', 'cors', 'express-rate-limit', 'nodemailer'],
     category: 'JavaScript',
     github: 'https://github.com/sourav81R/Employee-Management',
-    demo: 'https://employee-management-ivory-mu.vercel.app/login',
+    liveUrl: 'https://employee-management-ivory-mu.vercel.app/login',
     bgImage: '/employee.jpeg',
   },
 
@@ -170,7 +170,7 @@ const projects: Project[] = [
     category: 'React',
     featured: true,
     github: 'https://github.com/sourav81R/VerifyAI',
-    demo: 'https://hakkanshah.github.io/VerifyAI/',
+    liveUrl: 'https://hakkanshah.github.io/VerifyAI/',
     bgImage: '/images/verifyai.jpeg',
     video:
       'https://cdn.coverr.com/videos/coverr-typing-on-computer-keyboard-4643/1080p.mp4',
@@ -199,7 +199,7 @@ const projects: Project[] = [
     category: 'React',
     featured: true,
     github: 'https://github.com/sourav81R/realtime-poll-app',
-    demo: 'https://realtime-poll-app-one.vercel.app',
+    liveUrl: 'https://realtime-poll-app-one.vercel.app',
     bgImage: '/poll.webp',
     caseStudySlug: 'pollroom',
   },
@@ -225,7 +225,7 @@ const projects: Project[] = [
     tech: ['React 18', 'React Router', 'Axios', 'React Leaflet', 'Node.js', 'Express', 'Mongoose', 'JWT', 'bcryptjs', 'MongoDB', 'helmet', 'cors', 'express-rate-limit', 'nodemailer'],
     category: 'JavaScript',
     github: 'https://github.com/sourav81R/Quiz-App',
-    demo: 'https://quiz-app-ebon-five-26.vercel.app',
+    liveUrl: 'https://quiz-app-ebon-five-26.vercel.app',
     bgImage: '/quiz.png',
   },
 
@@ -252,7 +252,7 @@ const projects: Project[] = [
     category: 'JavaScript',
     github:
       'https://github.com/sourav81R/weather-forecasting-religion-language',
-    demo: 'https://weather-forecasting-religion-langua.vercel.app/',
+    liveUrl: 'https://weather-forecasting-religion-langua.vercel.app/',
     bgImage: '/images/weather.jpeg',
   },
 
@@ -277,7 +277,7 @@ const projects: Project[] = [
     tech: ['React 18', 'React Router', 'Axios', 'React Leaflet', 'Node.js', 'Express', 'Mongoose', 'JWT', 'bcryptjs', 'MongoDB', 'helmet', 'cors', 'express-rate-limit', 'nodemailer'],
     category: 'JavaScript',
     github: 'https://github.com/sourav81R/Currency-Converter',
-    demo: 'https://sourav81r.github.io/Currency-Converter/',
+    liveUrl: 'https://sourav81r.github.io/Currency-Converter/',
     bgImage: '/images/currency.png',
   },
 
@@ -302,7 +302,7 @@ const projects: Project[] = [
     tech: ['React 18', 'React Router', 'Axios', 'React Leaflet', 'Node.js', 'Express', 'Mongoose', 'JWT', 'bcryptjs', 'MongoDB', 'helmet', 'cors', 'express-rate-limit', 'nodemailer'],
     category: 'JavaScript',
     github: 'https://github.com/sourav81R/Rock-Paper-Scissor',
-    demo: 'https://sourav81r.github.io/Rock-Paper-Scissor/',
+    liveUrl: 'https://sourav81r.github.io/Rock-Paper-Scissor/',
     bgImage: '/images/game.jpeg',
   },
 ]
@@ -326,7 +326,6 @@ const Projects = () => {
   const [showAll, setShowAll] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState<Category>('All')
   const [featuredOnly, setFeaturedOnly] = useState(false)
-  const navigate = useNavigate()
 
   const INITIAL_PROJECTS_COUNT = 6
   const sortedProjects = [...projects].sort((a, b) => {
@@ -360,10 +359,6 @@ const Projects = () => {
   }, [selectedCategory, featuredOnly])
 
   const openProjectDetails = (project: Project) => {
-    if (project.caseStudySlug) {
-      navigate(`/case-studies/${project.caseStudySlug}`)
-      return
-    }
     setSelectedProject(project)
   }
 
@@ -515,11 +510,11 @@ const Projects = () => {
                           Details
                         </button>
                         <a
-                          href={project.demo || '#'}
+                          href={project.liveUrl || '#'}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className={`flex-1 h-9 sm:h-10 flex items-center justify-center gap-2 px-3 text-xs sm:text-sm font-bold border-2 border-gray-900 dark:border-white rounded-md transition-colors bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 ${!project.demo ? 'opacity-50 cursor-not-allowed' : ''}`}
-                          onClick={(e) => !project.demo && e.preventDefault()}
+                          className={`flex-1 h-9 sm:h-10 flex items-center justify-center gap-2 px-3 text-xs sm:text-sm font-bold border-2 border-gray-900 dark:border-white rounded-md transition-colors bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 ${!project.liveUrl ? 'opacity-50 cursor-not-allowed' : ''}`}
+                          onClick={(e) => !project.liveUrl && e.preventDefault()}
                         >
                           <ExternalLink className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                           <span className="hidden sm:inline">Live Demo</span>
@@ -593,46 +588,184 @@ const ProjectModal = ({
 }: {
   project: Project
   onClose: () => void
-}) => (
-  <motion.div
-    className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center px-3 sm:px-6"
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    exit={{ opacity: 0 }}
-  >
+}) => {
+  const hasDemo = Boolean(project.liveUrl)
+  const navigate = useNavigate()
+  const [activeTab, setActiveTab] = useState<'overview' | 'demo'>('overview')
+  const [iframeLoaded, setIframeLoaded] = useState(false)
+  const [showEmbedFallback, setShowEmbedFallback] = useState(false)
+
+  useEffect(() => {
+    setActiveTab('overview')
+    setIframeLoaded(false)
+    setShowEmbedFallback(false)
+  }, [project])
+
+  useEffect(() => {
+    if (activeTab !== 'demo' || !project.liveUrl) return
+
+    setIframeLoaded(false)
+    setShowEmbedFallback(false)
+
+    const timeoutId = window.setTimeout(() => {
+      setShowEmbedFallback(true)
+    }, 3500)
+
+    return () => window.clearTimeout(timeoutId)
+  }, [activeTab, project.liveUrl])
+
+  return (
     <motion.div
-      className="relative max-w-3xl w-full bg-gray-50 dark:bg-gray-950 rounded-xl p-4 sm:p-6 md:p-10 font-mono max-h-[90vh] overflow-y-auto"
-      initial={{ scale: 0.9, y: 40 }}
-      animate={{ scale: 1, y: 0 }}
-      exit={{ scale: 0.9, y: 40 }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-3 sm:px-6"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
     >
-      <button
-        onClick={onClose}
-        className="absolute top-4 right-4 text-gray-500 hover:text-red-500"
+      <motion.div
+        className="relative max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-xl bg-gray-50 p-4 font-mono dark:bg-gray-950 sm:p-6 md:p-8"
+        initial={{ scale: 0.9, y: 40 }}
+        animate={{ scale: 1, y: 0 }}
+        exit={{ scale: 0.9, y: 40 }}
+        onClick={(event) => event.stopPropagation()}
       >
-        <X />
-      </button>
+        <button
+          onClick={onClose}
+          className="absolute right-4 top-4 text-gray-500 hover:text-red-500"
+        >
+          <X />
+        </button>
 
-      <h2 className="pr-8 text-xl sm:text-2xl font-bold mb-2">{project.title}</h2>
-      <p className="text-green-500 mb-6">{project.role}</p>
+        <h2 className="pr-8 text-xl font-bold sm:text-2xl">{project.title}</h2>
+        <p className="mb-5 text-green-500">{project.role}</p>
 
-      <Section title="Problem" text={project.problem} />
-      <Section title="Solution" text={project.solution} />
-      <List title="Key Contributions" items={project.points} />
-      <List title="What I Learned" items={project.learnings} />
-
-      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6">
-        <a href={project.github} target="_blank" className="flex items-center gap-2 break-all">
-          <Github size={18} /> GitHub
-        </a>
-        {project.demo && (
-          <a href={project.demo} target="_blank" className="flex items-center gap-2 break-all">
-            <ExternalLink size={18} /> Live Demo
-          </a>
+        {hasDemo && (
+          <div className="mb-6 flex flex-wrap gap-2">
+            <TabButton
+              active={activeTab === 'overview'}
+              onClick={() => setActiveTab('overview')}
+            >
+              Overview
+            </TabButton>
+            <TabButton
+              active={activeTab === 'demo'}
+              onClick={() => setActiveTab('demo')}
+            >
+              Live Demo
+            </TabButton>
+          </div>
         )}
-      </div>
+
+        {activeTab === 'overview' && (
+          <>
+            <Section title="Problem" text={project.problem} />
+            <Section title="Solution" text={project.solution} />
+            <List title="Key Contributions" items={project.points} />
+            <List title="What I Learned" items={project.learnings} />
+          </>
+        )}
+
+        {activeTab === 'demo' && project.liveUrl && (
+          <div className="space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-gray-200 bg-white/70 px-4 py-3 text-sm dark:border-gray-800 dark:bg-gray-900/60">
+              <p className="text-gray-600 dark:text-gray-400">
+                Try the project inline. If the site blocks embedding, open it in a new tab.
+              </p>
+              <a
+                href={project.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 transition hover:border-green-500 hover:text-green-600 dark:border-gray-700 dark:text-gray-200 dark:hover:text-green-400"
+              >
+                <ExternalLink size={14} />
+                Open in new tab
+              </a>
+            </div>
+
+            <div className="relative h-[52vh] overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-black">
+              {!iframeLoaded && (
+                <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/85 dark:bg-black/80">
+                  <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-300">
+                    <LoaderCircle className="animate-spin" size={18} />
+                    Loading live demo...
+                  </div>
+                </div>
+              )}
+
+              <iframe
+                src={project.liveUrl}
+                title={`${project.title} live demo`}
+                className="h-full w-full"
+                loading="lazy"
+                onLoad={() => {
+                  setIframeLoaded(true)
+                  setShowEmbedFallback(false)
+                }}
+              />
+            </div>
+
+            {showEmbedFallback && !iframeLoaded && (
+              <div className="rounded-xl border border-amber-500/20 bg-amber-500/10 px-4 py-3 text-sm text-amber-700 dark:text-amber-300">
+                This demo may be blocking iframe embeds. Use the "Open in new tab" button above if it does not finish loading here.
+              </div>
+            )}
+          </div>
+        )}
+
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:gap-4">
+          <a
+            href={project.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 break-all"
+          >
+            <Github size={18} /> GitHub
+          </a>
+          {project.liveUrl && (
+            <a
+              href={project.liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 break-all"
+            >
+              <ExternalLink size={18} /> Live Demo
+            </a>
+          )}
+          {project.caseStudySlug && (
+            <button
+              type="button"
+              onClick={() => navigate(`/case-studies/${project.caseStudySlug}`)}
+              className="flex items-center gap-2 text-left text-sky-600 transition hover:text-sky-500 dark:text-sky-400"
+            >
+              <Eye size={18} /> Read Case Study
+            </button>
+          )}
+        </div>
+      </motion.div>
     </motion.div>
-  </motion.div>
+  )
+}
+
+const TabButton = ({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean
+  onClick: () => void
+  children: string
+}) => (
+  <button
+    type="button"
+    onClick={onClick}
+    className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors sm:text-sm ${
+      active
+        ? 'border-gray-900 bg-gray-900 text-white dark:border-white dark:bg-white dark:text-black'
+        : 'border-gray-300 text-gray-600 hover:border-green-500 hover:text-green-600 dark:border-gray-700 dark:text-gray-300 dark:hover:text-green-400'
+    }`}
+  >
+    {children}
+  </button>
 )
 
 const Section = ({ title, text }: { title: string; text: string }) => (

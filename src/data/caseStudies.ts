@@ -15,6 +15,11 @@ export type CaseStudy = {
   role: string
   duration: string
   summary: string
+  tldr: {
+    problem: string
+    built: string
+    result: string
+  }
   problem: string[]
   architecture: CaseStudySection[]
   impactMetrics: CaseStudyMetric[]
@@ -34,6 +39,11 @@ export const caseStudies: CaseStudy[] = [
     duration: '2025',
     summary:
       'Built an AI-assisted resume analysis platform that combines deterministic ATS checks with LLM feedback for practical resume improvements.',
+    tldr: {
+      problem: 'Job seekers needed clearer ATS feedback than generic resume advice usually provides.',
+      built: 'A full-stack resume analyzer with upload, parsing, scoring, AI recommendations, and history tracking.',
+      result: 'Created an end-to-end workflow that turns resume uploads into actionable reports in under 20 seconds.',
+    },
     problem: [
       'Most job seekers do not know why their resume is filtered by ATS systems.',
       'Generic AI feedback can be too vague to act on and hard to trust.',
@@ -104,6 +114,11 @@ export const caseStudies: CaseStudy[] = [
     duration: '2025',
     summary:
       'Delivered a full-stack food ordering platform with authentication, real-time order awareness, and production-style payment and media integrations.',
+    tldr: {
+      problem: 'Food ordering flows often break down around auth, payments, and real-time order state changes.',
+      built: 'A full-stack delivery platform with secure auth, cart and checkout flows, live order updates, and media handling.',
+      result: 'Shipped a production-style ordering experience that covers the full journey from menu browse to post-order tracking.',
+    },
     problem: [
       'Users needed a fast and reliable way to browse menus, place orders, and track outcomes.',
       'Conventional demo apps often skip real payment, auth security, and operational workflows.',
@@ -184,6 +199,11 @@ export const caseStudies: CaseStudy[] = [
     duration: '2025',
     summary:
       'Designed a real-time polling platform with reliable live updates, secure participation, and fairness checks for vote integrity.',
+    tldr: {
+      problem: 'Traditional polling tools feel static and are vulnerable to duplicate participation.',
+      built: 'A React and Socket.IO polling app with live updates, guarded voting, and server-side fairness rules.',
+      result: 'Enabled instant audience feedback while keeping poll participation trustworthy and synchronized.',
+    },
     problem: [
       'Traditional polling tools feel static and do not provide instant feedback loops.',
       'Vote integrity becomes difficult when users can vote multiple times.',
@@ -254,6 +274,11 @@ export const caseStudies: CaseStudy[] = [
     duration: '2024',
     summary:
       'Built a cross-platform mobile workflow for property visit tracking and reward management, replacing manual coordination.',
+    tldr: {
+      problem: 'Property visits and reward tracking were still being coordinated through manual processes.',
+      built: 'A React Native workflow for visit tracking, rewards, navigation, and API-backed status management.',
+      result: 'Improved operational visibility with a mobile-first system that streamlined field execution across devices.',
+    },
     problem: [
       'Field visit tracking and rewards were managed manually, causing delays and errors.',
       'Teams needed a mobile-first interface with predictable navigation and status visibility.',

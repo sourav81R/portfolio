@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
-import { ArrowLeft, Calendar, ExternalLink, Github } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { AlertCircle, ArrowLeft, Calendar, CheckCircle2, ExternalLink, Github, Wrench } from 'lucide-react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { caseStudyBySlug } from '../data/caseStudies'
 
@@ -14,6 +15,39 @@ const CaseStudyPage = () => {
   return (
     <main className="min-h-screen bg-white text-gray-900 dark:bg-black dark:text-gray-300 px-4 sm:px-6 py-10 sm:py-12">
       <div className="max-w-5xl mx-auto font-mono">
+        <motion.section
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="mb-6 overflow-hidden rounded-2xl border border-emerald-500/20 bg-emerald-500/5"
+        >
+          <div className="border-l-4 border-emerald-500 p-5 sm:p-6">
+            <p className="mb-4 text-xs uppercase tracking-[0.24em] text-emerald-600 dark:text-emerald-400">
+              TL;DR
+            </p>
+            <div className="space-y-3">
+              <TldrRow
+                icon={AlertCircle}
+                label="Problem"
+                value={study.tldr.problem}
+                accent="text-rose-500"
+              />
+              <TldrRow
+                icon={Wrench}
+                label="Built"
+                value={study.tldr.built}
+                accent="text-sky-500"
+              />
+              <TldrRow
+                icon={CheckCircle2}
+                label="Result"
+                value={study.tldr.result}
+                accent="text-emerald-500"
+              />
+            </div>
+          </div>
+        </motion.section>
+
         <Link
           to="/#projects"
           className="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 transition-colors"
@@ -173,6 +207,32 @@ const BulletList = ({ items }: { items: string[] }) => (
       </li>
     ))}
   </ul>
+)
+
+const TldrRow = ({
+  icon: Icon,
+  label,
+  value,
+  accent,
+}: {
+  icon: typeof AlertCircle
+  label: string
+  value: string
+  accent: string
+}) => (
+  <div className="flex items-start gap-3 rounded-xl border border-gray-200/80 bg-white/70 p-3 dark:border-gray-800 dark:bg-gray-950/40">
+    <span className={`mt-0.5 ${accent}`}>
+      <Icon size={18} />
+    </span>
+    <div>
+      <p className="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400">
+        {label}
+      </p>
+      <p className="mt-1 text-sm sm:text-base text-gray-700 dark:text-gray-300">
+        {value}
+      </p>
+    </div>
+  </div>
 )
 
 export default CaseStudyPage

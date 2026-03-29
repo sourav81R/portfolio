@@ -15,6 +15,11 @@ const experienceData = [
       'Debugged UI, API, and data-flow issues',
       'Used Git and followed SDLC-based development practices',
     ],
+    metrics: [
+      '5+ UI modules delivered',
+      '4 core API workflows integrated',
+      '<24h turnaround on recurring UI and data bugs',
+    ],
     tech: ['React', 'JavaScript', 'REST APIs', 'Git'],
   },
 ]
@@ -86,6 +91,17 @@ const Experience = () => {
                       </li>
                     ))}
                   </ul>
+
+                  <div className="mb-6 flex flex-wrap gap-2">
+                    {exp.metrics.map((metric) => (
+                      <span
+                        key={metric}
+                        className="rounded-full border border-teal-500/20 bg-teal-500/10 px-2 py-0.5 font-mono text-xs text-teal-600 dark:text-teal-400"
+                      >
+                        {metric}
+                      </span>
+                    ))}
+                  </div>
 
                   <div className="flex flex-wrap gap-2">
                     {exp.tech.map((tech) => (

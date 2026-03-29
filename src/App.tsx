@@ -2,6 +2,7 @@ import { Suspense, lazy, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
+import OpenToWorkBanner from './components/layout/OpenToWorkBanner'
 import Hero from './components/sections/Hero'
 import CommandPalette from './components/common/CommandPalette'
 import './styles/noise.css'
@@ -9,6 +10,7 @@ import './styles/noise.css'
 const RecruiterHighlights = lazy(() => import('./components/sections/RecruiterHighlights'))
 const About = lazy(() => import('./components/sections/About'))
 const Experience = lazy(() => import('./components/sections/Experience'))
+const Testimonials = lazy(() => import('./components/sections/Testimonials'))
 const Skills = lazy(() => import('./components/sections/Skills'))
 const Projects = lazy(() => import('./components/sections/Projects'))
 const Education = lazy(() => import('./components/sections/Education'))
@@ -64,6 +66,7 @@ function App() {
       <CommandPalette />
 
       {/* Layout */}
+      <OpenToWorkBanner />
       <Navbar />
 
       {/* Sections */}
@@ -76,6 +79,9 @@ function App() {
       </Suspense>
       <Suspense fallback={<SectionFallback id="experience" />}>
         <Experience />
+      </Suspense>
+      <Suspense fallback={<SectionFallback id="testimonials" />}>
+        <Testimonials />
       </Suspense>
       <Suspense fallback={<SectionFallback id="skills" />}>
         <Skills />

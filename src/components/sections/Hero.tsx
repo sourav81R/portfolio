@@ -5,6 +5,7 @@ import AnimatedBorder from '../common/AnimatedBorder'
 import MagneticButton from '../common/MagneticButton'
 import { useCommandPalette } from '../../store/useCommandpalette'
 import SmartResume from '../common/SmartResume'
+import ResumePreviewModal from '../common/ResumePreviewModal'
 import './About.css'
 
 /* ---------------- TERMINAL DATA ---------------- */
@@ -93,6 +94,7 @@ const Hero = () => {
   const [currentText, setCurrentText] = useState('')
   const [commandInput, setCommandInput] = useState('')
   const [showResume, setShowResume] = useState(false)
+  const [showResumePreview, setShowResumePreview] = useState(false)
 
   /* Typing animation */
   useEffect(() => {
@@ -153,6 +155,7 @@ const Hero = () => {
         <div className="absolute top-[-10%] right-[-5%] w-[360px] h-[360px] bg-green-500/10 rounded-full blur-[70px]" />
         <div className="absolute bottom-[-10%] left-[-5%] w-[360px] h-[360px] bg-blue-500/10 rounded-full blur-[70px]" />
       </div>
+      <div className="grain-overlay absolute inset-0 z-[1]" />
 
       <div className="max-w-[98%] mx-auto w-full relative z-10">
         <AnimatedBorder>
@@ -236,15 +239,14 @@ const Hero = () => {
             </MagneticButton>
 
             <MagneticButton>
-              <a
-                href="/images/resume.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                type="button"
+                onClick={() => setShowResumePreview(true)}
                 className="group flex w-full sm:w-auto justify-center items-center gap-2 px-5 sm:px-6 py-3 border border-gray-300 dark:border-gray-700 rounded-full font-medium hover:border-gray-900 dark:hover:border-white transition-colors bg-white/50 dark:bg-black/50 backdrop-blur-sm"
               >
                 <Eye size={18} />
-                View Resume
-              </a>
+                Preview Resume
+              </button>
             </MagneticButton>
 
             <MagneticButton>
@@ -382,6 +384,11 @@ const Hero = () => {
       </motion.div>
 
       <SmartResume open={showResume} onClose={handleResumeClose} />
+      <ResumePreviewModal
+        open={showResumePreview}
+        onClose={() => setShowResumePreview(false)}
+        pdfUrl="/images/resume.pdf"
+      />
     </motion.section>
   )
 }

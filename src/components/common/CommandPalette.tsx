@@ -6,6 +6,7 @@ import { useCommandPalette } from '../../store/useCommandpalette'
 type Command = {
   label: string
   action: () => void
+  shortcut?: string[]
 }
 
 const CommandPalette = () => {
@@ -27,18 +28,20 @@ const CommandPalette = () => {
   }, [])
 
   const commands: Command[] = [
-    { label: 'Go to Home', action: () => go('#home') },
+    { label: 'Go to Home', action: () => go('#home'), shortcut: ['G', 'H'] },
     { label: 'Go to Highlights', action: () => go('#highlights') },
-    { label: 'Go to About', action: () => go('#about') },
-    { label: 'Go to Projects', action: () => go('#projects') },
+    { label: 'Go to About', action: () => go('#about'), shortcut: ['G', 'A'] },
+    { label: 'Go to Testimonials', action: () => go('#testimonials') },
+    { label: 'Go to Projects', action: () => go('#projects'), shortcut: ['G', 'P'] },
     { label: 'Go to Skills', action: () => go('#skills') },
-    { label: 'Go to Contact', action: () => go('#contact') },
+    { label: 'Go to Contact', action: () => go('#contact'), shortcut: ['G', 'C'] },
     {
       label: 'Toggle Dark Mode',
       action: () => {
         const isDark = document.documentElement.classList.toggle('dark')
         localStorage.setItem('theme', isDark ? 'dark' : 'light')
       },
+      shortcut: ['T'],
     },
     {
       label: 'Open GitHub',
@@ -52,6 +55,7 @@ const CommandPalette = () => {
     {
       label: 'Open Resume',
       action: () => window.open('/images/resume.pdf', '_blank'),
+      shortcut: ['R'],
     },
     {
       label: 'Download Resume',
@@ -119,11 +123,23 @@ const CommandPalette = () => {
             <li
               key={i}
               onClick={() => runCommand(cmd.action)}
-              className="px-4 py-3 text-sm cursor-pointer
+              className="flex items-center justify-between gap-3 px-4 py-3 text-sm cursor-pointer
                          text-gray-700 dark:text-gray-300
                          hover:bg-gray-100 dark:hover:bg-gray-900"
             >
-              {cmd.label}
+              <span>{cmd.label}</span>
+              {cmd.shortcut && (
+                <span className="flex items-center gap-1">
+                  {cmd.shortcut.map((key) => (
+                    <kbd
+                      key={key}
+                      className="rounded border border-gray-300 bg-gray-100 px-1.5 py-0.5 font-mono text-[11px] text-gray-500 dark:border-white/20 dark:bg-white/10 dark:text-gray-300"
+                    >
+                      {key}
+                    </kbd>
+                  ))}
+                </span>
+              )}
             </li>
           ))}
 

@@ -7,6 +7,7 @@ const sections = [
   'highlights',
   'about',
   'experience',
+  'testimonials',
   'skills',
   'projects',
   'education',
@@ -94,7 +95,10 @@ const Navbar = () => {
   }, [])
 
   return (
-    <nav className="fixed inset-x-0 top-2.5 z-50 px-4 sm:top-4 sm:px-6">
+    <nav
+      className="fixed inset-x-0 z-50 px-4 sm:px-6"
+      style={{ top: 'calc(var(--banner-offset, 0px) + 0.75rem)' }}
+    >
       <div
         className={`relative overflow-hidden border border-emerald-200/80 bg-gradient-to-r from-emerald-50/95 via-white/95 to-cyan-50/95 shadow-[0_16px_45px_-28px_rgba(0,0,0,0.8)] backdrop-blur-sm dark:border-emerald-500/30 dark:bg-gradient-to-r dark:from-gray-900/95 dark:via-gray-950/95 dark:to-gray-900/95 ${
           isOpen ? 'rounded-2xl' : 'rounded-2xl sm:rounded-full'

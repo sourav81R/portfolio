@@ -4,6 +4,7 @@ export const sectionColors: Record<string, string> = {
   highlights: 'text-emerald-500',
   about: 'text-blue-500',
   experience: 'text-orange-500',
+  testimonials: 'text-teal-500',
   skills: 'text-purple-500',
   projects: 'text-sky-500',
   education: 'text-pink-500',
