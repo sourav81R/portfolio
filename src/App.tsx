@@ -18,8 +18,8 @@ const Certifications = lazy(() => import('./components/sections/Certifications')
 const Contact = lazy(() => import('./components/sections/Contact'))
 
 const SectionFallback = ({ id }: { id: string }) => (
-  <section id={id} className="px-4 sm:px-6 py-20 sm:py-24 lg:py-28">
-    <div className="max-w-6xl mx-auto h-24 rounded-2xl border border-gray-200/70 dark:border-gray-800/70 bg-gray-100/60 dark:bg-gray-900/40 animate-pulse" />
+  <section id={id} className="px-4 py-20 sm:px-6 sm:py-24 lg:py-28">
+    <div className="mx-auto h-24 max-w-6xl animate-pulse rounded-2xl border border-gray-200/70 bg-gray-100/60 dark:border-gray-800/70 dark:bg-gray-900/40" />
   </section>
 )
 
@@ -54,22 +54,11 @@ function App() {
   }, [location.hash])
 
   return (
-    <div
-      className="
-        min-h-screen
-        bg-white text-gray-900
-        dark:bg-black dark:text-gray-300
-        transition-colors duration-300
-      "
-    >
-      {/* Global Command Palette (Ctrl + K) */}
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top_right,rgba(34,197,94,0.12),transparent_26%),radial-gradient(circle_at_top_left,rgba(59,130,246,0.08),transparent_24%),#ffffff] text-gray-900 transition-colors duration-300 dark:bg-[radial-gradient(circle_at_top_right,rgba(34,197,94,0.12),transparent_24%),radial-gradient(circle_at_top_left,rgba(56,189,248,0.09),transparent_24%),#020617] dark:text-gray-300">
       <CommandPalette />
-
-      {/* Layout */}
       <OpenToWorkBanner />
       <Navbar />
 
-      {/* Sections */}
       <Hero />
       <Suspense fallback={<SectionFallback id="highlights" />}>
         <RecruiterHighlights />

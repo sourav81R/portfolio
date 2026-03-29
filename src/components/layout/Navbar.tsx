@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Menu, X, Sun, Moon } from 'lucide-react'
+import { Menu, Moon, Sun, X } from 'lucide-react'
 import { sectionColors } from '../../constants/sectionColor'
 
 const sections = [
@@ -15,18 +15,29 @@ const sections = [
   'contact',
 ]
 
+const sectionLabels: Record<string, string> = {
+  home: 'Home',
+  highlights: 'Highlights',
+  about: 'About',
+  experience: 'Experience',
+  testimonials: 'Testimonials',
+  skills: 'Skills',
+  projects: 'Projects',
+  education: 'Education',
+  certifications: 'Certifications',
+  contact: 'Contact',
+}
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [active, setActive] = useState('home')
   const [theme, setTheme] = useState<'dark' | 'light'>('dark')
 
-  /* ---------- LOAD SAVED THEME ---------- */
   useEffect(() => {
     const saved = localStorage.getItem('theme') as 'dark' | 'light' | null
     if (saved) setTheme(saved)
   }, [])
 
-  /* ---------- APPLY THEME ---------- */
   useEffect(() => {
     const root = document.documentElement
     if (theme === 'dark') {
@@ -38,7 +49,6 @@ const Navbar = () => {
     }
   }, [theme])
 
-  /* ---------- SCROLL SPY ---------- */
   useEffect(() => {
     let raf = 0
     let sectionElements = [] as HTMLElement[]
@@ -100,11 +110,10 @@ const Navbar = () => {
       style={{ top: 'calc(var(--banner-offset, 0px) + 0.75rem)' }}
     >
       <div
-        className={`relative overflow-hidden border border-emerald-200/80 bg-gradient-to-r from-emerald-50/95 via-white/95 to-cyan-50/95 shadow-[0_16px_45px_-28px_rgba(0,0,0,0.8)] backdrop-blur-sm dark:border-emerald-500/30 dark:bg-gradient-to-r dark:from-gray-900/95 dark:via-gray-950/95 dark:to-gray-900/95 ${
+        className={`relative overflow-hidden border border-emerald-200/80 bg-gradient-to-r from-white/95 via-emerald-50/95 to-cyan-50/95 shadow-[0_24px_60px_-32px_rgba(15,23,42,0.6)] backdrop-blur-md dark:border-emerald-500/25 dark:bg-gradient-to-r dark:from-gray-900/95 dark:via-gray-950/95 dark:to-slate-900/95 ${
           isOpen ? 'rounded-2xl' : 'rounded-2xl sm:rounded-full'
         }`}
       >
-        {/* Scroll Progress Bar */}
         <div className="absolute inset-x-0 bottom-0 h-[2px] bg-transparent">
           <div
             id="scroll-progress"
@@ -113,31 +122,31 @@ const Navbar = () => {
           />
         </div>
 
-        <div className="px-3 py-2.5 sm:px-5 sm:py-3 flex items-center justify-between font-mono">
-          {/* Logo */}
-          <a href="#home" className="font-bold text-sm sm:text-base text-gray-900 dark:text-white">
+        <div className="flex items-center justify-between px-3 py-2.5 font-mono sm:px-5 sm:py-3">
+          <a
+            href="#home"
+            className="inline-flex items-center gap-2 rounded-full bg-gray-900 px-3 py-1.5 text-xs font-bold text-white shadow-sm dark:bg-white dark:text-black sm:text-sm"
+          >
+            <span className="h-2 w-2 rounded-full bg-emerald-400" />
             sourav.is-a.dev
           </a>
 
-          {/* Desktop Menu */}
-          <ul className="hidden lg:flex gap-6 text-sm items-center">
+          <ul className="hidden items-center gap-5 text-sm lg:flex">
             {sections.map((item) => (
               <li key={item}>
                 <a
                   href={`#${item}`}
-                  className={`relative transition ${
+                  className={`relative text-[13px] transition ${
                     active === item
                       ? sectionColors[item]
                       : 'text-gray-600 dark:text-gray-400 hover:text-green-500'
                   }`}
                 >
-                  {item}
-
-                  {/* Animated underline */}
+                  {sectionLabels[item]}
                   <span
-                    className={`absolute left-0 -bottom-1 h-[2px] w-full origin-left scale-x-0 transition-transform duration-300
-                      ${active === item ? 'scale-x-100' : ''}
-                    `}
+                    className={`absolute left-0 -bottom-1 h-[2px] w-full origin-left scale-x-0 transition-transform duration-300 ${
+                      active === item ? 'scale-x-100' : ''
+                    }`}
                     style={{
                       backgroundColor:
                         active === item ? 'currentColor' : 'transparent',
@@ -147,7 +156,6 @@ const Navbar = () => {
               </li>
             ))}
 
-            {/* Theme Toggle */}
             <button
               aria-label="Toggle theme"
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
@@ -157,8 +165,7 @@ const Navbar = () => {
             </button>
           </ul>
 
-          {/* Mobile Controls */}
-          <div className="lg:hidden flex items-center gap-1.5 sm:gap-2">
+          <div className="flex items-center gap-1.5 lg:hidden sm:gap-2">
             <button
               aria-label="Toggle theme"
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
@@ -177,22 +184,21 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Menu */}
         {isOpen && (
-          <div className="lg:hidden border-t border-emerald-200/80 bg-emerald-50/95 dark:border-emerald-500/30 dark:bg-gray-900/95 max-h-[min(70vh,28rem)] overflow-y-auto">
+          <div className="max-h-[min(70vh,28rem)] overflow-y-auto border-t border-emerald-200/80 bg-emerald-50/95 dark:border-emerald-500/30 dark:bg-gray-900/95 lg:hidden">
             <ul className="flex flex-col items-stretch gap-1 px-3 py-3 font-mono">
               {sections.map((item) => (
                 <li key={item}>
                   <a
                     href={`#${item}`}
                     onClick={() => setIsOpen(false)}
-                    className={`block px-3 py-2 rounded-lg text-sm sm:text-base transition ${
+                    className={`block rounded-lg px-3 py-2 text-sm transition sm:text-base ${
                       active === item
                         ? sectionColors[item]
                         : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'
                     }`}
                   >
-                    {item}
+                    {sectionLabels[item]}
                   </a>
                 </li>
               ))}

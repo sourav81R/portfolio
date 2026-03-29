@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 
 type Props = {
   open: boolean
@@ -9,7 +9,7 @@ type Props = {
 const lines = [
   '$ preparing resume...',
   '$ checking latest version...',
-  '✔ resume.pdf ready',
+  '[ok] resume.pdf ready',
 ]
 
 const SmartResume = ({ open, onClose }: Props) => {
@@ -23,7 +23,6 @@ const SmartResume = ({ open, onClose }: Props) => {
       setTimeout(() => setStep(i + 1), i * 200)
     )
 
-    // auto download after animation
     const downloadTimer = setTimeout(() => {
       const link = document.createElement('a')
       link.href = '/images/resume.pdf'
@@ -42,7 +41,7 @@ const SmartResume = ({ open, onClose }: Props) => {
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center px-3 sm:px-6"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-3 sm:px-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -51,33 +50,19 @@ const SmartResume = ({ open, onClose }: Props) => {
             initial={{ scale: 0.95, y: 20 }}
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.95, y: 20 }}
-            className="
-              w-full max-w-md
-              rounded-xl
-              bg-gray-950
-              border border-gray-800
-              p-4 sm:p-6
-              font-mono
-              text-xs sm:text-sm
-            "
+            className="w-full max-w-md rounded-xl border border-gray-800 bg-gray-950 p-4 font-mono text-xs sm:p-6 sm:text-sm"
           >
-            {/* Terminal header */}
-            <div className="flex gap-2 mb-4">
-              <span className="w-3 h-3 bg-red-500 rounded-full" />
-              <span className="w-3 h-3 bg-yellow-500 rounded-full" />
-              <span className="w-3 h-3 bg-green-500 rounded-full" />
+            <div className="mb-4 flex gap-2">
+              <span className="h-3 w-3 rounded-full bg-red-500" />
+              <span className="h-3 w-3 rounded-full bg-yellow-500" />
+              <span className="h-3 w-3 rounded-full bg-green-500" />
             </div>
 
-            {/* Terminal output */}
             <div className="space-y-2">
               {lines.slice(0, step).map((line, i) => (
                 <p
                   key={i}
-                  className={
-                    line.startsWith('✔')
-                      ? 'text-green-500'
-                      : 'text-gray-300'
-                  }
+                  className={line.startsWith('[ok]') ? 'text-green-500' : 'text-gray-300'}
                 >
                   {line}
                 </p>
