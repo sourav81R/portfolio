@@ -150,4 +150,3 @@ These slugs are currently backed by structured data and route pages:
 
 - This repository currently does not define test or lint scripts.
 - The active application lives in this `sourav-portfolio/` folder.
-- There is an old `generate_images.js` helper script in the repo, but it is not part of the runtime app flow.

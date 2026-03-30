@@ -4,6 +4,14 @@ import App from './App'
 import CaseStudyPage from './pages/CaseStudyPage'
 import './index.css'
 
+const savedTheme = localStorage.getItem('theme')
+
+if (savedTheme === 'dark') {
+  document.documentElement.classList.add('dark')
+} else if (savedTheme === 'light') {
+  document.documentElement.classList.remove('dark')
+}
+
 const rootElement = document.getElementById('root')
 
 if (!rootElement) {

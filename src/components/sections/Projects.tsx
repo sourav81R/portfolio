@@ -3,7 +3,6 @@ import { Github, ExternalLink, X, Eye, ChevronDown, ChevronUp, LoaderCircle } fr
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import AnimatedBorder from '../common/AnimatedBorder'
-import './About.css'
 
 type Category = 'All' | 'React' | 'JavaScript' | 'Mobile'
 

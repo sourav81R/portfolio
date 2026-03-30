@@ -2,7 +2,6 @@ import { Calendar, Code, Database, Zap, Users, Rocket, Brain } from 'lucide-reac
 import { motion } from 'framer-motion'
 import FadeIn from '../common/FadeIn'
 import AnimatedBorder from '../common/AnimatedBorder'
-import './About.css'
 
 const About = () => {
   const text = 'About Me'

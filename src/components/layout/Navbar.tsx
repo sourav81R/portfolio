@@ -31,12 +31,10 @@ const sectionLabels: Record<string, string> = {
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [active, setActive] = useState('home')
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
-
-  useEffect(() => {
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     const saved = localStorage.getItem('theme') as 'dark' | 'light' | null
-    if (saved) setTheme(saved)
-  }, [])
+    return saved ?? 'dark'
+  })
 
   useEffect(() => {
     const root = document.documentElement

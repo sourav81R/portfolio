@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Mail, Github, Linkedin, Phone, MessageCircle, Send, Copy, Check, MapPin } from 'lucide-react'
 import { motion } from 'framer-motion'
 import AnimatedBorder from '../common/AnimatedBorder'
-import './About.css'
 
 const contactLinks = [
   {

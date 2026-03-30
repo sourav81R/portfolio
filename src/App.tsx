@@ -5,7 +5,6 @@ import Footer from './components/layout/Footer'
 import OpenToWorkBanner from './components/layout/OpenToWorkBanner'
 import Hero from './components/sections/Hero'
 import CommandPalette from './components/common/CommandPalette'
-import './styles/noise.css'
 
 const RecruiterHighlights = lazy(() => import('./components/sections/RecruiterHighlights'))
 const About = lazy(() => import('./components/sections/About'))

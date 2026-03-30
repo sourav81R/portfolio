@@ -1,7 +1,6 @@
 import { Calendar, GraduationCap, School } from 'lucide-react'
 import { motion } from 'framer-motion'
 import AnimatedBorder from '../common/AnimatedBorder'
-import './About.css'
 
 const educationData = [
   {

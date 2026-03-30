@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import {
   ArrowRight,
@@ -17,8 +17,6 @@ import MagneticButton from '../common/MagneticButton'
 import { useCommandPalette } from '../../store/useCommandpalette'
 import SmartResume from '../common/SmartResume'
 import ResumePreviewModal from '../common/ResumePreviewModal'
-import './About.css'
-
 type Line = {
   prompt: string
   text: string
@@ -61,8 +59,6 @@ const heroProof = [
   'Frontend, APIs, and mobile experience',
 ]
 
-const TYPING_SPEED = 35
-const LINE_DELAY = 600
 const fullName = 'SOURAV CHOWDHURY'
 const BADGE_WORDS = [
   'COMPUTER SCIENCE ENGINEER',
@@ -105,55 +101,8 @@ const TypingBadge = () => {
 const Hero = () => {
   const { open } = useCommandPalette()
   const reduceMotion = useReducedMotion()
-  const terminalInputRef = useRef<HTMLInputElement | null>(null)
-
-  const [displayedLines, setDisplayedLines] = useState<Line[]>([])
-  const [lineIndex, setLineIndex] = useState(0)
-  const [charIndex, setCharIndex] = useState(0)
-  const [currentText, setCurrentText] = useState('')
-  const [commandInput, setCommandInput] = useState('')
   const [showResume, setShowResume] = useState(false)
   const [showResumePreview, setShowResumePreview] = useState(false)
-
-  useEffect(() => {
-    if (lineIndex >= terminalLines.length) return
-
-    const activeLine = terminalLines[lineIndex]
-    const fullText = activeLine.text
-
-    if (charIndex < fullText.length) {
-      const timeout = setTimeout(() => {
-        setCurrentText((prev) => prev + fullText[charIndex])
-        setCharIndex((prev) => prev + 1)
-      }, TYPING_SPEED)
-
-      return () => clearTimeout(timeout)
-    }
-
-    const timeout = setTimeout(() => {
-      setDisplayedLines((prev) => [...prev, activeLine])
-      setCurrentText('')
-      setCharIndex(0)
-      setLineIndex((prev) => prev + 1)
-    }, LINE_DELAY)
-
-    return () => clearTimeout(timeout)
-  }, [charIndex, lineIndex])
-
-  useEffect(() => {
-    if (lineIndex < terminalLines.length) return
-    terminalInputRef.current?.focus()
-  }, [lineIndex])
-
-  const handleTerminalInputChange = (value: string) => {
-    if (value.trim().toLowerCase() === 'clear') {
-      setDisplayedLines([])
-      setCommandInput('')
-      return
-    }
-
-    setCommandInput(value)
-  }
 
   const handleResumeClose = useCallback(() => setShowResume(false), [])
 
@@ -360,10 +309,7 @@ const Hero = () => {
                 <Globe className="text-green-500" size={24} />
               </motion.div>
 
-              <div
-                className="mx-auto w-full max-w-xl rounded-[28px] border border-gray-800/50 bg-gray-900/95 p-1 font-mono text-gray-300 shadow-2xl backdrop-blur-sm"
-                onClick={() => terminalInputRef.current?.focus()}
-              >
+              <div className="mx-auto w-full max-w-xl rounded-[28px] border border-gray-800/50 bg-gray-900/95 p-1 font-mono text-gray-300 shadow-2xl backdrop-blur-sm">
                 <div className="flex items-center justify-between rounded-t-lg border-b border-gray-700/50 bg-gray-800/50 px-4 py-3">
                   <div className="flex gap-2">
                     <div className="h-3 w-3 rounded-full bg-red-500/80" />
@@ -377,7 +323,7 @@ const Hero = () => {
                 </div>
 
                 <div className="min-h-[300px] space-y-4 overflow-hidden p-6 text-sm">
-                  {displayedLines.map((line, i) => (
+                  {terminalLines.map((line, i) => (
                     <div key={i} className="break-words">
                       <span className="mr-2 font-bold text-green-400">
                         {line.prompt}
@@ -385,37 +331,11 @@ const Hero = () => {
                       <span className="text-gray-100">{line.text}</span>
                     </div>
                   ))}
-
-                  {lineIndex < terminalLines.length && (
-                    <div className="break-words">
-                      <span className="mr-2 font-bold text-green-400">
-                        {terminalLines[lineIndex].prompt}
-                      </span>
-                      <span className="text-gray-100">
-                        {currentText}
-                        <span className="ml-1 inline-block h-4 w-2 animate-pulse bg-gray-400 align-middle" />
-                      </span>
-                    </div>
-                  )}
-
-                  {lineIndex >= terminalLines.length && (
-                    <label className="flex items-center gap-2 break-words">
-                      <span className="font-bold text-green-400">&gt;&gt; ~</span>
-                      <input
-                        ref={terminalInputRef}
-                        type="text"
-                        value={commandInput}
-                        onChange={(event) =>
-                          handleTerminalInputChange(event.target.value)
-                        }
-                        spellCheck={false}
-                        autoComplete="off"
-                        autoCapitalize="off"
-                        className="min-w-0 flex-1 bg-transparent text-gray-100 outline-none placeholder:text-gray-500"
-                        aria-label="Terminal command input"
-                      />
-                    </label>
-                  )}
+                  <div className="break-words">
+                    <span className="mr-2 font-bold text-green-400">&gt;&gt; ~</span>
+                    <span className="text-gray-100">Ready to build</span>
+                    <span className="ml-1 inline-block h-4 w-2 animate-pulse bg-gray-400 align-middle" />
+                  </div>
                 </div>
 
                 <div className="grid gap-2 border-t border-gray-800/80 bg-black/20 px-4 py-4 md:grid-cols-3">

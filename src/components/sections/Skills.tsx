@@ -8,7 +8,6 @@ import {
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import AnimatedBorder from '../common/AnimatedBorder'
-import './About.css'
 
 const skillCategories = [
   {
