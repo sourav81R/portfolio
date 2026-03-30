@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import {
   ArrowRight,
@@ -37,6 +37,14 @@ const terminalLines: Line[] = [
   },
   { prompt: '>> ~', text: 'echo "Ready to build!"' },
 ]
+
+const terminalSequence: Line[] = [
+  ...terminalLines,
+  { prompt: '>> ~', text: 'Ready to build' },
+]
+
+const TERMINAL_TYPING_SPEED = 32
+const TERMINAL_LINE_PAUSE = 220
 
 const heroSignals = [
   {
@@ -103,8 +111,133 @@ const Hero = () => {
   const reduceMotion = useReducedMotion()
   const [showResume, setShowResume] = useState(false)
   const [showResumePreview, setShowResumePreview] = useState(false)
+  const terminalInputRef = useRef<HTMLInputElement>(null)
+  const [typedTerminalLines, setTypedTerminalLines] = useState<Line[]>(() =>
+    reduceMotion ? terminalSequence : []
+  )
+  const [activeTerminalLine, setActiveTerminalLine] = useState(
+    reduceMotion ? -1 : 0
+  )
+  const [activeTerminalChar, setActiveTerminalChar] = useState(0)
+  const [terminalInput, setTerminalInput] = useState('')
+  const [isTerminalReady, setIsTerminalReady] = useState(reduceMotion)
 
   const handleResumeClose = useCallback(() => setShowResume(false), [])
+
+  const startTerminalSequence = useCallback(() => {
+    setTerminalInput('')
+
+    if (reduceMotion) {
+      setTypedTerminalLines(terminalSequence)
+      setActiveTerminalLine(-1)
+      setActiveTerminalChar(0)
+      setIsTerminalReady(true)
+      return
+    }
+
+    setTypedTerminalLines([])
+    setActiveTerminalLine(0)
+    setActiveTerminalChar(0)
+    setIsTerminalReady(false)
+  }, [reduceMotion])
+
+  useEffect(() => {
+    startTerminalSequence()
+  }, [startTerminalSequence])
+
+  useEffect(() => {
+    if (reduceMotion || isTerminalReady || activeTerminalLine < 0) {
+      return
+    }
+
+    const currentLine = terminalSequence[activeTerminalLine]
+
+    if (!currentLine) {
+      setIsTerminalReady(true)
+      setActiveTerminalLine(-1)
+      return
+    }
+
+    const isLineComplete = activeTerminalChar >= currentLine.text.length
+    const timeout = window.setTimeout(() => {
+      if (isLineComplete) {
+        setTypedTerminalLines((prev) => [...prev, currentLine])
+
+        if (activeTerminalLine === terminalSequence.length - 1) {
+          setActiveTerminalLine(-1)
+          setActiveTerminalChar(0)
+          setIsTerminalReady(true)
+          return
+        }
+
+        setActiveTerminalLine((prev) => prev + 1)
+        setActiveTerminalChar(0)
+        return
+      }
+
+      setActiveTerminalChar((prev) => prev + 1)
+    }, isLineComplete ? TERMINAL_LINE_PAUSE : TERMINAL_TYPING_SPEED)
+
+    return () => window.clearTimeout(timeout)
+  }, [activeTerminalChar, activeTerminalLine, isTerminalReady, reduceMotion])
+
+  useEffect(() => {
+    if (isTerminalReady) {
+      terminalInputRef.current?.focus()
+    }
+  }, [isTerminalReady])
+
+  const handleTerminalCommand = useCallback(
+    (value: string) => {
+      const command = value.trim().toLowerCase()
+
+      if (!command) {
+        return
+      }
+
+      if (command === 'clear') {
+        setTypedTerminalLines([])
+        setActiveTerminalLine(-1)
+        setActiveTerminalChar(0)
+        setIsTerminalReady(true)
+        return
+      }
+
+      if (command === 'start') {
+        startTerminalSequence()
+        return
+      }
+
+      setTypedTerminalLines((prev) => [
+        ...prev,
+        { prompt: '>> ~', text: value.trim() },
+        { prompt: '>> ~', text: `command not found: ${value.trim()}` },
+      ])
+    },
+    [startTerminalSequence]
+  )
+
+  const handleTerminalSubmit = useCallback(
+    (event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault()
+      const nextCommand = terminalInput
+
+      setTerminalInput('')
+      handleTerminalCommand(nextCommand)
+    },
+    [handleTerminalCommand, terminalInput]
+  )
+
+  const liveTerminalLine =
+    activeTerminalLine >= 0
+      ? {
+          ...terminalSequence[activeTerminalLine],
+          text: terminalSequence[activeTerminalLine].text.slice(
+            0,
+            activeTerminalChar
+          ),
+        }
+      : null
 
   return (
     <motion.section
@@ -322,8 +455,11 @@ const Hero = () => {
                   </div>
                 </div>
 
-                <div className="min-h-[300px] space-y-4 overflow-hidden p-6 text-sm">
-                  {terminalLines.map((line, i) => (
+                <div
+                  className="min-h-[300px] space-y-4 overflow-hidden p-6 text-sm"
+                  onClick={() => terminalInputRef.current?.focus()}
+                >
+                  {typedTerminalLines.map((line, i) => (
                     <div key={i} className="break-words">
                       <span className="mr-2 font-bold text-green-400">
                         {line.prompt}
@@ -331,11 +467,32 @@ const Hero = () => {
                       <span className="text-gray-100">{line.text}</span>
                     </div>
                   ))}
-                  <div className="break-words">
-                    <span className="mr-2 font-bold text-green-400">&gt;&gt; ~</span>
-                    <span className="text-gray-100">Ready to build</span>
-                    <span className="ml-1 inline-block h-4 w-2 animate-pulse bg-gray-400 align-middle" />
-                  </div>
+                  {liveTerminalLine ? (
+                    <div className="break-words">
+                      <span className="mr-2 font-bold text-green-400">
+                        {liveTerminalLine.prompt}
+                      </span>
+                      <span className="text-gray-100">{liveTerminalLine.text}</span>
+                      <span className="ml-1 inline-block h-4 w-2 animate-pulse bg-gray-400 align-middle" />
+                    </div>
+                  ) : null}
+                  {isTerminalReady ? (
+                    <form onSubmit={handleTerminalSubmit} className="break-words">
+                      <label className="flex items-center">
+                        <span className="mr-2 font-bold text-green-400">&gt;&gt; ~</span>
+                        <input
+                          ref={terminalInputRef}
+                          value={terminalInput}
+                          onChange={(event) => setTerminalInput(event.target.value)}
+                          className="w-full bg-transparent text-gray-100 outline-none placeholder:text-gray-500"
+                          autoComplete="off"
+                          autoCapitalize="none"
+                          spellCheck={false}
+                          placeholder='Type "clear" or "start"'
+                        />
+                      </label>
+                    </form>
+                  ) : null}
                 </div>
 
                 <div className="grid gap-2 border-t border-gray-800/80 bg-black/20 px-4 py-4 md:grid-cols-3">
