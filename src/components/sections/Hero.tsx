@@ -22,6 +22,12 @@ type Line = {
   text: string
 }
 
+type SectionCommand = {
+  id: string
+  label: string
+  commands: readonly string[]
+}
+
 const terminalLines: Line[] = [
   { prompt: '>> ~', text: 'whoami' },
   { prompt: '>> ~', text: 'Sourav Chowdhury' },
@@ -45,6 +51,131 @@ const terminalSequence: Line[] = [
 
 const TERMINAL_TYPING_SPEED = 32
 const TERMINAL_LINE_PAUSE = 220
+
+const sectionCommands: SectionCommand[] = [
+  {
+    id: 'about',
+    label: 'About',
+    commands: ['about', 'about section', 'go to about', 'go to about section'],
+  },
+  {
+    id: 'certifications',
+    label: 'Certifications',
+    commands: [
+      'certification',
+      'certifications',
+      'certification section',
+      'certifications section',
+      'go to certification',
+      'go to certifications',
+      'go to certification section',
+      'go to certifications section',
+    ],
+  },
+  {
+    id: 'contact',
+    label: 'Contact',
+    commands: [
+      'contact',
+      'contacts',
+      'contact section',
+      'contacts section',
+      'go to contact',
+      'go to contacts',
+      'go to contact section',
+      'go to contacts section',
+    ],
+  },
+  {
+    id: 'education',
+    label: 'Education',
+    commands: [
+      'education',
+      'education section',
+      'go to education',
+      'go to education section',
+    ],
+  },
+  {
+    id: 'experience',
+    label: 'Experience',
+    commands: [
+      'experience',
+      'experience section',
+      'go to experience',
+      'go to experience section',
+    ],
+  },
+  {
+    id: 'projects',
+    label: 'Projects',
+    commands: [
+      'project',
+      'projects',
+      'project section',
+      'projects section',
+      'go to project',
+      'go to projects',
+      'go to project section',
+      'go to projects section',
+    ],
+  },
+  {
+    id: 'highlights',
+    label: 'Recruiter Hiring',
+    commands: [
+      'highlights',
+      'highlight',
+      'recruiter',
+      'recruiters',
+      'recruiter section',
+      'recruiters section',
+      'recruiter hiring',
+      'recruiterhiring',
+      'recuiterhiring',
+      'recruiter highlights',
+      'recruiter highlight section',
+      'go to recruiter',
+      'go to recruiter section',
+      'go to recruiter hiring',
+      'go to recruiter hiring section',
+      'go to recruiter highlights',
+      'go to recruiter highlights section',
+    ],
+  },
+  {
+    id: 'skills',
+    label: 'Skills',
+    commands: [
+      'skill',
+      'skills',
+      'skill section',
+      'skills section',
+      'go to skill',
+      'go to skills',
+      'go to skill section',
+      'go to skills section',
+    ],
+  },
+  {
+    id: 'testimonials',
+    label: 'Testimonials',
+    commands: [
+      'testimonial',
+      'testimonials',
+      'testimonal',
+      'testimonial section',
+      'testimonials section',
+      'testimonal section',
+      'go to testimonial',
+      'go to testimonials',
+      'go to testimonal',
+      'go to testimonial section',
+      'go to testimonials section',
+      'go to testimonal section',
+    ],
+  },
+]
 
 const heroSignals = [
   {
@@ -189,7 +320,8 @@ const Hero = () => {
 
   const handleTerminalCommand = useCallback(
     (value: string) => {
-      const command = value.trim().toLowerCase()
+      const trimmedValue = value.trim()
+      const command = trimmedValue.toLowerCase().replace(/\s+/g, ' ')
 
       if (!command) {
         return
@@ -208,13 +340,31 @@ const Hero = () => {
         return
       }
 
+      const matchedSection = sectionCommands.find((section) =>
+        section.commands.includes(command)
+      )
+
+      if (matchedSection) {
+        setTypedTerminalLines((prev) => [
+          ...prev,
+          { prompt: '>> ~', text: trimmedValue },
+          { prompt: '>> ~', text: `Opening ${matchedSection.label} section...` },
+        ])
+
+        document.getElementById(matchedSection.id)?.scrollIntoView({
+          behavior: reduceMotion ? 'auto' : 'smooth',
+          block: 'start',
+        })
+        return
+      }
+
       setTypedTerminalLines((prev) => [
         ...prev,
-        { prompt: '>> ~', text: value.trim() },
-        { prompt: '>> ~', text: `command not found: ${value.trim()}` },
+        { prompt: '>> ~', text: trimmedValue },
+        { prompt: '>> ~', text: `command not found: ${trimmedValue}` },
       ])
     },
-    [startTerminalSequence]
+    [reduceMotion, startTerminalSequence]
   )
 
   const handleTerminalSubmit = useCallback(
@@ -488,7 +638,6 @@ const Hero = () => {
                           autoComplete="off"
                           autoCapitalize="none"
                           spellCheck={false}
-                          placeholder='Type "clear" or "start"'
                         />
                       </label>
                     </form>
