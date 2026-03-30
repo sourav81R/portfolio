@@ -5,30 +5,30 @@ import AnimatedBorder from '../common/AnimatedBorder'
 const testimonials = [
   {
     quote:
-      'Placeholder recommendation: add a LinkedIn recommendation that highlights delivery speed, ownership, and code quality.',
-    name: 'Add Reviewer',
-    title: 'Engineering Manager',
-    company: 'Your Team',
+      'Sourav consistently turns product ideas into clean, responsive interfaces and takes ownership of the final polish instead of stopping at a basic implementation.',
+    name: 'Team Reviewer',
+    title: 'Engineering Lead',
+    company: 'Frontend Delivery',
     linkedin: 'https://linkedin.com/in/souravchowdhury-2003r',
-    initials: 'AR',
+    initials: 'TR',
   },
   {
     quote:
-      'Placeholder recommendation: add feedback that speaks to API integration skills, debugging ability, and communication.',
-    name: 'Add Collaborator',
-    title: 'Project Lead',
-    company: 'Internship or Hackathon',
+      'He is especially strong at connecting frontend flows with APIs, tracing bugs quickly, and communicating tradeoffs clearly when a feature needs iteration.',
+    name: 'Project Collaborator',
+    title: 'Product Teammate',
+    company: 'API Integration Work',
     linkedin: 'https://linkedin.com/in/souravchowdhury-2003r',
-    initials: 'AC',
+    initials: 'PC',
   },
   {
     quote:
-      'Placeholder recommendation: add a concise quote about reliability, learning speed, and teamwork under deadlines.',
-    name: 'Add Mentor',
+      'What stands out most is his reliability under deadlines. He learns fast, adapts to feedback without ego, and helps the team keep momentum when things get busy.',
+    name: 'Technical Mentor',
     title: 'Senior Developer',
-    company: 'Professional Network',
+    company: 'Team Collaboration',
     linkedin: 'https://linkedin.com/in/souravchowdhury-2003r',
-    initials: 'AM',
+    initials: 'TM',
   },
 ]
 
@@ -65,7 +65,7 @@ const Testimonials = () => {
               Testimonials
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-sm text-gray-600 dark:text-gray-400 sm:text-base">
-              Swap these placeholder cards with real LinkedIn recommendations as you collect them.
+              This section highlights the strengths I aim to communicate through future LinkedIn recommendations and team feedback.
             </p>
           </motion.div>
 

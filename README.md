@@ -1,42 +1,27 @@
 # Sourav Portfolio
 
-Personal developer portfolio built with React, TypeScript, Tailwind CSS, Framer Motion, and React Router. The app presents a recruiter-friendly landing page, interactive project showcase, detailed case-study routes, and a contact experience focused on quick hiring outreach.
+A recruiter-focused developer portfolio built with React, TypeScript, Tailwind CSS, Framer Motion, and React Router. The app combines a polished single-page landing experience with dedicated case-study routes, resume actions, hiring-friendly shortcuts, and a project gallery that lets visitors explore live demos without leaving the site.
 
-## Overview
+## Preview
 
-This codebase powers a single-page portfolio at `/` plus dedicated case-study pages at `/case-studies/:slug`.
+![Desktop preview](./site-home.png)
+![Mobile preview](./site-mobile.png)
 
-The homepage is organized into these sections:
+## What This Project Includes
 
-- `Hero`
-- `RecruiterHighlights`
-- `About`
-- `Experience`
-- `Testimonials`
-- `Skills`
-- `Projects`
-- `Education`
-- `Certifications`
-- `Contact`
+- Single-page portfolio homepage composed from modular React sections
+- Dedicated case-study pages at `/case-studies/:slug`
+- Lazy-loaded sections for most homepage content
+- Dark/light theme toggle persisted with `localStorage`
+- Command palette opened with `Ctrl/Cmd + K`
+- Resume preview modal and animated resume download flow
+- Dismissible open-to-work banner with sticky offset handling
+- Scroll-aware navbar with active-section tracking and progress bar
+- Filterable projects grid with modal details and embedded live demo tab
+- Contact section with mailto form, copy-to-clipboard actions, and recruiter email template
+- Open Graph metadata and preview image for link sharing
 
-Sections are lazy-loaded where it makes sense, and the navigation supports hash-based scrolling, active section tracking, theme toggling, and a command palette opened with `Ctrl/Cmd + K`.
-
-## Key Features
-
-- Animated hero section with terminal-style typing, floating icons, and resume actions
-- Open-to-work banner with dismiss persistence and direct contact CTA
-- Resume preview modal rendered inline from the PDF
-- Global command palette for section jumps, theme switching, external links, and case-study shortcuts
-- Responsive navbar with scroll spy and progress indicator
-- Recruiter-focused highlight section with quick hiring facts and contact shortcuts
-- Testimonials section ready for LinkedIn recommendations
-- Filterable project gallery with featured toggle, modal details, and case-study deep dives
-- Dedicated case-study routes for `ResumeIQ`, `Foodooza`, `PollRoom`, and `EstatePerks`, each with a TL;DR card
-- Interactive skills section with optional hover-triggered audio feedback
-- Contact section with copy-to-clipboard actions and a mailto-powered outreach form
-- Dark/light theme persistence using `localStorage`
-
-## Tech Stack
+## Stack
 
 - React 19
 - TypeScript
@@ -48,49 +33,68 @@ Sections are lazy-loaded where it makes sense, and the navigation supports hash-
 - Vite via `rolldown-vite`
 - PostCSS + Autoprefixer
 
+## Routes
+
+- `/` renders the full landing page
+- `/case-studies/:slug` renders a detailed case study page
+- Unknown routes redirect back to `/`
+
+## Homepage Sections
+
+The homepage is assembled in [`src/App.tsx`](/c:/portfolio2/sourav-portfolio/src/App.tsx) and currently renders these sections in order:
+
+1. `Hero`
+2. `RecruiterHighlights`
+3. `About`
+4. `Experience`
+5. `Testimonials`
+6. `Skills`
+7. `Projects`
+8. `Education`
+9. `Certifications`
+10. `Contact`
+
+## Content Map
+
+Most portfolio content is stored directly in the codebase instead of a CMS.
+
+- [`src/components/sections/Projects.tsx`](/c:/portfolio2/sourav-portfolio/src/components/sections/Projects.tsx) contains the homepage project inventory, filters, featured state, modal content, and demo links.
+- [`src/data/caseStudies.ts`](/c:/portfolio2/sourav-portfolio/src/data/caseStudies.ts) contains the structured data for case-study pages.
+- [`src/components/sections/Experience.tsx`](/c:/portfolio2/sourav-portfolio/src/components/sections/Experience.tsx), [`src/components/sections/Education.tsx`](/c:/portfolio2/sourav-portfolio/src/components/sections/Education.tsx), and [`src/components/sections/Certifications.tsx`](/c:/portfolio2/sourav-portfolio/src/components/sections/Certifications.tsx) hold timeline/profile content.
+- [`src/components/sections/Contact.tsx`](/c:/portfolio2/sourav-portfolio/src/components/sections/Contact.tsx) contains direct contact info, the email form, and the recruiter template copy action.
+- [`src/components/layout/Navbar.tsx`](/c:/portfolio2/sourav-portfolio/src/components/layout/Navbar.tsx), [`src/components/layout/OpenToWorkBanner.tsx`](/c:/portfolio2/sourav-portfolio/src/components/layout/OpenToWorkBanner.tsx), and [`src/components/common/CommandPalette.tsx`](/c:/portfolio2/sourav-portfolio/src/components/common/CommandPalette.tsx) define the core recruiter-facing navigation and shortcut flows.
+
 ## Project Structure
 
 ```text
-src/
-  components/
-    common/        reusable animated, modal, and utility UI
-    layout/        navbar and footer
-    sections/      homepage sections
-    ui/            small UI primitives
-  constants/       shared UI constants such as section colors
-  data/            case studies and shared content collections
-  pages/           route-level pages
-  store/           Zustand state for the command palette
-  styles/          global visual effects and shared CSS
-  App.tsx          homepage composition
-  main.tsx         router entry point
-public/
-  images/          resume PDF and project images
-  *.jpeg|*.png     additional portfolio assets
+sourav-portfolio/
+  public/
+    images/              project assets and resume PDF
+    og-preview.png       social share preview image
+    profile.jpg          hero/profile image
+  src/
+    components/
+      common/            reusable motion, modal, and utility components
+      layout/            navbar, footer, open-to-work banner
+      sections/          homepage sections
+    constants/           shared section color map
+    data/                case-study content
+    pages/               route-level pages
+    store/               Zustand store for command palette state
+    styles/              shared visual effect styles
+    App.tsx              homepage composition
+    main.tsx             router entry point
+    index.css            global Tailwind and app styles
+  index.html             SEO and social metadata
+  tailwind.config.js     Tailwind config
+  vite.config.ts         Vite config
 ```
 
-## Routing
-
-- `/` renders the full portfolio landing page
-- `/case-studies/:slug` renders detailed project case-study pages
-- any unknown route redirects back to `/`
-
-## Content Model
-
-Most portfolio content is stored directly in code:
-
-- `src/components/sections/Projects.tsx` contains the active project card data used on the homepage
-- `src/data/caseStudies.ts` powers the case-study detail pages
-- `src/components/sections/Experience.tsx`, `src/components/sections/Education.tsx`, and `src/components/sections/Certifications.tsx` store profile timeline content inline
-- `src/components/sections/Contact.tsx` contains contact links and the email template logic
-
-If you want to update portfolio content, these files are the main editing points.
-
-## Getting Started
+## Local Development
 
 ### Prerequisites
 
-- Node.js 18+ recommended
+- Node.js 18 or newer
 - npm
 
 ### Install
@@ -99,41 +103,51 @@ If you want to update portfolio content, these files are the main editing points
 npm install
 ```
 
-### Run Locally
+### Start the dev server
 
 ```bash
 npm run dev
 ```
 
-### Production Build
+### Build for production
 
 ```bash
 npm run build
 ```
 
-### Preview Build
+### Preview the production build
 
 ```bash
 npm run preview
 ```
 
-## Scripts
+## Available Scripts
 
-- `npm run dev` starts the Vite development server
-- `npm run build` creates a production build
-- `npm run preview` serves the production build locally
+- `npm run dev` starts the Vite dev server
+- `npm run build` creates the production bundle in `dist/`
+- `npm run preview` serves the built app locally
 
-## Design Notes
+## Notable Implementation Details
 
-- Tailwind handles the bulk of layout and theming
-- Framer Motion powers section reveals, hover interactions, and motion accents
-- The visual style leans on monospace typography, animated borders, glow effects, glassy panel treatments, and a subtle hero grain overlay
-- Reduced-motion preferences are partially respected in animated areas like the hero and border effects
+- [`src/main.tsx`](/c:/portfolio2/sourav-portfolio/src/main.tsx) uses `BrowserRouter`, explicit routes, and a catch-all redirect.
+- [`src/App.tsx`](/c:/portfolio2/sourav-portfolio/src/App.tsx) lazy-loads most content sections and retries hash scrolling after route changes.
+- [`src/components/common/ResumePreviewModal.tsx`](/c:/portfolio2/sourav-portfolio/src/components/common/ResumePreviewModal.tsx) renders the PDF viewer through a portal.
+- [`src/components/common/SmartResume.tsx`](/c:/portfolio2/sourav-portfolio/src/components/common/SmartResume.tsx) handles the animated download flow.
+- [`src/components/sections/Projects.tsx`](/c:/portfolio2/sourav-portfolio/src/components/sections/Projects.tsx) supports category filters, featured-only mode, project detail modals, and inline iframe demo previews with fallback messaging.
+- [`src/components/sections/Skills.tsx`](/c:/portfolio2/sourav-portfolio/src/components/sections/Skills.tsx) includes optional hover-triggered Web Audio feedback.
+- [`index.html`](/c:/portfolio2/sourav-portfolio/index.html) defines SEO, Open Graph, and Twitter card metadata for the deployed site.
 
-## Repository Notes
+## Current Case Studies
 
-Legacy Vue starter files and dependencies have been removed, so the repo now reflects the active React portfolio much more closely.
+These slugs are currently backed by structured data and route pages:
 
-## Current Status
+- `resumeiq`
+- `foodooza`
+- `pollroom`
+- `estateperks`
 
-The README now matches the implemented portfolio, including the recruiter-focused upgrades, project structure, setup flow, and cleaned dependency set.
+## Notes
+
+- This repository currently does not define test or lint scripts.
+- The active application lives in this `sourav-portfolio/` folder.
+- There is an old `generate_images.js` helper script in the repo, but it is not part of the runtime app flow.
