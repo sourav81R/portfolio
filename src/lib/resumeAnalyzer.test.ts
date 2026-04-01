@@ -10,11 +10,13 @@ describe('analyzeResumeText', () => {
     expect(result.score).toBeGreaterThan(60)
     expect(result.keywordCoverage).toContain('react')
     expect(result.strengths.length).toBeGreaterThan(0)
+    expect(result.readiness).not.toBe('Needs work')
   })
 
   it('flags thin resumes for improvement', () => {
     const result = analyzeResumeText('Student looking for work.')
 
     expect(result.improvements.length).toBeGreaterThan(0)
+    expect(result.missingKeywords.length).toBeGreaterThan(0)
   })
 })

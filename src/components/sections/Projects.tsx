@@ -1,10 +1,20 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
-import { ExternalLink, Github, GripVertical, LoaderCircle, Search, Video, X } from 'lucide-react'
+import {
+  ExternalLink,
+  Github,
+  GripVertical,
+  LoaderCircle,
+  Search,
+  Sparkles,
+  Video,
+  X,
+} from 'lucide-react'
 import AnimatedBorder from '../common/AnimatedBorder'
 import { projects as projectData, type ProjectCategory, type ProjectRecord } from '../../data/projects'
 import { useAppStore } from '../../store/useAppStore'
+import { useProjectDiscovery } from '../../hooks/useProjectDiscovery'
 
 type Category = 'All' | ProjectCategory
 
@@ -27,23 +37,14 @@ const Projects = () => {
     initializeProjectOrder(projectData)
   }, [initializeProjectOrder])
 
-  const orderedProjects = useMemo(() => {
-    if (projectOrder.length === 0) return projectData
-    return [...projectData].sort(
-      (a, b) => projectOrder.indexOf(a.slug) - projectOrder.indexOf(b.slug)
-    )
-  }, [projectOrder])
-
-  const filteredProjects = orderedProjects
-    .filter((project) => (selectedCategory === 'All' ? true : project.category === selectedCategory))
-    .filter((project) => (featuredOnly ? project.featured : true))
-    .filter((project) => {
-      const haystack = `${project.title} ${project.description} ${project.tech.join(' ')}`.toLowerCase()
-      return haystack.includes(query.toLowerCase())
-    })
-    .sort((a, b) => {
-      if (!recruiterMode) return 0
-      return b.recruiterPriority - a.recruiterPriority
+  const { filteredProjects, inferredGoals, recommendedProjects, totalProjects } =
+    useProjectDiscovery({
+      allProjects: projectData,
+      query,
+      selectedCategory,
+      featuredOnly,
+      recruiterMode,
+      projectOrder,
     })
 
   return (
@@ -106,7 +107,64 @@ const Projects = () => {
                 </button>
               </div>
             </div>
+
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-gray-200 pt-4 dark:border-gray-800">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Showing {filteredProjects.length} of {totalProjects} projects
+                {query.trim() ? ` for "${query.trim()}"` : ''}
+              </p>
+              {inferredGoals.length > 0 && (
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-fuchsia-600 dark:text-fuchsia-400">
+                    <Sparkles size={14} />
+                    AI matched goals
+                  </span>
+                  {inferredGoals.map((goal) => (
+                    <span
+                      key={goal}
+                      className="rounded-full border border-fuchsia-500/20 bg-fuchsia-500/10 px-3 py-1 text-xs font-medium text-fuchsia-700 dark:text-fuchsia-300"
+                    >
+                      {goal}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
+
+          {recommendedProjects.length > 0 && (
+            <div className="mb-8 grid gap-4 lg:grid-cols-3">
+              {recommendedProjects.map((project, index) => (
+                <motion.button
+                  key={project.slug}
+                  type="button"
+                  initial={{ opacity: 0, y: 14 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.22, delay: index * 0.05 }}
+                  onClick={() => {
+                    setSelectedProject(project)
+                    recordProjectInteraction(project.slug)
+                  }}
+                  className="rounded-2xl border border-fuchsia-500/20 bg-fuchsia-500/10 p-4 text-left transition hover:-translate-y-1 hover:border-fuchsia-400"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-fuchsia-700 dark:text-fuchsia-300">
+                      <Sparkles size={14} />
+                      Recommended
+                    </span>
+                    <span className="text-xs text-fuchsia-700/80 dark:text-fuchsia-300/80">
+                      {project.category}
+                    </span>
+                  </div>
+                  <h3 className="mt-3 text-lg font-semibold text-gray-900 dark:text-white">
+                    {project.title}
+                  </h3>
+                  <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">{project.impact}</p>
+                </motion.button>
+              ))}
+            </div>
+          )}
 
           <motion.div layout className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
             <AnimatePresence>
@@ -212,6 +270,15 @@ const Projects = () => {
               ))}
             </AnimatePresence>
           </motion.div>
+
+          {filteredProjects.length === 0 && (
+            <div className="mt-8 rounded-2xl border border-dashed border-gray-300 bg-white/70 px-6 py-10 text-center dark:border-gray-700 dark:bg-gray-950/40">
+              <p className="text-lg font-semibold text-gray-900 dark:text-white">No projects matched this query</p>
+              <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                Try a broader keyword like React, AI, mobile, API, or realtime.
+              </p>
+            </div>
+          )}
         </div>
       </AnimatedBorder>
 

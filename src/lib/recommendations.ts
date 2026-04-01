@@ -18,6 +18,19 @@ const goalKeywords: Record<RecommendationGoal, string[]> = {
   'APIs & Backend': ['Node.js', 'Express.js', 'MongoDB', 'REST APIs', 'Flask'],
 }
 
+export const inferRecommendationGoals = (query: string) => {
+  const normalizedQuery = query.trim().toLowerCase()
+
+  if (!normalizedQuery) return [] as RecommendationGoal[]
+
+  return recommendationGoals.filter((goal) =>
+    goalKeywords[goal].some((keyword) =>
+      normalizedQuery.includes(keyword.toLowerCase()) ||
+      keyword.toLowerCase().includes(normalizedQuery)
+    )
+  )
+}
+
 export const getRecommendedProjects = (
   allProjects: ProjectRecord[],
   goals: RecommendationGoal[],

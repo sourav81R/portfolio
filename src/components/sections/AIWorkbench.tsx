@@ -1,9 +1,14 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState, type ChangeEvent } from 'react'
 import { motion } from 'framer-motion'
-import { Bot, BrainCircuit, FileSearch, Sparkles } from 'lucide-react'
+import { Bot, BrainCircuit, FileSearch, Sparkles, Upload } from 'lucide-react'
 import AnimatedBorder from '../common/AnimatedBorder'
 import { featuredProjects } from '../../data/projects'
-import { analyzeResumeText } from '../../lib/resumeAnalyzer'
+import { extractResumeText } from '../../lib/extractResumeText'
+import {
+  analyzeResumeText,
+  resumeTargetRoles,
+  type ResumeTargetRole,
+} from '../../lib/resumeAnalyzer'
 import { getRecommendedProjects, recommendationGoals, type RecommendationGoal } from '../../lib/recommendations'
 import { useAppStore } from '../../store/useAppStore'
 
@@ -11,6 +16,9 @@ const AIWorkbench = () => {
   const recruiterMode = useAppStore((state) => state.recruiterMode)
   const [goals, setGoals] = useState<RecommendationGoal[]>(['Frontend UI'])
   const [resumeText, setResumeText] = useState('')
+  const [targetRole, setTargetRole] = useState<ResumeTargetRole>('Frontend Engineer')
+  const [fileStatus, setFileStatus] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const recommendedProjects = useMemo(
     () => getRecommendedProjects(featuredProjects, goals, recruiterMode),
@@ -18,8 +26,8 @@ const AIWorkbench = () => {
   )
 
   const analysis = useMemo(
-    () => (resumeText.trim() ? analyzeResumeText(resumeText) : null),
-    [resumeText]
+    () => (resumeText.trim() ? analyzeResumeText(resumeText, targetRole) : null),
+    [resumeText, targetRole]
   )
 
   const toggleGoal = (goal: RecommendationGoal) => {
@@ -28,6 +36,33 @@ const AIWorkbench = () => {
         ? current.filter((item) => item !== goal)
         : [...current, goal]
     )
+  }
+
+  const loadSampleResume = () => {
+    setResumeText(
+      'Frontend Engineer with React, TypeScript, Tailwind CSS, accessibility, analytics, and API integration experience. Built recruiter-friendly interfaces, improved performance by 32%, and shipped tested product features across multiple releases.'
+    )
+    setFileStatus('Loaded sample resume content.')
+  }
+
+  const handleResumeUpload = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+
+    if (!file) return
+
+    try {
+      const text = await extractResumeText(file)
+      setResumeText(text)
+      setFileStatus(`Loaded ${file.name} into the analyzer.`)
+    } catch (error) {
+      setFileStatus(
+        error instanceof Error
+          ? error.message
+          : 'Unable to read that file. Please try PDF, DOCX, or TXT.'
+      )
+    } finally {
+      event.target.value = ''
+    }
   }
 
   return (
@@ -122,6 +157,51 @@ const AIWorkbench = () => {
                   </div>
                 </div>
 
+                <div className="mt-5 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                  <div className="flex flex-wrap gap-2">
+                    {resumeTargetRoles.map((role) => (
+                      <button
+                        key={role}
+                        type="button"
+                        onClick={() => setTargetRole(role)}
+                        className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                          targetRole === role
+                            ? 'bg-sky-600 text-white'
+                            : 'border border-gray-300 text-gray-700 hover:border-sky-400 dark:border-gray-700 dark:text-gray-300'
+                        }`}
+                      >
+                        {role}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={loadSampleResume}
+                      className="rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 dark:border-gray-700 dark:text-gray-300"
+                    >
+                      Load sample
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="inline-flex items-center gap-2 rounded-full border border-sky-500/30 bg-sky-500/10 px-4 py-2 text-sm font-medium text-sky-700 dark:text-sky-300"
+                    >
+                      <Upload size={16} />
+                      Upload resume
+                    </button>
+                  </div>
+                </div>
+
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".pdf,.doc,.docx,.txt,.md,.json,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
+                  className="hidden"
+                  onChange={handleResumeUpload}
+                />
+
                 <textarea
                   value={resumeText}
                   onChange={(event) => setResumeText(event.target.value)}
@@ -130,19 +210,37 @@ const AIWorkbench = () => {
                   className="mt-5 w-full rounded-2xl border border-gray-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-sky-500 dark:border-gray-700 dark:bg-gray-950 dark:text-white"
                 />
 
+                {fileStatus && (
+                  <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">{fileStatus}</p>
+                )}
+
+                <p className="mt-2 text-xs uppercase tracking-[0.18em] text-gray-500 dark:text-gray-400">
+                  Supports PDF, DOCX, and text-based resume files. Legacy DOC may not parse reliably.
+                </p>
+
                 {analysis && (
                   <div className="mt-5 grid gap-4">
                     <div className="rounded-2xl border border-sky-500/20 bg-sky-500/10 p-4">
-                      <p className="text-xs uppercase tracking-[0.22em] text-sky-600 dark:text-sky-400">
-                        ATS-style score
-                      </p>
-                      <p className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">
-                        {analysis.score}/100
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                          <p className="text-xs uppercase tracking-[0.22em] text-sky-600 dark:text-sky-400">
+                            ATS-style score
+                          </p>
+                          <p className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">
+                            {analysis.score}/100
+                          </p>
+                        </div>
+                        <span className="rounded-full border border-sky-500/20 bg-white/70 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-sky-700 dark:bg-slate-950/40 dark:text-sky-300">
+                          {analysis.readiness}
+                        </span>
+                      </div>
+                      <p className="mt-3 text-sm text-gray-700 dark:text-gray-300">
+                        {analysis.summary}
                       </p>
                     </div>
 
-                    <InfoList title="Strengths" items={analysis.strengths} accent="text-emerald-500" />
-                    <InfoList title="Improvements" items={analysis.improvements} accent="text-rose-500" />
+                    <InfoList title="Strengths" items={analysis.strengths} accent="bg-emerald-500" />
+                    <InfoList title="Improvements" items={analysis.improvements} accent="bg-rose-500" />
 
                     <div className="rounded-2xl border border-gray-200 bg-white/80 p-4 dark:border-gray-800 dark:bg-gray-950/40">
                       <p className="text-sm font-semibold text-gray-900 dark:text-white">Detected keywords</p>
@@ -151,6 +249,22 @@ const AIWorkbench = () => {
                           <span
                             key={keyword}
                             className="rounded-full border border-sky-500/20 bg-sky-500/10 px-3 py-1 text-xs font-medium text-sky-700 dark:text-sky-300"
+                          >
+                            {keyword}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="rounded-2xl border border-amber-500/20 bg-amber-500/10 p-4">
+                      <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                        Missing keywords for {targetRole}
+                      </p>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {analysis.missingKeywords.map((keyword) => (
+                          <span
+                            key={keyword}
+                            className="rounded-full border border-amber-500/20 bg-white/70 px-3 py-1 text-xs font-medium text-amber-700 dark:bg-slate-950/40 dark:text-amber-300"
                           >
                             {keyword}
                           </span>

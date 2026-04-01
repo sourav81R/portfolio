@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect } from 'react'
+import { Suspense, lazy, useEffect, type ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
@@ -6,6 +6,7 @@ import OpenToWorkBanner from './components/layout/OpenToWorkBanner'
 import Hero from './components/sections/Hero'
 import CommandPalette from './components/common/CommandPalette'
 import ThemeCustomizer from './components/common/ThemeCustomizer'
+import SectionErrorBoundary from './components/system/SectionErrorBoundary'
 import { useAppStore } from './store/useAppStore'
 
 const RecruiterHighlights = lazy(() => import('./components/sections/RecruiterHighlights'))
@@ -69,41 +70,35 @@ function App() {
       <Navbar />
 
       <Hero />
-      <Suspense fallback={<SectionFallback id="highlights" />}>
-        <RecruiterHighlights />
-      </Suspense>
-      <Suspense fallback={<SectionFallback id="about" />}>
-        <About />
-      </Suspense>
-      <Suspense fallback={<SectionFallback id="experience" />}>
-        <Experience />
-      </Suspense>
-      <Suspense fallback={<SectionFallback id="testimonials" />}>
-        <Testimonials />
-      </Suspense>
-      <Suspense fallback={<SectionFallback id="skills" />}>
-        <Skills />
-      </Suspense>
-      <Suspense fallback={<SectionFallback id="projects" />}>
-        <Projects />
-      </Suspense>
-      <Suspense fallback={<SectionFallback id="signals" />}>
-        <DeveloperSignals />
-      </Suspense>
-      <Suspense fallback={<SectionFallback id="ai-workbench" />}>
-        <AIWorkbench />
-      </Suspense>
-      <Suspense fallback={<SectionFallback id="education" />}>
-        <Education />
-      </Suspense>
-      <Suspense fallback={<SectionFallback id="certifications" />}>
-        <Certifications />
-      </Suspense>
-      <Suspense fallback={<SectionFallback id="contact" />}>
-        <Contact />
-      </Suspense>
+      <LazySection id="highlights" title="Recruiter Highlights"><RecruiterHighlights /></LazySection>
+      <LazySection id="about" title="About"><About /></LazySection>
+      <LazySection id="experience" title="Experience"><Experience /></LazySection>
+      <LazySection id="testimonials" title="Testimonials"><Testimonials /></LazySection>
+      <LazySection id="skills" title="Skills"><Skills /></LazySection>
+      <LazySection id="projects" title="Projects"><Projects /></LazySection>
+      <LazySection id="signals" title="Developer Signals"><DeveloperSignals /></LazySection>
+      <LazySection id="ai-workbench" title="AI Workbench"><AIWorkbench /></LazySection>
+      <LazySection id="education" title="Education"><Education /></LazySection>
+      <LazySection id="certifications" title="Certifications"><Certifications /></LazySection>
+      <LazySection id="contact" title="Contact"><Contact /></LazySection>
       <Footer />
     </div>
+  )
+}
+
+function LazySection({
+  children,
+  id,
+  title,
+}: {
+  children: ReactNode
+  id: string
+  title: string
+}) {
+  return (
+    <SectionErrorBoundary title={title}>
+      <Suspense fallback={<SectionFallback id={id} />}>{children}</Suspense>
+    </SectionErrorBoundary>
   )
 }
 
