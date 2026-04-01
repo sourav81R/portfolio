@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { LayoutDashboard, Menu, Moon, Sun, Users, X } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { sectionColors } from '../../constants/sectionColor'
+import { sectionTextColors } from '../../constants/sectionColor'
 import { useAppStore } from '../../store/useAppStore'
 
 const sections = [
@@ -124,7 +124,7 @@ const Navbar = () => {
         <div className="absolute inset-x-0 bottom-0 h-[2px] bg-transparent">
           <div
             id="scroll-progress"
-            className={`h-full transition-[width] duration-150 ${sectionColors[active]}`}
+            className={`h-full transition-[width] duration-150 ${sectionTextColors[active]}`}
             style={{ width: '0%' }}
           />
         </div>
@@ -143,9 +143,9 @@ const Navbar = () => {
               <li key={item}>
                 <a
                   href={`#${item}`}
-                  className={`relative text-[13px] transition ${
-                    active === item
-                      ? sectionColors[item]
+                    className={`relative text-[13px] transition ${
+                      active === item
+                      ? sectionTextColors[item]
                       : 'text-gray-600 dark:text-gray-400 hover:text-green-500'
                   }`}
                 >
@@ -239,7 +239,7 @@ const Navbar = () => {
                     onClick={() => setIsOpen(false)}
                     className={`block rounded-lg px-3 py-2 text-sm transition sm:text-base ${
                       active === item
-                        ? sectionColors[item]
+                        ? sectionTextColors[item]
                         : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'
                     }`}
                   >

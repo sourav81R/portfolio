@@ -35,7 +35,10 @@ const ThemeCustomizer = () => {
       <button
         type="button"
         onClick={() => setThemePanelOpen(true)}
-        className="fixed bottom-5 right-5 z-[90] inline-flex h-12 w-12 items-center justify-center rounded-full bg-gray-900 text-white shadow-lg dark:bg-white dark:text-black"
+        className="fixed bottom-5 right-5 z-[90] inline-flex h-12 w-12 items-center justify-center rounded-full text-white shadow-lg"
+        style={{
+          background: 'linear-gradient(135deg, var(--accent), #6366f1)',
+        }}
         aria-label="Open customization panel"
       >
         <Palette size={18} />
@@ -73,9 +76,17 @@ const ThemeCustomizer = () => {
               onClick={() => setAccent(option.value)}
               className={`rounded-full border px-3 py-2 text-sm ${
                 accent === option.value
-                  ? 'border-gray-900 text-gray-900 dark:border-white dark:text-white'
+                  ? 'text-gray-900 dark:text-white'
                   : 'border-gray-300 text-gray-600 dark:border-gray-700 dark:text-gray-300'
               }`}
+              style={
+                accent === option.value
+                  ? {
+                      borderColor: option.color,
+                      boxShadow: `0 0 0 1px ${option.color} inset`,
+                    }
+                  : undefined
+              }
             >
               <span
                 className="mr-2 inline-block h-2.5 w-2.5 rounded-full"

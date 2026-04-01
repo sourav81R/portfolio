@@ -15,7 +15,10 @@ import {
   Cpu,
   Download,
   Eye,
+  Github,
   Globe,
+  Linkedin,
+  Mail,
   MapPin,
   Sparkles,
   Terminal as TerminalIcon,
@@ -207,6 +210,24 @@ const heroProof = [
   'Modern React and TypeScript focus',
   'Frontend, APIs, and mobile experience',
 ]
+
+const socialLinks = [
+  {
+    label: 'GitHub',
+    href: 'https://github.com/sourav81R',
+    icon: Github,
+  },
+  {
+    label: 'LinkedIn',
+    href: 'https://linkedin.com/in/souravchowdhury-2003r',
+    icon: Linkedin,
+  },
+  {
+    label: 'Email',
+    href: 'mailto:souravchowdhury0203@gmail.com',
+    icon: Mail,
+  },
+] as const
 
 const fullName = 'SOURAV CHOWDHURY'
 const BADGE_WORDS = [
@@ -497,7 +518,10 @@ const Hero = () => {
                   <a
                     href="#projects"
                     onClick={() => recordClick('hero-view-projects')}
-                    className="group flex w-full items-center justify-center gap-2 rounded-full bg-gray-900 px-5 py-3 font-medium text-white shadow-lg transition-all hover:bg-gray-800 hover:shadow-xl dark:bg-white dark:text-black dark:hover:bg-gray-100 sm:w-auto sm:px-6"
+                    className="group flex w-full items-center justify-center gap-2 rounded-full px-5 py-3 font-medium text-white shadow-lg transition-all hover:shadow-xl sm:w-auto sm:px-6"
+                    style={{
+                      background: 'linear-gradient(135deg, var(--accent), #6366f1)',
+                    }}
                   >
                     View Projects
                     <ArrowRight
@@ -534,6 +558,33 @@ const Hero = () => {
                   </button>
                 </MagneticButton>
               </div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="mt-5 flex flex-wrap items-center gap-3"
+              >
+                {socialLinks.map((link) => {
+                  const Icon = link.icon
+
+                  return (
+                    <motion.a
+                      key={link.label}
+                      href={link.href}
+                      target={link.href.startsWith('http') ? '_blank' : undefined}
+                      rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                      whileHover={{ y: -3, scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="inline-flex items-center gap-2 rounded-full border border-gray-200/80 bg-white/70 px-4 py-2 text-sm font-medium text-gray-700 shadow-sm backdrop-blur-md dark:border-gray-800 dark:bg-white/5 dark:text-gray-300"
+                      onClick={() => recordClick(`hero-social-${link.label.toLowerCase()}`)}
+                    >
+                      <Icon size={16} />
+                      {link.label}
+                    </motion.a>
+                  )
+                })}
+              </motion.div>
 
               <motion.div
                 initial={{ opacity: 0, y: 18 }}

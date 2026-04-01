@@ -1,29 +1,15 @@
 import { ReactNode, useEffect, useRef, useState } from 'react'
+import { sectionGradientColors } from '../../constants/sectionColor'
 
 type AnimatedBorderProps = {
   children: ReactNode
-}
-
-const sectionColorMap: Record<string, string> = {
-  home: 'from-green-500 via-emerald-400 to-green-500',
-  highlights: 'from-emerald-500 via-teal-400 to-emerald-500',
-  about: 'from-blue-500 via-cyan-400 to-blue-500',
-  experience: 'from-orange-500 via-amber-400 to-orange-500',
-  testimonials: 'from-teal-500 via-cyan-400 to-teal-500',
-  skills: 'from-purple-500 via-fuchsia-400 to-purple-500',
-  projects: 'from-sky-500 via-blue-400 to-sky-500',
-  signals: 'from-blue-500 via-sky-400 to-blue-500',
-  'ai-workbench': 'from-fuchsia-500 via-violet-400 to-fuchsia-500',
-  education: 'from-pink-500 via-rose-400 to-pink-500',
-  certifications: 'from-lime-500 via-green-400 to-lime-500',
-  contact: 'from-red-500 via-rose-400 to-red-500',
 }
 
 const AnimatedBorder = ({ children }: AnimatedBorderProps) => {
   const ref = useRef<HTMLDivElement>(null)
   const [inView, setInView] = useState(false)
   const [reduceMotion, setReduceMotion] = useState(false)
-  const [gradient, setGradient] = useState(sectionColorMap.home)
+  const [gradient, setGradient] = useState(sectionGradientColors.home)
 
   useEffect(() => {
     if (typeof window === 'undefined' || !window.matchMedia) return
@@ -41,7 +27,7 @@ const AnimatedBorder = ({ children }: AnimatedBorderProps) => {
 
     const section = ref.current.closest('section')
     const sectionId = section?.id ?? 'home'
-    setGradient(sectionColorMap[sectionId] || sectionColorMap.home)
+    setGradient(sectionGradientColors[sectionId] || sectionGradientColors.home)
 
     const observer = new IntersectionObserver(
       ([entry]) => setInView(entry.isIntersecting),

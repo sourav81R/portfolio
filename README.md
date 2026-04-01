@@ -1,30 +1,27 @@
 # Sourav Portfolio
 
-A recruiter-focused developer portfolio built with React, TypeScript, Tailwind CSS, Framer Motion, and React Router. The app combines a polished single-page landing experience with dedicated case-study routes, resume actions, hiring-friendly shortcuts, and a project gallery that lets visitors explore live demos without leaving the site.
+A production-style frontend portfolio built with React 19, TypeScript, Tailwind CSS, Framer Motion, Zustand, and React Router. The app is designed to feel closer to a real product than a static portfolio, with recruiter-focused flows, route-level views, analytics, dynamic widgets, AI-inspired tools, and progressive enhancement features like PWA support.
 
 ## Preview
 
 ![Desktop preview](./site-home.png)
 ![Mobile preview](./site-mobile.png)
 
-## What This Project Includes
+## Highlights
 
-- Single-page portfolio homepage composed from modular React sections
-- Dedicated case-study pages at `/case-studies/:slug`
-- Dashboard route at `/dashboard` with interaction analytics charts
-- Lazy-loaded sections for most homepage content
-- Dark/light theme toggle persisted with `localStorage`
-- Theme customization panel and recruiter mode toggle
-- Command palette opened with `Ctrl/Cmd + K`
-- Resume preview modal and animated resume download flow
-- Dismissible open-to-work banner with sticky offset handling
-- Scroll-aware navbar with active-section tracking and progress bar
-- Filterable, searchable, draggable projects grid with modal details and embedded live demo tab
-- External API widgets for GitHub activity, LeetCode stats, and dynamic articles
-- AI workbench with project recommendation and resume analyzer UI
-- Contact section with mailto form, copy-to-clipboard actions, and recruiter email template
-- Open Graph metadata and preview image for link sharing
-- Manual PWA manifest and service worker support
+- Single-page landing experience with modular sections and route transitions
+- Dedicated routes for case studies and a dashboard view
+- Glassy product-style UI with animated borders, motion-rich interactions, and theme support
+- Scroll-aware floating navbar with active section tracking and progress indicator
+- Command palette with navigation shortcuts and quick actions via `Ctrl/Cmd + K`
+- Recruiter mode, theme customizer, and dismissible open-to-work banner
+- Searchable, filterable, draggable projects grid with modal previews and case-study navigation
+- Dashboard analytics powered by persisted interaction events in Zustand
+- Developer signals section with GitHub, LeetCode, and article data plus cache-backed fallbacks
+- AI Lab with project recommendations and resume analysis
+- Resume preview and animated download flow
+- PWA manifest, service worker, and install prompt support
+- Error boundaries, route/section lazy loading, and test coverage for utility logic
 
 ## Stack
 
@@ -35,21 +32,21 @@ A recruiter-focused developer portfolio built with React, TypeScript, Tailwind C
 - Framer Motion
 - Zustand
 - Lucide React
-- Recharts
+- `pdfjs-dist`
+- `mammoth`
 - Vite via `rolldown-vite`
-- PostCSS + Autoprefixer
 - Vitest + Testing Library
 
 ## Routes
 
-- `/` renders the full landing page
+- `/` renders the main portfolio experience
 - `/dashboard` renders the analytics dashboard
-- `/case-studies/:slug` renders a detailed case study page
-- Unknown routes redirect back to `/`
+- `/case-studies/:slug` renders a structured case-study page
+- Unknown routes redirect to `/`
 
 ## Homepage Sections
 
-The homepage is assembled in [`src/App.tsx`](/c:/portfolio2/sourav-portfolio/src/App.tsx) and currently renders these sections in order:
+The homepage is composed in [`src/App.tsx`](/c:/portfolio2/sourav-portfolio/src/App.tsx).
 
 1. `Hero`
 2. `RecruiterHighlights`
@@ -64,19 +61,42 @@ The homepage is assembled in [`src/App.tsx`](/c:/portfolio2/sourav-portfolio/src
 11. `Certifications`
 12. `Contact`
 
-## Content Map
+Most sections are lazy-loaded and mounted near the viewport to reduce initial work on first visit.
 
-Most portfolio content is stored directly in the codebase instead of a CMS.
+## Key Product Features
 
-- [`src/components/sections/Projects.tsx`](/c:/portfolio2/sourav-portfolio/src/components/sections/Projects.tsx) contains the homepage project inventory, filters, featured state, modal content, and demo links.
-- [`src/components/sections/DeveloperSignals.tsx`](/c:/portfolio2/sourav-portfolio/src/components/sections/DeveloperSignals.tsx) fetches and displays GitHub, LeetCode, and article data with caching and fallbacks.
-- [`src/components/sections/AIWorkbench.tsx`](/c:/portfolio2/sourav-portfolio/src/components/sections/AIWorkbench.tsx) contains the recommendation system and resume analyzer UI.
-- [`src/data/caseStudies.ts`](/c:/portfolio2/sourav-portfolio/src/data/caseStudies.ts) contains the structured data for case-study pages.
-- [`src/data/projects.ts`](/c:/portfolio2/sourav-portfolio/src/data/projects.ts) centralizes structured project data used across recommendations, analytics, and the projects section.
-- [`src/components/sections/Experience.tsx`](/c:/portfolio2/sourav-portfolio/src/components/sections/Experience.tsx), [`src/components/sections/Education.tsx`](/c:/portfolio2/sourav-portfolio/src/components/sections/Education.tsx), and [`src/components/sections/Certifications.tsx`](/c:/portfolio2/sourav-portfolio/src/components/sections/Certifications.tsx) hold timeline/profile content.
-- [`src/components/sections/Contact.tsx`](/c:/portfolio2/sourav-portfolio/src/components/sections/Contact.tsx) contains direct contact info, the email form, and the recruiter template copy action.
-- [`src/components/layout/Navbar.tsx`](/c:/portfolio2/sourav-portfolio/src/components/layout/Navbar.tsx), [`src/components/layout/OpenToWorkBanner.tsx`](/c:/portfolio2/sourav-portfolio/src/components/layout/OpenToWorkBanner.tsx), and [`src/components/common/CommandPalette.tsx`](/c:/portfolio2/sourav-portfolio/src/components/common/CommandPalette.tsx) define the core recruiter-facing navigation and shortcut flows.
-- [`src/store/useAppStore.ts`](/c:/portfolio2/sourav-portfolio/src/store/useAppStore.ts) manages recruiter mode, theme customization, analytics, and project ordering with persisted Zustand state.
+### Navigation and shell
+
+- [`src/components/layout/Navbar.tsx`](/c:/portfolio2/sourav-portfolio/src/components/layout/Navbar.tsx) handles floating navigation, active section highlighting, recruiter mode, theme toggle, and dashboard navigation.
+- [`src/components/common/CommandPalette.tsx`](/c:/portfolio2/sourav-portfolio/src/components/common/CommandPalette.tsx) provides fuzzy command search, keyboard navigation, route shortcuts, and quick actions.
+- [`src/components/common/PwaInstallPrompt.tsx`](/c:/portfolio2/sourav-portfolio/src/components/common/PwaInstallPrompt.tsx) exposes installable-app UX when supported.
+
+### Projects and case studies
+
+- [`src/components/sections/Projects.tsx`](/c:/portfolio2/sourav-portfolio/src/components/sections/Projects.tsx) includes category filters, fuzzy search, recruiter-aware ordering, drag-and-drop reordering, modal previews, and live demo embeds.
+- [`src/hooks/useProjectDiscovery.ts`](/c:/portfolio2/sourav-portfolio/src/hooks/useProjectDiscovery.ts) centralizes project filtering, prioritization, and recommendation inputs.
+- [`src/data/projects.ts`](/c:/portfolio2/sourav-portfolio/src/data/projects.ts) contains structured project metadata, images, impact notes, and case-study links.
+- [`src/data/caseStudies.ts`](/c:/portfolio2/sourav-portfolio/src/data/caseStudies.ts) powers the dedicated case-study routes.
+
+### Analytics and app state
+
+- [`src/store/useAppStore.ts`](/c:/portfolio2/sourav-portfolio/src/store/useAppStore.ts) stores recruiter mode, accent theme, analytics events, and project order with persisted Zustand state.
+- [`src/pages/DashboardView.tsx`](/c:/portfolio2/sourav-portfolio/src/pages/DashboardView.tsx) visualizes page views, clicks, project interactions, and time-range filtering.
+
+### Developer data and AI Lab
+
+- [`src/components/sections/DeveloperSignals.tsx`](/c:/portfolio2/sourav-portfolio/src/components/sections/DeveloperSignals.tsx) fetches GitHub, LeetCode, and article data with graceful fallback behavior.
+- [`src/services/developerData.ts`](/c:/portfolio2/sourav-portfolio/src/services/developerData.ts) manages external data retrieval and caching.
+- [`src/components/sections/AIWorkbench.tsx`](/c:/portfolio2/sourav-portfolio/src/components/sections/AIWorkbench.tsx) combines project recommendations with resume analysis.
+- [`src/lib/extractResumeText.ts`](/c:/portfolio2/sourav-portfolio/src/lib/extractResumeText.ts) supports `PDF`, `DOCX`, and text-based resume uploads.
+- [`src/lib/resumeAnalyzer.ts`](/c:/portfolio2/sourav-portfolio/src/lib/resumeAnalyzer.ts) scores resume content and highlights missing keywords by role.
+
+### Reliability and performance
+
+- [`src/components/system/ErrorBoundary.tsx`](/c:/portfolio2/sourav-portfolio/src/components/system/ErrorBoundary.tsx) provides app-level crash recovery.
+- [`src/components/system/SectionErrorBoundary.tsx`](/c:/portfolio2/sourav-portfolio/src/components/system/SectionErrorBoundary.tsx) isolates failures per homepage section.
+- [`src/main.tsx`](/c:/portfolio2/sourav-portfolio/src/main.tsx) lazy-loads routes and manages service worker behavior for dev and production.
+- [`src/App.tsx`](/c:/portfolio2/sourav-portfolio/src/App.tsx) defers below-the-fold section rendering with viewport-aware loading.
 
 ## Project Structure
 
@@ -84,25 +104,26 @@ Most portfolio content is stored directly in the codebase instead of a CMS.
 sourav-portfolio/
   public/
     images/              project assets and resume PDF
-    og-preview.png       social share preview image
-    profile.jpg          hero/profile image
+    manifest.webmanifest PWA manifest
+    sw.js                service worker
   src/
     components/
-      common/            reusable motion, modal, and utility components
-      layout/            navbar, footer, open-to-work banner
+      common/            reusable UI, modal, motion, and shell utilities
+      layout/            navbar, footer, and banner components
       sections/          homepage sections
-    constants/           shared section color map
-    data/                case-study content
+      system/            error boundaries
+    constants/           shared UI maps and configuration
+    data/                project and case-study content
+    hooks/               reusable discovery logic
+    lib/                 analyzers, search, extraction, and cache helpers
     pages/               route-level pages
-    services/            external API integrations with caching
-    lib/                 recommendation, resume analysis, and cache helpers
-    store/               Zustand state for command palette and app-wide product state
+    services/            external data integrations
+    store/               Zustand stores
     App.tsx              homepage composition
-    main.tsx             router entry point
-    index.css            global Tailwind and app styles
-  index.html             SEO and social metadata
-  tailwind.config.js     Tailwind config
-  vite.config.ts         Vite config
+    main.tsx             application entry and routing
+  index.html             metadata and root document
+  vite.config.ts         Vite configuration
+  tailwind.config.js     Tailwind configuration
 ```
 
 ## Local Development
@@ -150,22 +171,9 @@ npm run test
 - `npm run test` runs the Vitest suite
 - `npm run test:watch` runs Vitest in watch mode
 
-## Notable Implementation Details
-
-- [`src/main.tsx`](/c:/portfolio2/sourav-portfolio/src/main.tsx) uses `BrowserRouter`, explicit routes, and a catch-all redirect.
-- [`src/main.tsx`](/c:/portfolio2/sourav-portfolio/src/main.tsx) also registers the service worker and lazy-loads route-level pages.
-- [`src/App.tsx`](/c:/portfolio2/sourav-portfolio/src/App.tsx) lazy-loads homepage sections, tracks page views, and retries hash scrolling after route changes.
-- [`src/components/common/ResumePreviewModal.tsx`](/c:/portfolio2/sourav-portfolio/src/components/common/ResumePreviewModal.tsx) renders the PDF viewer through a portal.
-- [`src/components/common/SmartResume.tsx`](/c:/portfolio2/sourav-portfolio/src/components/common/SmartResume.tsx) handles the animated download flow.
-- [`src/components/sections/Projects.tsx`](/c:/portfolio2/sourav-portfolio/src/components/sections/Projects.tsx) supports smart search, drag-and-drop ordering, recruiter mode prioritization, project detail modals, and inline live preview support.
-- [`src/components/sections/Skills.tsx`](/c:/portfolio2/sourav-portfolio/src/components/sections/Skills.tsx) includes optional hover-triggered Web Audio feedback.
-- [`src/pages/DashboardPage.tsx`](/c:/portfolio2/sourav-portfolio/src/pages/DashboardPage.tsx) visualizes interaction analytics with Recharts.
-- [`src/components/system/ErrorBoundary.tsx`](/c:/portfolio2/sourav-portfolio/src/components/system/ErrorBoundary.tsx) provides a global safety net for runtime failures.
-- [`index.html`](/c:/portfolio2/sourav-portfolio/index.html) defines SEO, Open Graph, and Twitter card metadata for the deployed site.
-
 ## Current Case Studies
 
-These slugs are currently backed by structured data and route pages:
+These slugs currently have dedicated route content:
 
 - `resumeiq`
 - `foodooza`
@@ -175,4 +183,5 @@ These slugs are currently backed by structured data and route pages:
 ## Notes
 
 - The active application lives in this `sourav-portfolio/` folder.
-- Some live-data widgets use fallback data when the upstream API is unavailable or no custom endpoint is configured.
+- The workspace root duplicate `package.json` setup was removed; this folder is now the single source of truth for app dependencies.
+- Some live-data widgets use fallback/mock data when upstream data is unavailable.

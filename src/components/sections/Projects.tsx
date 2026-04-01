@@ -19,6 +19,7 @@ import { useProjectDiscovery } from '../../hooks/useProjectDiscovery'
 type Category = 'All' | ProjectCategory
 
 const categories: Category[] = ['All', 'Web', 'AI', 'Mobile', 'Realtime']
+const projectFallbackImage = `${import.meta.env.BASE_URL}og-preview.png`
 
 const Projects = () => {
   const recruiterMode = useAppStore((state) => state.recruiterMode)
@@ -195,6 +196,10 @@ const Projects = () => {
                         alt={project.title}
                         loading="lazy"
                         decoding="async"
+                        onError={(event) => {
+                          event.currentTarget.onerror = null
+                          event.currentTarget.src = projectFallbackImage
+                        }}
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
@@ -334,7 +339,15 @@ const ProjectModal = ({
         </button>
 
         <div className="overflow-hidden rounded-2xl">
-          <img src={project.bgImage} alt={project.title} className="h-60 w-full object-cover sm:h-72" />
+          <img
+            src={project.bgImage}
+            alt={project.title}
+            onError={(event) => {
+              event.currentTarget.onerror = null
+              event.currentTarget.src = projectFallbackImage
+            }}
+            className="h-60 w-full object-cover sm:h-72"
+          />
         </div>
 
         <div className="mt-6 flex flex-wrap items-center justify-between gap-3">

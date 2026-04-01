@@ -13,6 +13,7 @@ import Footer from './components/layout/Footer'
 import OpenToWorkBanner from './components/layout/OpenToWorkBanner'
 import Hero from './components/sections/Hero'
 import CommandPalette from './components/common/CommandPalette'
+import PwaInstallPrompt from './components/common/PwaInstallPrompt'
 import ThemeCustomizer from './components/common/ThemeCustomizer'
 import SectionErrorBoundary from './components/system/SectionErrorBoundary'
 import { useAppStore } from './store/useAppStore'
@@ -76,6 +77,7 @@ function App() {
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top_right,rgba(34,197,94,0.12),transparent_26%),radial-gradient(circle_at_top_left,rgba(59,130,246,0.08),transparent_24%),#ffffff] text-gray-900 transition-colors duration-300 dark:bg-[radial-gradient(circle_at_top_right,rgba(34,197,94,0.12),transparent_24%),radial-gradient(circle_at_top_left,rgba(56,189,248,0.09),transparent_24%),#020617] dark:text-gray-300">
       <CommandPalette />
+      <PwaInstallPrompt />
       <ThemeCustomizer />
       <OpenToWorkBanner />
       <Navbar />
