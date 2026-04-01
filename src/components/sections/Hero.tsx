@@ -1,4 +1,12 @@
-import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
+import {
+  Suspense,
+  lazy,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+} from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import {
   ArrowRight,
@@ -15,9 +23,10 @@ import {
 import AnimatedBorder from '../common/AnimatedBorder'
 import MagneticButton from '../common/MagneticButton'
 import { useCommandPalette } from '../../store/useCommandpalette'
-import SmartResume from '../common/SmartResume'
-import ResumePreviewModal from '../common/ResumePreviewModal'
 import { useAppStore } from '../../store/useAppStore'
+
+const SmartResume = lazy(() => import('../common/SmartResume'))
+const ResumePreviewModal = lazy(() => import('../common/ResumePreviewModal'))
 type Line = {
   prompt: string
   text: string
@@ -678,12 +687,16 @@ const Hero = () => {
         <div className="h-12 w-[1px] bg-gradient-to-b from-gray-400 to-transparent dark:from-gray-600" />
       </motion.div>
 
-      <SmartResume open={showResume} onClose={handleResumeClose} />
-      <ResumePreviewModal
-        open={showResumePreview}
-        onClose={() => setShowResumePreview(false)}
-        pdfUrl="/images/resume.pdf"
-      />
+      {(showResume || showResumePreview) && (
+        <Suspense fallback={null}>
+          <SmartResume open={showResume} onClose={handleResumeClose} />
+          <ResumePreviewModal
+            open={showResumePreview}
+            onClose={() => setShowResumePreview(false)}
+            pdfUrl="/images/resume.pdf"
+          />
+        </Suspense>
+      )}
     </motion.section>
   )
 }

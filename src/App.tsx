@@ -1,4 +1,12 @@
-import { Suspense, lazy, useEffect, type ReactNode } from 'react'
+import {
+  Suspense,
+  forwardRef,
+  lazy,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react'
 import { useLocation } from 'react-router-dom'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
@@ -21,15 +29,18 @@ const Education = lazy(() => import('./components/sections/Education'))
 const Certifications = lazy(() => import('./components/sections/Certifications'))
 const Contact = lazy(() => import('./components/sections/Contact'))
 
-const SectionFallback = ({ id }: { id: string }) => (
-  <section id={id} className="px-4 py-20 sm:px-6 sm:py-24 lg:py-28">
+const SectionFallback = forwardRef<HTMLElement, { id: string }>(({ id }, ref) => (
+  <section ref={ref} id={id} className="px-4 py-20 sm:px-6 sm:py-24 lg:py-28">
     <div className="mx-auto h-24 max-w-6xl animate-pulse rounded-2xl border border-gray-200/70 bg-gray-100/60 dark:border-gray-800/70 dark:bg-gray-900/40" />
   </section>
-)
+))
+
+SectionFallback.displayName = 'SectionFallback'
 
 function App() {
   const location = useLocation()
   const recordPageView = useAppStore((state) => state.recordPageView)
+  const activeHash = location.hash.replace('#', '')
 
   useEffect(() => {
     recordPageView(location.pathname || '/')
@@ -70,17 +81,17 @@ function App() {
       <Navbar />
 
       <Hero />
-      <LazySection id="highlights" title="Recruiter Highlights"><RecruiterHighlights /></LazySection>
-      <LazySection id="about" title="About"><About /></LazySection>
-      <LazySection id="experience" title="Experience"><Experience /></LazySection>
-      <LazySection id="testimonials" title="Testimonials"><Testimonials /></LazySection>
-      <LazySection id="skills" title="Skills"><Skills /></LazySection>
-      <LazySection id="projects" title="Projects"><Projects /></LazySection>
-      <LazySection id="signals" title="Developer Signals"><DeveloperSignals /></LazySection>
-      <LazySection id="ai-workbench" title="AI Workbench"><AIWorkbench /></LazySection>
-      <LazySection id="education" title="Education"><Education /></LazySection>
-      <LazySection id="certifications" title="Certifications"><Certifications /></LazySection>
-      <LazySection id="contact" title="Contact"><Contact /></LazySection>
+      <LazySection id="highlights" title="Recruiter Highlights" activeHash={activeHash}><RecruiterHighlights /></LazySection>
+      <LazySection id="about" title="About" activeHash={activeHash}><About /></LazySection>
+      <LazySection id="experience" title="Experience" activeHash={activeHash}><Experience /></LazySection>
+      <LazySection id="testimonials" title="Testimonials" activeHash={activeHash}><Testimonials /></LazySection>
+      <LazySection id="skills" title="Skills" activeHash={activeHash}><Skills /></LazySection>
+      <LazySection id="projects" title="Projects" activeHash={activeHash}><Projects /></LazySection>
+      <LazySection id="signals" title="Developer Signals" activeHash={activeHash}><DeveloperSignals /></LazySection>
+      <LazySection id="ai-workbench" title="AI Workbench" activeHash={activeHash}><AIWorkbench /></LazySection>
+      <LazySection id="education" title="Education" activeHash={activeHash}><Education /></LazySection>
+      <LazySection id="certifications" title="Certifications" activeHash={activeHash}><Certifications /></LazySection>
+      <LazySection id="contact" title="Contact" activeHash={activeHash}><Contact /></LazySection>
       <Footer />
     </div>
   )
@@ -90,11 +101,46 @@ function LazySection({
   children,
   id,
   title,
+  activeHash,
 }: {
   children: ReactNode
   id: string
   title: string
+  activeHash: string
 }) {
+  const sectionRef = useRef<HTMLElement>(null)
+  const [shouldRender, setShouldRender] = useState(activeHash === id)
+
+  useEffect(() => {
+    if (activeHash === id) {
+      setShouldRender(true)
+    }
+  }, [activeHash, id])
+
+  useEffect(() => {
+    if (shouldRender) return
+    if (!sectionRef.current) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return
+        setShouldRender(true)
+        observer.disconnect()
+      },
+      {
+        rootMargin: '420px 0px',
+        threshold: 0.01,
+      }
+    )
+
+    observer.observe(sectionRef.current)
+    return () => observer.disconnect()
+  }, [shouldRender])
+
+  if (!shouldRender) {
+    return <SectionFallback id={id} ref={sectionRef} />
+  }
+
   return (
     <SectionErrorBoundary title={title}>
       <Suspense fallback={<SectionFallback id={id} />}>{children}</Suspense>
