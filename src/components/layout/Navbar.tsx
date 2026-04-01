@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Menu, Moon, Sun, X } from 'lucide-react'
+import { LayoutDashboard, Menu, Moon, Sun, Users, X } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { sectionColors } from '../../constants/sectionColor'
+import { useAppStore } from '../../store/useAppStore'
 
 const sections = [
   'home',
@@ -10,6 +12,8 @@ const sections = [
   'testimonials',
   'skills',
   'projects',
+  'signals',
+  'ai-workbench',
   'education',
   'certifications',
   'contact',
@@ -23,6 +27,8 @@ const sectionLabels: Record<string, string> = {
   testimonials: 'Testimonials',
   skills: 'Skills',
   projects: 'Projects',
+  signals: 'Signals',
+  'ai-workbench': 'AI Lab',
   education: 'Education',
   certifications: 'Certifications',
   contact: 'Contact',
@@ -35,6 +41,9 @@ const Navbar = () => {
     const saved = localStorage.getItem('theme') as 'dark' | 'light' | null
     return saved ?? 'dark'
   })
+  const recruiterMode = useAppStore((state) => state.recruiterMode)
+  const toggleRecruiterMode = useAppStore((state) => state.toggleRecruiterMode)
+  const recordClick = useAppStore((state) => state.recordClick)
 
   useEffect(() => {
     const root = document.documentElement
@@ -155,9 +164,36 @@ const Navbar = () => {
             ))}
 
             <button
+              aria-label="Toggle recruiter mode"
+              onClick={() => {
+                toggleRecruiterMode()
+                recordClick('recruiter-mode')
+              }}
+              className={`ml-1 rounded-full px-3 py-2 text-xs font-semibold transition ${
+                recruiterMode
+                  ? 'bg-indigo-600 text-white'
+                  : 'text-gray-600 hover:text-indigo-500 dark:text-gray-400'
+              }`}
+            >
+              <span className="inline-flex items-center gap-2">
+                <Users size={14} />
+                Recruiter
+              </span>
+            </button>
+
+            <Link
+              to="/dashboard"
+              className="inline-flex items-center gap-2 rounded-full border border-gray-300 px-3 py-2 text-xs font-semibold text-gray-700 transition hover:border-sky-500 hover:text-sky-600 dark:border-gray-700 dark:text-gray-300 dark:hover:text-sky-400"
+              onClick={() => recordClick('dashboard-route')}
+            >
+              <LayoutDashboard size={14} />
+              Dashboard
+            </Link>
+
+            <button
               aria-label="Toggle theme"
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="ml-2 rounded-full p-2 text-gray-600 transition hover:text-green-500 dark:text-gray-400"
+              className="rounded-full p-2 text-gray-600 transition hover:text-green-500 dark:text-gray-400"
             >
               {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
             </button>
@@ -170,6 +206,17 @@ const Navbar = () => {
               className="rounded-full p-2 text-gray-600 dark:text-gray-400"
             >
               {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+
+            <button
+              aria-label="Toggle recruiter mode"
+              onClick={() => {
+                toggleRecruiterMode()
+                recordClick('recruiter-mode')
+              }}
+              className={`rounded-full p-2 ${recruiterMode ? 'text-indigo-500' : 'text-gray-700 dark:text-gray-300'}`}
+            >
+              <Users size={18} />
             </button>
 
             <button
@@ -200,6 +247,18 @@ const Navbar = () => {
                   </a>
                 </li>
               ))}
+              <li>
+                <Link
+                  to="/dashboard"
+                  onClick={() => {
+                    setIsOpen(false)
+                    recordClick('dashboard-route')
+                  }}
+                  className="block rounded-lg px-3 py-2 text-sm transition sm:text-base text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900"
+                >
+                  Dashboard
+                </Link>
+              </li>
             </ul>
           </div>
         )}

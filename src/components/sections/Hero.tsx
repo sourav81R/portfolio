@@ -17,6 +17,7 @@ import MagneticButton from '../common/MagneticButton'
 import { useCommandPalette } from '../../store/useCommandpalette'
 import SmartResume from '../common/SmartResume'
 import ResumePreviewModal from '../common/ResumePreviewModal'
+import { useAppStore } from '../../store/useAppStore'
 type Line = {
   prompt: string
   text: string
@@ -240,6 +241,7 @@ const TypingBadge = () => {
 const Hero = () => {
   const { open } = useCommandPalette()
   const reduceMotion = useReducedMotion()
+  const recordClick = useAppStore((state) => state.recordClick)
   const [showResume, setShowResume] = useState(false)
   const [showResumePreview, setShowResumePreview] = useState(false)
   const terminalInputRef = useRef<HTMLInputElement>(null)
@@ -406,9 +408,9 @@ const Hero = () => {
       </div>
       <div className="grain-overlay absolute inset-0 z-[1]" />
 
-      <div className="relative z-10 mx-auto w-full max-w-7xl">
+      <div className="relative z-10 w-full">
         <AnimatedBorder>
-          <div className="grid min-h-[560px] gap-8 rounded-2xl border border-white/70 bg-gradient-to-br from-white via-white to-emerald-50/70 p-4 shadow-[0_35px_120px_-55px_rgba(15,23,42,0.45)] sm:p-6 md:p-10 lg:min-h-[72vh] lg:grid-cols-[1.08fr_0.92fr] lg:gap-14 lg:p-12 dark:border-gray-800/80 dark:bg-gradient-to-br dark:from-[#030712] dark:via-[#020617] dark:to-emerald-950/20">
+          <div className="mx-auto grid min-h-[560px] max-w-6xl gap-8 rounded-2xl border border-white/70 bg-gradient-to-br from-white via-white to-emerald-50/70 p-4 shadow-[0_35px_120px_-55px_rgba(15,23,42,0.45)] sm:p-6 md:p-10 lg:min-h-[72vh] lg:grid-cols-[1.08fr_0.92fr] lg:gap-14 lg:p-12 dark:border-gray-800/80 dark:bg-gradient-to-br dark:from-[#030712] dark:via-[#020617] dark:to-emerald-950/20">
             <div className="flex flex-col items-start font-mono">
               <motion.div
                 initial={{ opacity: 0, scale: 0.5 }}
@@ -485,6 +487,7 @@ const Hero = () => {
                 <MagneticButton>
                   <a
                     href="#projects"
+                    onClick={() => recordClick('hero-view-projects')}
                     className="group flex w-full items-center justify-center gap-2 rounded-full bg-gray-900 px-5 py-3 font-medium text-white shadow-lg transition-all hover:bg-gray-800 hover:shadow-xl dark:bg-white dark:text-black dark:hover:bg-gray-100 sm:w-auto sm:px-6"
                   >
                     View Projects
@@ -498,7 +501,10 @@ const Hero = () => {
                 <MagneticButton>
                   <button
                     type="button"
-                    onClick={() => setShowResumePreview(true)}
+                    onClick={() => {
+                      recordClick('hero-preview-resume')
+                      setShowResumePreview(true)
+                    }}
                     className="group flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white/70 px-5 py-3 font-medium transition-colors hover:border-gray-900 dark:border-gray-700 dark:bg-white/5 dark:hover:border-white sm:w-auto sm:px-6"
                   >
                     <Eye size={18} />
@@ -508,7 +514,10 @@ const Hero = () => {
 
                 <MagneticButton>
                   <button
-                    onClick={() => setShowResume(true)}
+                    onClick={() => {
+                      recordClick('hero-download-resume')
+                      setShowResume(true)
+                    }}
                     className="group flex w-full items-center justify-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-5 py-3 font-medium text-emerald-700 transition-all hover:bg-emerald-500/15 dark:text-emerald-300 sm:w-auto sm:px-6"
                   >
                     <Download size={18} />

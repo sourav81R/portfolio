@@ -1,12 +1,18 @@
-import type { ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import { AlertCircle, ArrowLeft, Calendar, CheckCircle2, ExternalLink, Github, Wrench } from 'lucide-react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { caseStudyBySlug } from '../data/caseStudies'
+import { useAppStore } from '../store/useAppStore'
 
 const CaseStudyPage = () => {
   const { slug } = useParams<{ slug: string }>()
   const study = slug ? caseStudyBySlug[slug] : undefined
+  const recordPageView = useAppStore((state) => state.recordPageView)
+
+  useEffect(() => {
+    if (slug) recordPageView(`/case-studies/${slug}`)
+  }, [recordPageView, slug])
 
   if (!study) {
     return <Navigate to="/" replace />

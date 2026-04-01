@@ -5,6 +5,8 @@ import Footer from './components/layout/Footer'
 import OpenToWorkBanner from './components/layout/OpenToWorkBanner'
 import Hero from './components/sections/Hero'
 import CommandPalette from './components/common/CommandPalette'
+import ThemeCustomizer from './components/common/ThemeCustomizer'
+import { useAppStore } from './store/useAppStore'
 
 const RecruiterHighlights = lazy(() => import('./components/sections/RecruiterHighlights'))
 const About = lazy(() => import('./components/sections/About'))
@@ -12,6 +14,8 @@ const Experience = lazy(() => import('./components/sections/Experience'))
 const Testimonials = lazy(() => import('./components/sections/Testimonials'))
 const Skills = lazy(() => import('./components/sections/Skills'))
 const Projects = lazy(() => import('./components/sections/Projects'))
+const DeveloperSignals = lazy(() => import('./components/sections/DeveloperSignals'))
+const AIWorkbench = lazy(() => import('./components/sections/AIWorkbench'))
 const Education = lazy(() => import('./components/sections/Education'))
 const Certifications = lazy(() => import('./components/sections/Certifications'))
 const Contact = lazy(() => import('./components/sections/Contact'))
@@ -24,6 +28,11 @@ const SectionFallback = ({ id }: { id: string }) => (
 
 function App() {
   const location = useLocation()
+  const recordPageView = useAppStore((state) => state.recordPageView)
+
+  useEffect(() => {
+    recordPageView(location.pathname || '/')
+  }, [location.pathname, recordPageView])
 
   useEffect(() => {
     if (!location.hash) return
@@ -55,6 +64,7 @@ function App() {
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top_right,rgba(34,197,94,0.12),transparent_26%),radial-gradient(circle_at_top_left,rgba(59,130,246,0.08),transparent_24%),#ffffff] text-gray-900 transition-colors duration-300 dark:bg-[radial-gradient(circle_at_top_right,rgba(34,197,94,0.12),transparent_24%),radial-gradient(circle_at_top_left,rgba(56,189,248,0.09),transparent_24%),#020617] dark:text-gray-300">
       <CommandPalette />
+      <ThemeCustomizer />
       <OpenToWorkBanner />
       <Navbar />
 
@@ -76,6 +86,12 @@ function App() {
       </Suspense>
       <Suspense fallback={<SectionFallback id="projects" />}>
         <Projects />
+      </Suspense>
+      <Suspense fallback={<SectionFallback id="signals" />}>
+        <DeveloperSignals />
+      </Suspense>
+      <Suspense fallback={<SectionFallback id="ai-workbench" />}>
+        <AIWorkbench />
       </Suspense>
       <Suspense fallback={<SectionFallback id="education" />}>
         <Education />
