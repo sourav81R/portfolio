@@ -48,7 +48,7 @@ const cardVariants = {
 
 const Testimonials = () => {
   return (
-    <section id="testimonials" className="px-4 py-20 sm:px-6 sm:py-24 lg:py-28">
+    <section className="px-4 py-20 sm:px-6 sm:py-24 lg:py-28">
       <AnimatedBorder>
         <div className="mx-auto max-w-6xl p-4 font-mono sm:p-6 md:p-10">
           <motion.div

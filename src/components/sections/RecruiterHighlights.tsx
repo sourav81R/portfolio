@@ -42,7 +42,7 @@ const valuePoints = [
 
 const RecruiterHighlights = () => {
   return (
-    <section id="highlights" className="px-4 sm:px-6 py-12 sm:py-16 lg:py-20">
+    <section className="px-4 sm:px-6 py-12 sm:py-16 lg:py-20">
       <AnimatedBorder>
         <div className="max-w-6xl mx-auto p-4 sm:p-6 md:p-10 font-mono">
           <motion.div

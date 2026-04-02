@@ -28,7 +28,7 @@ const educationData = [
 
 const Education = () => {
   return (
-    <section id="education" className="px-4 py-20 sm:px-6 sm:py-24 lg:py-28">
+    <section className="px-4 py-20 sm:px-6 sm:py-24 lg:py-28">
       <AnimatedBorder>
         <div className="mx-auto max-w-5xl p-4 font-mono sm:p-6 md:p-10">
           <h2 className="mb-10 text-2xl font-bold tracking-tight text-gray-900 dark:text-white sm:mb-14 sm:text-3xl md:text-4xl">

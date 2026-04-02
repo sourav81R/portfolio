@@ -124,7 +124,7 @@ const Contact = () => {
   )
 
   return (
-    <section id="contact" className="px-4 sm:px-6 py-20 sm:py-24 lg:py-28">
+    <section className="px-4 sm:px-6 py-20 sm:py-24 lg:py-28">
       <AnimatedBorder>
         <div className="max-w-6xl mx-auto font-mono p-4 sm:p-6 md:p-10">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-8 sm:mb-10 text-center tracking-tight">

@@ -1,6 +1,5 @@
 import {
   Suspense,
-  forwardRef,
   lazy,
   useEffect,
   useRef,
@@ -30,13 +29,11 @@ const Education = lazy(() => import('./components/sections/Education'))
 const Certifications = lazy(() => import('./components/sections/Certifications'))
 const Contact = lazy(() => import('./components/sections/Contact'))
 
-const SectionFallback = forwardRef<HTMLElement, { id: string }>(({ id }, ref) => (
-  <section ref={ref} id={id} className="px-4 py-20 sm:px-6 sm:py-24 lg:py-28">
+const SectionFallback = () => (
+  <div className="px-4 py-20 sm:px-6 sm:py-24 lg:py-28">
     <div className="mx-auto h-24 max-w-6xl animate-pulse rounded-2xl border border-gray-200/70 bg-gray-100/60 dark:border-gray-800/70 dark:bg-gray-900/40" />
-  </section>
-))
-
-SectionFallback.displayName = 'SectionFallback'
+  </div>
+)
 
 function App() {
   const location = useLocation()
@@ -53,25 +50,26 @@ function App() {
     const targetId = location.hash.replace('#', '')
     if (!targetId) return
 
+    let frameId = 0
     let attempts = 0
-    const maxAttempts = 25
+    const maxAttempts = 12
 
-    const timer = window.setInterval(() => {
+    const alignToHash = () => {
       const target = document.getElementById(targetId)
       attempts += 1
 
       if (target) {
         target.scrollIntoView({ behavior: 'smooth', block: 'start' })
-        window.clearInterval(timer)
-        return
       }
 
-      if (attempts >= maxAttempts) {
-        window.clearInterval(timer)
+      if (attempts < maxAttempts) {
+        frameId = window.requestAnimationFrame(alignToHash)
       }
-    }, 80)
+    }
 
-    return () => window.clearInterval(timer)
+    frameId = window.requestAnimationFrame(alignToHash)
+
+    return () => window.cancelAnimationFrame(frameId)
   }, [location.hash])
 
   return (
@@ -139,14 +137,16 @@ function LazySection({
     return () => observer.disconnect()
   }, [shouldRender])
 
-  if (!shouldRender) {
-    return <SectionFallback id={id} ref={sectionRef} />
-  }
-
   return (
-    <SectionErrorBoundary title={title}>
-      <Suspense fallback={<SectionFallback id={id} />}>{children}</Suspense>
-    </SectionErrorBoundary>
+    <section id={id} ref={sectionRef}>
+      {shouldRender ? (
+        <SectionErrorBoundary title={title}>
+          <Suspense fallback={<SectionFallback />}>{children}</Suspense>
+        </SectionErrorBoundary>
+      ) : (
+        <SectionFallback />
+      )}
+    </section>
   )
 }
 

@@ -26,7 +26,7 @@ const DeveloperSignals = () => {
   }, [])
 
   return (
-    <section id="signals" className="px-4 py-20 sm:px-6 sm:py-24 lg:py-28">
+    <section className="px-4 py-20 sm:px-6 sm:py-24 lg:py-28">
       <AnimatedBorder>
         <div className="mx-auto max-w-6xl p-4 sm:p-6 md:p-10">
           <div className="mb-10 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">

@@ -26,7 +26,7 @@ const experienceData = [
 const Experience = () => {
   const text = 'Experience'
   return (
-    <section id="experience" className="px-4 sm:px-6 py-20 sm:py-24 lg:py-28">
+    <section className="px-4 sm:px-6 py-20 sm:py-24 lg:py-28">
       <AnimatedBorder>
         <div className="max-w-5xl mx-auto font-mono p-4 sm:p-6 md:p-10">
           {/* Section Title */}
