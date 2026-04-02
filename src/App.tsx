@@ -29,6 +29,20 @@ const Education = lazy(() => import('./components/sections/Education'))
 const Certifications = lazy(() => import('./components/sections/Certifications'))
 const Contact = lazy(() => import('./components/sections/Contact'))
 
+const sectionOrder = [
+  'highlights',
+  'about',
+  'experience',
+  'testimonials',
+  'skills',
+  'projects',
+  'signals',
+  'ai-workbench',
+  'education',
+  'certifications',
+  'contact',
+] as const
+
 const SectionFallback = () => (
   <div className="px-4 py-20 sm:px-6 sm:py-24 lg:py-28">
     <div className="mx-auto h-24 max-w-6xl animate-pulse rounded-2xl border border-gray-200/70 bg-gray-100/60 dark:border-gray-800/70 dark:bg-gray-900/40" />
@@ -50,26 +64,26 @@ function App() {
     const targetId = location.hash.replace('#', '')
     if (!targetId) return
 
-    let frameId = 0
+    let timeoutId = 0
     let attempts = 0
-    const maxAttempts = 12
+    const maxAttempts = 18
 
     const alignToHash = () => {
       const target = document.getElementById(targetId)
       attempts += 1
 
       if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        target.scrollIntoView({ behavior: 'auto', block: 'start' })
       }
 
       if (attempts < maxAttempts) {
-        frameId = window.requestAnimationFrame(alignToHash)
+        timeoutId = window.setTimeout(alignToHash, 80)
       }
     }
 
-    frameId = window.requestAnimationFrame(alignToHash)
+    timeoutId = window.setTimeout(alignToHash, 0)
 
-    return () => window.cancelAnimationFrame(frameId)
+    return () => window.clearTimeout(timeoutId)
   }, [location.hash])
 
   return (
@@ -81,17 +95,17 @@ function App() {
       <Navbar />
 
       <Hero />
-      <LazySection id="highlights" title="Recruiter Highlights" activeHash={activeHash}><RecruiterHighlights /></LazySection>
-      <LazySection id="about" title="About" activeHash={activeHash}><About /></LazySection>
-      <LazySection id="experience" title="Experience" activeHash={activeHash}><Experience /></LazySection>
-      <LazySection id="testimonials" title="Testimonials" activeHash={activeHash}><Testimonials /></LazySection>
-      <LazySection id="skills" title="Skills" activeHash={activeHash}><Skills /></LazySection>
-      <LazySection id="projects" title="Projects" activeHash={activeHash}><Projects /></LazySection>
-      <LazySection id="signals" title="Developer Signals" activeHash={activeHash}><DeveloperSignals /></LazySection>
-      <LazySection id="ai-workbench" title="AI Workbench" activeHash={activeHash}><AIWorkbench /></LazySection>
-      <LazySection id="education" title="Education" activeHash={activeHash}><Education /></LazySection>
-      <LazySection id="certifications" title="Certifications" activeHash={activeHash}><Certifications /></LazySection>
-      <LazySection id="contact" title="Contact" activeHash={activeHash}><Contact /></LazySection>
+      <LazySection id="highlights" title="Recruiter Highlights" activeHash={activeHash} sectionIndex={0}><RecruiterHighlights /></LazySection>
+      <LazySection id="about" title="About" activeHash={activeHash} sectionIndex={1}><About /></LazySection>
+      <LazySection id="experience" title="Experience" activeHash={activeHash} sectionIndex={2}><Experience /></LazySection>
+      <LazySection id="testimonials" title="Testimonials" activeHash={activeHash} sectionIndex={3}><Testimonials /></LazySection>
+      <LazySection id="skills" title="Skills" activeHash={activeHash} sectionIndex={4}><Skills /></LazySection>
+      <LazySection id="projects" title="Projects" activeHash={activeHash} sectionIndex={5}><Projects /></LazySection>
+      <LazySection id="signals" title="Developer Signals" activeHash={activeHash} sectionIndex={6}><DeveloperSignals /></LazySection>
+      <LazySection id="ai-workbench" title="AI Workbench" activeHash={activeHash} sectionIndex={7}><AIWorkbench /></LazySection>
+      <LazySection id="education" title="Education" activeHash={activeHash} sectionIndex={8}><Education /></LazySection>
+      <LazySection id="certifications" title="Certifications" activeHash={activeHash} sectionIndex={9}><Certifications /></LazySection>
+      <LazySection id="contact" title="Contact" activeHash={activeHash} sectionIndex={10}><Contact /></LazySection>
       <Footer />
     </div>
   )
@@ -102,20 +116,24 @@ function LazySection({
   id,
   title,
   activeHash,
+  sectionIndex,
 }: {
   children: ReactNode
   id: string
   title: string
   activeHash: string
+  sectionIndex: number
 }) {
   const sectionRef = useRef<HTMLElement>(null)
-  const [shouldRender, setShouldRender] = useState(activeHash === id)
+  const activeHashIndex = sectionOrder.indexOf(activeHash as (typeof sectionOrder)[number])
+  const shouldPreloadForHash = activeHashIndex >= 0 && sectionIndex <= activeHashIndex
+  const [shouldRender, setShouldRender] = useState(activeHash === id || shouldPreloadForHash)
 
   useEffect(() => {
-    if (activeHash === id) {
+    if (activeHash === id || shouldPreloadForHash) {
       setShouldRender(true)
     }
-  }, [activeHash, id])
+  }, [activeHash, id, shouldPreloadForHash])
 
   useEffect(() => {
     if (shouldRender) return
