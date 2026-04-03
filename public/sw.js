@@ -1,5 +1,5 @@
-const CACHE_NAME = 'sourav-portfolio-v2'
-const APP_SHELL = ['/', '/manifest.webmanifest', '/pwa-icon.svg']
+const CACHE_NAME = 'sourav-portfolio-v3'
+const APP_SHELL = ['/', '/manifest.webmanifest', '/portfolio-icon.svg']
 
 const isCacheableRequest = (request) => {
   if (request.method !== 'GET') return false

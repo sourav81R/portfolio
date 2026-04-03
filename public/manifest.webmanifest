@@ -8,10 +8,10 @@
   "start_url": "/",
   "icons": [
     {
-      "src": "/pwa-icon.svg",
+      "src": "/portfolio-icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any"
+      "purpose": "any maskable"
     }
   ]
 }
