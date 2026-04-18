@@ -244,7 +244,7 @@ export const projects: ProjectRecord[] = [
     category: 'AI',
     featured: true,
     github: 'https://github.com/sourav81R/VerifyAI',
-    liveUrl: 'https://hakkanshah.github.io/VerifyAI/',
+    liveUrl: 'https://verifyai.is-a.software/',
     bgImage: resolvePublicAsset('/images/verifyai.jpeg'),
     recruiterPriority: 7,
     impact: 'Trust-oriented interface for AI misinformation validation.',
