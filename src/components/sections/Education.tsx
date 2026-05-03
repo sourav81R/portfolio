@@ -1,6 +1,7 @@
 import { Calendar, GraduationCap, School } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import AnimatedBorder from '../common/AnimatedBorder'
+import { getSectionRevealProps } from '../../lib/motion'
 
 const educationData = [
   {
@@ -27,8 +28,14 @@ const educationData = [
 ]
 
 const Education = () => {
+  const reduceMotion = useReducedMotion()
+  const sectionRevealProps = getSectionRevealProps(reduceMotion)
+
   return (
-    <section className="px-4 py-20 sm:px-6 sm:py-24 lg:py-28">
+    <motion.div
+      {...sectionRevealProps}
+      className="px-4 py-20 sm:px-6 sm:py-24 lg:py-28"
+    >
       <AnimatedBorder>
         <div className="mx-auto max-w-5xl p-4 font-mono sm:p-6 md:p-10">
           <h2 className="mb-10 text-2xl font-bold tracking-tight text-gray-900 dark:text-white sm:mb-14 sm:text-3xl md:text-4xl">
@@ -45,9 +52,9 @@ const Education = () => {
                 transition={{ duration: 0.25 }}
                 className="group relative pl-8 md:pl-12"
               >
-                <div className="absolute -left-[9px] top-0 h-5 w-5 rounded-full border-4 border-green-500 bg-white transition-transform duration-300 group-hover:scale-125 dark:bg-black" />
+                <div className="absolute -left-[9px] top-0 h-5 w-5 rounded-full border-4 border-green-500 bg-white dark:bg-black" />
 
-                <div className="relative rounded-xl border border-gray-200 bg-gray-50 p-4 shadow-sm transition-colors duration-300 hover:border-green-500 hover:shadow-md dark:border-gray-800 dark:bg-gray-900/50 dark:hover:border-green-500 sm:p-6">
+                <div className="relative rounded-xl border border-gray-200 bg-gray-50 p-4 shadow-sm hover:border-green-500 hover:shadow-md dark:border-gray-800 dark:bg-gray-900/50 dark:hover:border-green-500 sm:p-6">
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div>
                       <h3 className="flex items-center gap-2 text-lg font-bold text-gray-900 dark:text-white sm:text-xl">
@@ -79,7 +86,7 @@ const Education = () => {
           </div>
         </div>
       </AnimatedBorder>
-    </section>
+    </motion.div>
   )
 }
 

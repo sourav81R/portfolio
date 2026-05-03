@@ -1,5 +1,10 @@
 import { ReactNode, useRef } from 'react'
-import { motion } from 'framer-motion'
+import {
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+} from 'framer-motion'
 
 type Props = {
   children: ReactNode
@@ -8,19 +13,24 @@ type Props = {
 
 const MagneticButton = ({ children, className = '' }: Props) => {
   const ref = useRef<HTMLDivElement>(null)
+  const reduceMotion = useReducedMotion()
+  const x = useMotionValue(0)
+  const y = useMotionValue(0)
+  const springX = useSpring(x, { stiffness: 150, damping: 15 })
+  const springY = useSpring(y, { stiffness: 150, damping: 15 })
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!ref.current) return
+    if (reduceMotion || !ref.current) return
     const rect = ref.current.getBoundingClientRect()
-    const x = e.clientX - rect.left - rect.width / 2
-    const y = e.clientY - rect.top - rect.height / 2
-
-    ref.current.style.transform = `translate(${x * 0.25}px, ${y * 0.25}px)`
+    const centerX = rect.left + rect.width / 2
+    const centerY = rect.top + rect.height / 2
+    x.set((e.clientX - centerX) * 0.25)
+    y.set((e.clientY - centerY) * 0.25)
   }
 
   const reset = () => {
-    if (!ref.current) return
-    ref.current.style.transform = 'translate(0,0)'
+    x.set(0)
+    y.set(0)
   }
 
   return (
@@ -28,7 +38,8 @@ const MagneticButton = ({ children, className = '' }: Props) => {
       ref={ref}
       onMouseMove={handleMouseMove}
       onMouseLeave={reset}
-      className={`inline-block transition-transform duration-200 ${className}`}
+      className={`inline-block ${className}`}
+      style={reduceMotion ? undefined : { x: springX, y: springY }}
     >
       {children}
     </motion.div>

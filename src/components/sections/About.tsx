@@ -1,10 +1,13 @@
 import { Calendar, Code, Database, Zap, Users, Rocket, Brain } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import FadeIn from '../common/FadeIn'
 import AnimatedBorder from '../common/AnimatedBorder'
+import { getSectionRevealProps } from '../../lib/motion'
 
 const About = () => {
   const text = 'About Me'
+  const reduceMotion = useReducedMotion()
+  const sectionRevealProps = getSectionRevealProps(reduceMotion)
 
   const stats = [
     {
@@ -65,7 +68,10 @@ const About = () => {
   ]
 
   return (
-    <section className="px-4 sm:px-6 py-20 sm:py-24 lg:py-28">
+    <motion.div
+      {...sectionRevealProps}
+      className="px-4 py-20 sm:px-6 sm:py-24 lg:py-28"
+    >
       <AnimatedBorder>
         <div className="max-w-5xl mx-auto font-mono p-4 sm:p-6 md:p-10">
           {/* Section Title */}
@@ -134,12 +140,11 @@ const About = () => {
                       border border-gray-200 dark:border-gray-800
                       bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-sm
                       hover:border-green-500/30 hover:shadow-lg hover:shadow-green-500/5
-                      transition-all duration-300
                       group
                     "
                   >
                     <div
-                      className={`p-3 rounded-full mb-4 ${stat.bg} ${stat.color} group-hover:scale-110 transition-transform duration-300`}
+                      className={`mb-4 rounded-full p-3 ${stat.bg} ${stat.color}`}
                     >
                       <stat.icon size={24} />
                     </div>
@@ -173,7 +178,6 @@ const About = () => {
                       border border-gray-200 dark:border-gray-800
                       bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-sm
                       hover:border-green-500/30 hover:shadow-lg
-                      transition-all duration-300
                     "
                   >
                     <div
@@ -206,7 +210,7 @@ const About = () => {
           </FadeIn>
         </div>
       </AnimatedBorder>
-    </section>
+    </motion.div>
   )
 }
 

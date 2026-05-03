@@ -1,6 +1,7 @@
 import { Briefcase, Calendar, MapPin } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import AnimatedBorder from '../common/AnimatedBorder'
+import { getSectionRevealProps } from '../../lib/motion'
 
 const experienceData = [
   {
@@ -25,8 +26,13 @@ const experienceData = [
 
 const Experience = () => {
   const text = 'Experience'
+  const reduceMotion = useReducedMotion()
+  const sectionRevealProps = getSectionRevealProps(reduceMotion)
   return (
-    <section className="px-4 sm:px-6 py-20 sm:py-24 lg:py-28">
+    <motion.div
+      {...sectionRevealProps}
+      className="px-4 py-20 sm:px-6 sm:py-24 lg:py-28"
+    >
       <AnimatedBorder>
         <div className="max-w-5xl mx-auto font-mono p-4 sm:p-6 md:p-10">
           {/* Section Title */}
@@ -45,7 +51,7 @@ const Experience = () => {
                 className="relative pl-8 md:pl-12 group"
               >
                 {/* Timeline Dot */}
-                <div className="absolute -left-[9px] top-0 w-5 h-5 rounded-full bg-white dark:bg-black border-4 border-green-500 group-hover:scale-125 transition-transform duration-300" />
+                <div className="absolute -left-[9px] top-0 w-5 h-5 rounded-full border-4 border-green-500 bg-white dark:bg-black" />
 
                 {/* Content Card */}
                 <div className="
@@ -54,7 +60,6 @@ const Experience = () => {
                     bg-gray-50 dark:bg-gray-900/50
                     border border-gray-200 dark:border-gray-800
                     hover:border-green-500 dark:hover:border-green-500
-                    transition-colors duration-300
                     shadow-sm hover:shadow-md
                 ">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
@@ -122,7 +127,7 @@ const Experience = () => {
           </div>
         </div>
       </AnimatedBorder>
-    </section>
+    </motion.div>
   )
 }
 

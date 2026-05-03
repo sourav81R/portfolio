@@ -1,5 +1,6 @@
 import { ReactNode, useEffect, useRef, useState } from 'react'
-import { sectionGradientColors } from '../../constants/sectionColor'
+import { motion, useReducedMotion } from 'framer-motion'
+import { sectionGradientBackgrounds } from '../../constants/sectionColor'
 
 type AnimatedBorderProps = {
   children: ReactNode
@@ -8,26 +9,17 @@ type AnimatedBorderProps = {
 const AnimatedBorder = ({ children }: AnimatedBorderProps) => {
   const ref = useRef<HTMLDivElement>(null)
   const [inView, setInView] = useState(false)
-  const [reduceMotion, setReduceMotion] = useState(false)
-  const [gradient, setGradient] = useState(sectionGradientColors.home)
-
-  useEffect(() => {
-    if (typeof window === 'undefined' || !window.matchMedia) return
-
-    const media = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const onChange = () => setReduceMotion(media.matches)
-    onChange()
-
-    media.addEventListener('change', onChange)
-    return () => media.removeEventListener('change', onChange)
-  }, [])
+  const reduceMotion = useReducedMotion()
+  const [gradient, setGradient] = useState(sectionGradientBackgrounds.home)
 
   useEffect(() => {
     if (!ref.current) return
 
     const section = ref.current.closest('section')
     const sectionId = section?.id ?? 'home'
-    setGradient(sectionGradientColors[sectionId] || sectionGradientColors.home)
+    setGradient(
+      sectionGradientBackgrounds[sectionId] || sectionGradientBackgrounds.home
+    )
 
     const observer = new IntersectionObserver(
       ([entry]) => setInView(entry.isIntersecting),
@@ -44,15 +36,37 @@ const AnimatedBorder = ({ children }: AnimatedBorderProps) => {
   const shouldAnimate = inView && !reduceMotion
 
   return (
-    <div ref={ref} className="relative rounded-2xl p-[1.5px] overflow-hidden">
-      <div
-        className={`
-          absolute inset-0
-          bg-gradient-to-r ${gradient}
-          ${shouldAnimate ? 'animate-border opacity-95' : 'opacity-55'}
-          transition-opacity duration-500 ease-out
-        `}
-        style={shouldAnimate ? { willChange: 'background-position' } : undefined}
+    <div ref={ref} className="relative overflow-hidden rounded-2xl p-[1.5px]">
+      <motion.div
+        className="absolute inset-0"
+        animate={
+          shouldAnimate
+            ? {
+                backgroundPosition: ['0% 50%', '200% 50%'],
+                opacity: [0.78, 0.95, 0.78],
+              }
+            : {
+                backgroundPosition: '0% 50%',
+                opacity: 0.55,
+              }
+        }
+        transition={
+          shouldAnimate
+            ? {
+                duration: 7,
+                repeat: Infinity,
+                ease: 'linear',
+              }
+            : {
+                duration: 0.3,
+                ease: 'easeOut',
+              }
+        }
+        style={{
+          backgroundImage: gradient,
+          backgroundSize: '220% 220%',
+          willChange: shouldAnimate ? 'background-position, opacity' : 'opacity',
+        }}
       />
 
       <div className="relative rounded-2xl bg-white dark:bg-black">

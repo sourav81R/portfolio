@@ -25,6 +25,7 @@ import {
 } from 'lucide-react'
 import AnimatedBorder from '../common/AnimatedBorder'
 import MagneticButton from '../common/MagneticButton'
+import { getSectionRevealProps } from '../../lib/motion'
 import { useCommandPalette } from '../../store/useCommandpalette'
 import { useAppStore } from '../../store/useAppStore'
 
@@ -240,6 +241,7 @@ const TypingBadge = () => {
   const [index, setIndex] = useState(0)
   const [subIndex, setSubIndex] = useState(0)
   const [reverse, setReverse] = useState(false)
+  const reduceMotion = useReducedMotion()
 
   useEffect(() => {
     if (subIndex === BADGE_WORDS[index].length + 1 && !reverse) {
@@ -263,7 +265,17 @@ const TypingBadge = () => {
   return (
     <span className="inline-block max-w-[180px] overflow-hidden text-ellipsis whitespace-nowrap align-bottom sm:max-w-none">
       {BADGE_WORDS[index].substring(0, subIndex)}
-      <span className="ml-1 inline-block animate-pulse">|</span>
+      <motion.span
+        className="ml-1 inline-block"
+        animate={reduceMotion ? undefined : { opacity: [1, 0, 1] }}
+        transition={
+          reduceMotion
+            ? undefined
+            : { duration: 1.1, repeat: Infinity, ease: 'easeInOut' }
+        }
+      >
+        |
+      </motion.span>
     </span>
   )
 }
@@ -271,6 +283,7 @@ const TypingBadge = () => {
 const Hero = () => {
   const { open } = useCommandPalette()
   const reduceMotion = useReducedMotion()
+  const sectionRevealProps = getSectionRevealProps(reduceMotion)
   const recordClick = useAppStore((state) => state.recordClick)
   const [showResume, setShowResume] = useState(false)
   const [showResumePreview, setShowResumePreview] = useState(false)
@@ -428,7 +441,7 @@ const Hero = () => {
         scale: open ? 0.96 : 1,
         opacity: open ? 0.9 : 1,
       }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: reduceMotion ? 0.15 : 0.3 }}
       className="relative min-h-screen overflow-hidden px-4 pb-14 pt-28 sm:px-6 sm:pb-10 sm:pt-32 lg:pt-36"
     >
       <div className="absolute inset-0 z-0 pointer-events-none">
@@ -438,7 +451,10 @@ const Hero = () => {
       </div>
       <div className="grain-overlay absolute inset-0 z-[1]" />
 
-      <div className="relative z-10 w-full">
+      <motion.div
+        {...sectionRevealProps}
+        className="relative z-10 w-full"
+      >
         <AnimatedBorder>
           <div className="mx-auto grid min-h-[560px] max-w-6xl gap-8 rounded-2xl border border-white/70 bg-gradient-to-br from-white via-white to-emerald-50/70 p-4 shadow-[0_35px_120px_-55px_rgba(15,23,42,0.45)] sm:p-6 md:p-10 lg:min-h-[72vh] lg:grid-cols-[1.08fr_0.92fr] lg:gap-14 lg:p-12 dark:border-gray-800/80 dark:bg-gradient-to-br dark:from-[#030712] dark:via-[#020617] dark:to-emerald-950/20">
             <div className="flex flex-col items-start font-mono">
@@ -448,12 +464,33 @@ const Hero = () => {
                 transition={{ duration: 0.5 }}
                 className="relative mb-6 sm:mb-8"
               >
-                <div className="absolute inset-0 rounded-full bg-green-500/30 blur-xl animate-pulse" />
-                <img
-                  src="/profile.jpg"
-                  alt="Sourav Chowdhury"
-                  className="relative h-24 w-24 rounded-3xl border-2 border-green-500/40 object-cover shadow-xl sm:h-28 sm:w-28 md:h-32 md:w-32"
+                <motion.div
+                  className="absolute inset-0 rounded-full bg-green-500/30 blur-xl"
+                  animate={
+                    reduceMotion
+                      ? undefined
+                      : { opacity: [0.35, 0.75, 0.35], scale: [0.96, 1.06, 0.96] }
+                  }
+                  transition={
+                    reduceMotion
+                      ? undefined
+                      : { duration: 2.8, repeat: Infinity, ease: 'easeInOut' }
+                  }
                 />
+                <motion.div
+                  animate={reduceMotion ? undefined : { y: [0, -12, 0] }}
+                  transition={
+                    reduceMotion
+                      ? undefined
+                      : { duration: 3, repeat: Infinity, ease: 'easeInOut' }
+                  }
+                >
+                  <img
+                    src="/profile.jpg"
+                    alt="Sourav Chowdhury"
+                    className="relative h-24 w-24 rounded-3xl border-2 border-green-500/40 object-cover shadow-xl sm:h-28 sm:w-28 md:h-32 md:w-32"
+                  />
+                </motion.div>
               </motion.div>
 
               <motion.div
@@ -464,7 +501,19 @@ const Hero = () => {
               >
                 <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.18em] text-emerald-700 dark:text-emerald-300">
                   <span className="relative flex h-2 w-2">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                    <motion.span
+                      className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"
+                      animate={
+                        reduceMotion
+                          ? undefined
+                          : { scale: [1, 1.8], opacity: [0.75, 0] }
+                      }
+                      transition={
+                        reduceMotion
+                          ? undefined
+                          : { duration: 1.6, repeat: Infinity, ease: 'easeOut' }
+                      }
+                    />
                     <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
                   </span>
                   Open to work
@@ -515,47 +564,56 @@ const Hero = () => {
 
               <div className="flex w-full flex-wrap gap-3 sm:gap-4">
                 <MagneticButton>
-                  <a
+                  <motion.a
                     href="#projects"
                     onClick={() => recordClick('hero-view-projects')}
-                    className="group flex w-full items-center justify-center gap-2 rounded-full px-5 py-3 font-medium text-white shadow-lg transition-all hover:shadow-xl sm:w-auto sm:px-6"
+                    animate={reduceMotion ? undefined : { scale: [1, 1.04, 1] }}
+                    transition={
+                      reduceMotion
+                        ? undefined
+                        : { duration: 2.5, repeat: Infinity, ease: 'easeInOut' }
+                    }
+                    whileHover={reduceMotion ? undefined : { y: -2 }}
+                    whileTap={reduceMotion ? undefined : { scale: 0.98 }}
+                    className="flex w-full items-center justify-center gap-2 rounded-full px-5 py-3 font-medium text-white shadow-lg sm:w-auto sm:px-6"
                     style={{
                       background: 'linear-gradient(135deg, var(--accent), #6366f1)',
                     }}
                   >
                     View Projects
-                    <ArrowRight
-                      size={18}
-                      className="transition-transform group-hover:translate-x-1"
-                    />
-                  </a>
+                    <ArrowRight size={18} />
+                  </motion.a>
                 </MagneticButton>
 
                 <MagneticButton>
-                  <button
+                  <motion.button
                     type="button"
                     onClick={() => {
                       recordClick('hero-preview-resume')
                       setShowResumePreview(true)
                     }}
-                    className="group flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white/70 px-5 py-3 font-medium transition-colors hover:border-gray-900 dark:border-gray-700 dark:bg-white/5 dark:hover:border-white sm:w-auto sm:px-6"
+                    whileHover={reduceMotion ? undefined : { y: -2 }}
+                    whileTap={reduceMotion ? undefined : { scale: 0.98 }}
+                    className="flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white/70 px-5 py-3 font-medium dark:border-gray-700 dark:bg-white/5 sm:w-auto sm:px-6"
                   >
                     <Eye size={18} />
                     Preview Resume
-                  </button>
+                  </motion.button>
                 </MagneticButton>
 
                 <MagneticButton>
-                  <button
+                  <motion.button
                     onClick={() => {
                       recordClick('hero-download-resume')
                       setShowResume(true)
                     }}
-                    className="group flex w-full items-center justify-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-5 py-3 font-medium text-emerald-700 transition-all hover:bg-emerald-500/15 dark:text-emerald-300 sm:w-auto sm:px-6"
+                    whileHover={reduceMotion ? undefined : { y: -2 }}
+                    whileTap={reduceMotion ? undefined : { scale: 0.98 }}
+                    className="flex w-full items-center justify-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-5 py-3 font-medium text-emerald-700 dark:text-emerald-300 sm:w-auto sm:px-6"
                   >
                     <Download size={18} />
                     Download
-                  </button>
+                  </motion.button>
                 </MagneticButton>
               </div>
 
@@ -692,7 +750,15 @@ const Hero = () => {
                         {liveTerminalLine.prompt}
                       </span>
                       <span className="text-gray-100">{liveTerminalLine.text}</span>
-                      <span className="ml-1 inline-block h-4 w-2 animate-pulse bg-gray-400 align-middle" />
+                      <motion.span
+                        className="ml-1 inline-block h-4 w-2 bg-gray-400 align-middle"
+                        animate={reduceMotion ? undefined : { opacity: [1, 0, 1] }}
+                        transition={
+                          reduceMotion
+                            ? undefined
+                            : { duration: 1, repeat: Infinity, ease: 'easeInOut' }
+                        }
+                      />
                     </div>
                   ) : null}
                   {isTerminalReady ? (
@@ -727,7 +793,7 @@ const Hero = () => {
             </div>
           </div>
         </AnimatedBorder>
-      </div>
+      </motion.div>
 
       <motion.div
         className="absolute bottom-5 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-gray-400 dark:text-gray-500 sm:flex sm:bottom-8"

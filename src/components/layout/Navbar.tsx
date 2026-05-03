@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { motion, useScroll, useSpring } from 'framer-motion'
 import { LayoutDashboard, Menu, Moon, Sun, Users, X } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { sectionTextColors } from '../../constants/sectionColor'
@@ -44,6 +45,12 @@ const Navbar = () => {
   const recruiterMode = useAppStore((state) => state.recruiterMode)
   const toggleRecruiterMode = useAppStore((state) => state.toggleRecruiterMode)
   const recordClick = useAppStore((state) => state.recordClick)
+  const { scrollYProgress } = useScroll()
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001,
+  })
 
   useEffect(() => {
     const root = document.documentElement
@@ -59,7 +66,6 @@ const Navbar = () => {
   useEffect(() => {
     let raf = 0
     let sectionElements = [] as HTMLElement[]
-    const bar = document.getElementById('scroll-progress')
 
     const readSections = () =>
       sections
@@ -85,12 +91,6 @@ const Navbar = () => {
         setActive((prev) => (prev === matchedSection.id ? prev : matchedSection.id))
       }
 
-      const scrollTop = window.scrollY
-      const docHeight =
-        document.documentElement.scrollHeight -
-        document.documentElement.clientHeight
-      const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0
-      if (bar) bar.style.width = `${progress}%`
       raf = 0
     }
 
@@ -122,10 +122,9 @@ const Navbar = () => {
         }`}
       >
         <div className="absolute inset-x-0 bottom-0 h-[2px] bg-transparent">
-          <div
-            id="scroll-progress"
-            className={`h-full transition-[width] duration-150 ${sectionTextColors[active]}`}
-            style={{ width: '0%' }}
+          <motion.div
+            className={`h-full origin-left ${sectionTextColors[active]}`}
+            style={{ scaleX, transformOrigin: '0% 50%' }}
           />
         </div>
 
@@ -151,7 +150,7 @@ const Navbar = () => {
                 >
                   {sectionLabels[item]}
                   <span
-                    className={`absolute left-0 -bottom-1 h-[2px] w-full origin-left scale-x-0 transition-transform duration-300 ${
+                    className={`absolute left-0 -bottom-1 h-[2px] w-full origin-left scale-x-0 ${
                       active === item ? 'scale-x-100' : ''
                     }`}
                     style={{

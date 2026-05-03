@@ -1,6 +1,7 @@
 import { Award, CheckCircle } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import AnimatedBorder from '../common/AnimatedBorder'
+import { getSectionRevealProps } from '../../lib/motion'
 
 const certifications = [
   {
@@ -23,8 +24,13 @@ const certifications = [
 
 const Certifications = () => {
   const text = 'Certifications'
+  const reduceMotion = useReducedMotion()
+  const sectionRevealProps = getSectionRevealProps(reduceMotion)
   return (
-    <section className="px-4 sm:px-6 py-20 sm:py-24 lg:py-28">
+    <motion.div
+      {...sectionRevealProps}
+      className="px-4 py-20 sm:px-6 sm:py-24 lg:py-28"
+    >
       <AnimatedBorder>
         <div className="max-w-5xl mx-auto font-mono p-4 sm:p-6 md:p-10">
           {/* Section Title */}
@@ -47,12 +53,11 @@ const Certifications = () => {
                   bg-gray-50 dark:bg-gray-900/50
                   border border-gray-200 dark:border-gray-800
                   hover:border-green-500 dark:hover:border-green-500
-                  transition-colors duration-300
                   group
                 "
               >
                 <div className="flex items-start gap-4">
-                  <div className="p-3 bg-green-500/10 rounded-full text-green-500 group-hover:bg-green-500 group-hover:text-white transition-colors duration-300">
+                  <div className="rounded-full bg-green-500/10 p-3 text-green-500">
                     <Award size={24} />
                   </div>
                   <div>
@@ -70,7 +75,7 @@ const Certifications = () => {
           </div>
         </div>
       </AnimatedBorder>
-    </section>
+    </motion.div>
   )
 }
 

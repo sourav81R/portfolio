@@ -6,6 +6,7 @@ import {
   useState,
   type ReactNode,
 } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
 import { useLocation } from 'react-router-dom'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
@@ -43,11 +44,23 @@ const sectionOrder = [
   'contact',
 ] as const
 
-const SectionFallback = () => (
-  <div className="px-4 py-20 sm:px-6 sm:py-24 lg:py-28">
-    <div className="mx-auto h-24 max-w-6xl animate-pulse rounded-2xl border border-gray-200/70 bg-gray-100/60 dark:border-gray-800/70 dark:bg-gray-900/40" />
-  </div>
-)
+const SectionFallback = () => {
+  const reduceMotion = useReducedMotion()
+
+  return (
+    <div className="px-4 py-20 sm:px-6 sm:py-24 lg:py-28">
+      <motion.div
+        className="mx-auto h-24 max-w-6xl rounded-2xl border border-gray-200/70 bg-gray-100/60 dark:border-gray-800/70 dark:bg-gray-900/40"
+        animate={reduceMotion ? undefined : { opacity: [0.55, 0.95, 0.55] }}
+        transition={
+          reduceMotion
+            ? undefined
+            : { duration: 1.4, repeat: Infinity, ease: 'easeInOut' }
+        }
+      />
+    </div>
+  )
+}
 
 function App() {
   const location = useLocation()
@@ -87,7 +100,7 @@ function App() {
   }, [location.hash])
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top_right,rgba(34,197,94,0.12),transparent_26%),radial-gradient(circle_at_top_left,rgba(59,130,246,0.08),transparent_24%),#ffffff] text-gray-900 transition-colors duration-300 dark:bg-[radial-gradient(circle_at_top_right,rgba(34,197,94,0.12),transparent_24%),radial-gradient(circle_at_top_left,rgba(56,189,248,0.09),transparent_24%),#020617] dark:text-gray-300">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top_right,rgba(34,197,94,0.12),transparent_26%),radial-gradient(circle_at_top_left,rgba(59,130,246,0.08),transparent_24%),#ffffff] text-gray-900 dark:bg-[radial-gradient(circle_at_top_right,rgba(34,197,94,0.12),transparent_24%),radial-gradient(circle_at_top_left,rgba(56,189,248,0.09),transparent_24%),#020617] dark:text-gray-300">
       <CommandPalette />
       <PwaInstallPrompt />
       <ThemeCustomizer />

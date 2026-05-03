@@ -1,8 +1,9 @@
 import { useMemo, useRef, useState, type ChangeEvent } from 'react'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { Bot, BrainCircuit, FileSearch, Sparkles, Upload } from 'lucide-react'
 import AnimatedBorder from '../common/AnimatedBorder'
 import { featuredProjects } from '../../data/projects'
+import { getSectionRevealProps } from '../../lib/motion'
 import { extractResumeText } from '../../lib/extractResumeText'
 import {
   analyzeResumeText,
@@ -14,6 +15,8 @@ import { useAppStore } from '../../store/useAppStore'
 
 const AIWorkbench = () => {
   const recruiterMode = useAppStore((state) => state.recruiterMode)
+  const reduceMotion = useReducedMotion()
+  const sectionRevealProps = getSectionRevealProps(reduceMotion)
   const [goals, setGoals] = useState<RecommendationGoal[]>(['Frontend UI'])
   const [resumeText, setResumeText] = useState('')
   const [targetRole, setTargetRole] = useState<ResumeTargetRole>('Frontend Engineer')
@@ -66,7 +69,10 @@ const AIWorkbench = () => {
   }
 
   return (
-    <section className="px-4 py-20 sm:px-6 sm:py-24 lg:py-28">
+    <motion.div
+      {...sectionRevealProps}
+      className="px-4 py-20 sm:px-6 sm:py-24 lg:py-28"
+    >
       <AnimatedBorder>
         <div className="mx-auto max-w-6xl p-4 sm:p-6 md:p-10">
           <div className="mb-10 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
@@ -105,7 +111,7 @@ const AIWorkbench = () => {
                     key={goal}
                     type="button"
                     onClick={() => toggleGoal(goal)}
-                    className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                    className={`rounded-full px-4 py-2 text-sm font-medium ${
                       goals.includes(goal)
                         ? 'bg-fuchsia-600 text-white'
                         : 'border border-gray-300 text-gray-700 hover:border-fuchsia-400 dark:border-gray-700 dark:text-gray-300'
@@ -164,7 +170,7 @@ const AIWorkbench = () => {
                         key={role}
                         type="button"
                         onClick={() => setTargetRole(role)}
-                        className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                        className={`rounded-full px-4 py-2 text-sm font-medium ${
                           targetRole === role
                             ? 'bg-sky-600 text-white'
                             : 'border border-gray-300 text-gray-700 hover:border-sky-400 dark:border-gray-700 dark:text-gray-300'
@@ -207,7 +213,7 @@ const AIWorkbench = () => {
                   onChange={(event) => setResumeText(event.target.value)}
                   placeholder="Paste resume text here to simulate ATS-style analysis..."
                   rows={9}
-                  className="mt-5 w-full rounded-2xl border border-gray-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-sky-500 dark:border-gray-700 dark:bg-gray-950 dark:text-white"
+                  className="mt-5 w-full rounded-2xl border border-gray-300 bg-white px-4 py-3 text-sm outline-none focus:border-sky-500 dark:border-gray-700 dark:bg-gray-950 dark:text-white"
                 />
 
                 {fileStatus && (
@@ -297,7 +303,7 @@ const AIWorkbench = () => {
           </div>
         </div>
       </AnimatedBorder>
-    </section>
+    </motion.div>
   )
 }
 

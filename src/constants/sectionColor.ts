@@ -27,3 +27,18 @@ export const sectionGradientColors: Record<string, string> = {
   certifications: 'from-lime-500 via-green-400 to-lime-500',
   contact: 'from-red-500 via-rose-400 to-red-500',
 }
+
+export const sectionGradientBackgrounds: Record<string, string> = {
+  home: 'linear-gradient(120deg, #22c55e, #34d399, #22c55e)',
+  highlights: 'linear-gradient(120deg, #10b981, #2dd4bf, #10b981)',
+  about: 'linear-gradient(120deg, #3b82f6, #22d3ee, #3b82f6)',
+  experience: 'linear-gradient(120deg, #f97316, #fbbf24, #f97316)',
+  testimonials: 'linear-gradient(120deg, #14b8a6, #22d3ee, #14b8a6)',
+  skills: 'linear-gradient(120deg, #a855f7, #e879f9, #a855f7)',
+  projects: 'linear-gradient(120deg, #0ea5e9, #60a5fa, #0ea5e9)',
+  signals: 'linear-gradient(120deg, #3b82f6, #38bdf8, #3b82f6)',
+  'ai-workbench': 'linear-gradient(120deg, #d946ef, #8b5cf6, #d946ef)',
+  education: 'linear-gradient(120deg, #ec4899, #fb7185, #ec4899)',
+  certifications: 'linear-gradient(120deg, #84cc16, #4ade80, #84cc16)',
+  contact: 'linear-gradient(120deg, #ef4444, #fb7185, #ef4444)',
+}

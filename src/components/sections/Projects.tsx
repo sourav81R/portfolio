@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import {
   ExternalLink,
@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import AnimatedBorder from '../common/AnimatedBorder'
 import { projects as projectData, type ProjectCategory, type ProjectRecord } from '../../data/projects'
+import { getSectionRevealProps } from '../../lib/motion'
 import { useAppStore } from '../../store/useAppStore'
 import { useProjectDiscovery } from '../../hooks/useProjectDiscovery'
 
@@ -22,6 +23,8 @@ const categories: Category[] = ['All', 'Web', 'AI', 'Mobile', 'Realtime']
 const projectFallbackImage = `${import.meta.env.BASE_URL}og-preview.png`
 
 const Projects = () => {
+  const reduceMotion = useReducedMotion()
+  const sectionRevealProps = getSectionRevealProps(reduceMotion)
   const recruiterMode = useAppStore((state) => state.recruiterMode)
   const projectOrder = useAppStore((state) => state.projectOrder)
   const initializeProjectOrder = useAppStore((state) => state.initializeProjectOrder)
@@ -33,6 +36,7 @@ const Projects = () => {
   const [featuredOnly, setFeaturedOnly] = useState(false)
   const [query, setQuery] = useState('')
   const [draggingSlug, setDraggingSlug] = useState<string | null>(null)
+  const [hoveredProjectSlug, setHoveredProjectSlug] = useState<string | null>(null)
 
   useEffect(() => {
     initializeProjectOrder(projectData)
@@ -49,7 +53,10 @@ const Projects = () => {
     })
 
   return (
-    <section className="px-4 py-20 sm:px-6 sm:py-24 lg:py-28">
+    <motion.div
+      {...sectionRevealProps}
+      className="px-4 py-20 sm:px-6 sm:py-24 lg:py-28"
+    >
       <AnimatedBorder>
         <div className="mx-auto max-w-6xl p-4 sm:p-6 md:p-10">
           <div className="mb-10 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
@@ -139,15 +146,19 @@ const Projects = () => {
                 <motion.button
                   key={project.slug}
                   type="button"
-                  initial={{ opacity: 0, y: 14 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  initial={reduceMotion ? false : { opacity: 0, y: 14 }}
+                  whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.2 }}
-                  transition={{ duration: 0.22, delay: index * 0.05 }}
+                  transition={
+                    reduceMotion
+                      ? undefined
+                      : { duration: 0.22, delay: index * 0.05 }
+                  }
                   onClick={() => {
                     setSelectedProject(project)
                     recordProjectInteraction(project.slug)
                   }}
-                  className="rounded-2xl border border-fuchsia-500/20 bg-fuchsia-500/10 p-4 text-left transition hover:-translate-y-1 hover:border-fuchsia-400"
+                  className="rounded-2xl border border-fuchsia-500/20 bg-fuchsia-500/10 p-4 text-left hover:border-fuchsia-400"
                 >
                   <div className="flex items-center justify-between gap-3">
                     <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-fuchsia-700 dark:text-fuchsia-300">
@@ -170,108 +181,142 @@ const Projects = () => {
           <motion.div layout className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
             <AnimatePresence>
               {filteredProjects.map((project) => (
-                <motion.article
-                  key={project.slug}
-                  layout
-                  draggable
-                  onDragStart={() => setDraggingSlug(project.slug)}
-                  onDragOver={(event) => event.preventDefault()}
-                  onDrop={() => {
-                    if (draggingSlug && draggingSlug !== project.slug) {
-                      reorderProjects(draggingSlug, project.slug)
-                    }
-                    setDraggingSlug(null)
-                  }}
-                  onDragEnd={() => setDraggingSlug(null)}
-                  initial={{ opacity: 0, y: 18 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 12 }}
-                  transition={{ duration: 0.24 }}
-                  className="group"
-                >
-                  <div className="h-full overflow-hidden rounded-2xl border border-gray-200 bg-gray-50/70 shadow-sm transition hover:-translate-y-1 hover:shadow-xl dark:border-gray-800 dark:bg-gray-900/50">
-                    <div className="relative h-52 overflow-hidden">
-                      <img
-                        src={project.bgImage}
-                        alt={project.title}
-                        loading="lazy"
-                        decoding="async"
-                        onError={(event) => {
-                          event.currentTarget.onerror = null
-                          event.currentTarget.src = projectFallbackImage
-                        }}
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
-                      <div className="absolute left-4 right-4 top-4 flex items-center justify-between gap-3">
-                        <span className="rounded-full border border-white/20 bg-black/35 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-white/90">
-                          {project.category}
-                        </span>
-                        <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/35 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-white/90">
-                          <GripVertical size={12} />
-                          Drag
-                        </span>
-                      </div>
-                      <div className="absolute bottom-0 left-0 right-0 p-4">
-                        <h3 className="text-2xl font-bold text-white">{project.title}</h3>
-                        <p className="mt-1 text-sm text-white/80">{project.role}</p>
-                      </div>
-                    </div>
+                (() => {
+                  const isHovered = hoveredProjectSlug === project.slug
 
-                    <div className="p-4 sm:p-5">
-                      <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-400">
-                        {project.description}
-                      </p>
-
-                      {recruiterMode && (
-                        <div className="mt-4 rounded-2xl border border-indigo-500/20 bg-indigo-500/10 px-4 py-3">
-                          <p className="text-xs uppercase tracking-[0.18em] text-indigo-600 dark:text-indigo-400">
-                            Recruiter Highlight
-                          </p>
-                          <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">
-                            {project.impact}
-                          </p>
-                        </div>
-                      )}
-
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        {project.tech.slice(0, 4).map((tag) => (
-                          <span
-                            key={tag}
-                            className="rounded-full border border-gray-200 bg-white/80 px-3 py-1 text-xs font-medium text-gray-700 dark:border-gray-700 dark:bg-gray-950/40 dark:text-gray-300"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-
-                      <div className="mt-5 flex flex-wrap gap-2">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setSelectedProject(project)
-                            recordProjectInteraction(project.slug)
+                  return (
+                    <motion.article
+                      key={project.slug}
+                      layout
+                      draggable
+                      onHoverStart={() => setHoveredProjectSlug(project.slug)}
+                      onHoverEnd={() =>
+                        setHoveredProjectSlug((current) =>
+                          current === project.slug ? null : current
+                        )
+                      }
+                      onDragStart={() => setDraggingSlug(project.slug)}
+                      onDragOver={(event) => event.preventDefault()}
+                      onDrop={() => {
+                        if (draggingSlug && draggingSlug !== project.slug) {
+                          reorderProjects(draggingSlug, project.slug)
+                        }
+                        setDraggingSlug(null)
+                      }}
+                      onDragEnd={() => setDraggingSlug(null)}
+                      initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={reduceMotion ? undefined : { opacity: 0, y: 12 }}
+                      transition={reduceMotion ? undefined : { duration: 0.24 }}
+                      className="group"
+                    >
+                      <div className="h-full [perspective:1000px]">
+                        <motion.div
+                          animate={
+                            reduceMotion
+                              ? undefined
+                              : {
+                                  rotateY: isHovered ? 360 : 0,
+                                }
+                          }
+                          transition={
+                            reduceMotion
+                              ? undefined
+                              : isHovered
+                                ? { duration: 0.7, ease: 'easeInOut' }
+                                : { duration: 0 }
+                          }
+                          className="h-full overflow-hidden rounded-2xl border border-gray-200 bg-gray-50/70 shadow-sm dark:border-gray-800 dark:bg-gray-900/50 will-change-transform"
+                          style={{
+                            transformStyle: 'preserve-3d',
+                            willChange: 'transform',
                           }}
-                          className="rounded-full bg-gray-900 px-4 py-2 text-sm font-semibold text-white dark:bg-white dark:text-black"
                         >
-                          Preview
-                        </button>
-                        {project.liveUrl && (
-                          <a
-                            href={project.liveUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={() => recordProjectInteraction(project.slug)}
-                            className="inline-flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 dark:border-gray-700 dark:text-gray-300"
-                          >
-                            <ExternalLink size={15} />
-                            Live
-                          </a>
-                        )}
+                      <div className="relative h-52 overflow-hidden">
+                        <img
+                          src={project.bgImage}
+                          alt={project.title}
+                          loading="lazy"
+                          decoding="async"
+                          onError={(event) => {
+                            event.currentTarget.onerror = null
+                            event.currentTarget.src = projectFallbackImage
+                          }}
+                          className="h-full w-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
+                        <div className="absolute left-4 right-4 top-4 flex items-center justify-between gap-3">
+                          <span className="rounded-full border border-white/20 bg-black/35 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-white/90">
+                            {project.category}
+                          </span>
+                          <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/35 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-white/90">
+                            <GripVertical size={12} />
+                            Drag
+                          </span>
+                        </div>
+                        <div className="absolute bottom-0 left-0 right-0 p-4">
+                          <h3 className="text-2xl font-bold text-white">{project.title}</h3>
+                          <p className="mt-1 text-sm text-white/80">{project.role}</p>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                </motion.article>
+
+                      <div className="p-4 sm:p-5">
+                        <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+                          {project.description}
+                        </p>
+
+                        {recruiterMode && (
+                          <div className="mt-4 rounded-2xl border border-indigo-500/20 bg-indigo-500/10 px-4 py-3">
+                            <p className="text-xs uppercase tracking-[0.18em] text-indigo-600 dark:text-indigo-400">
+                              Recruiter Highlight
+                            </p>
+                            <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">
+                              {project.impact}
+                            </p>
+                          </div>
+                        )}
+
+                        <div className="mt-4 flex flex-wrap gap-2">
+                          {project.tech.slice(0, 4).map((tag) => (
+                            <span
+                              key={tag}
+                              className="rounded-full border border-gray-200 bg-white/80 px-3 py-1 text-xs font-medium text-gray-700 dark:border-gray-700 dark:bg-gray-950/40 dark:text-gray-300"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+
+                        <div className="mt-5 flex flex-wrap gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedProject(project)
+                              recordProjectInteraction(project.slug)
+                            }}
+                            className="rounded-full bg-gray-900 px-4 py-2 text-sm font-semibold text-white dark:bg-white dark:text-black"
+                          >
+                            Preview
+                          </button>
+                          {project.liveUrl && (
+                            <a
+                              href={project.liveUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={() => recordProjectInteraction(project.slug)}
+                              className="inline-flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 dark:border-gray-700 dark:text-gray-300"
+                            >
+                              <ExternalLink size={15} />
+                              Live
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                        </motion.div>
+                      </div>
+                    </motion.article>
+                  )
+                })()
               ))}
             </AnimatePresence>
           </motion.div>
@@ -295,7 +340,7 @@ const Projects = () => {
           />
         )}
       </AnimatePresence>
-    </section>
+    </motion.div>
   )
 }
 
@@ -446,7 +491,13 @@ const ProjectModal = ({
                 {!iframeLoaded && (
                   <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/85 dark:bg-black/80">
                     <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-300">
-                      <LoaderCircle className="animate-spin" size={18} />
+                      <motion.span
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                        className="inline-flex"
+                      >
+                        <LoaderCircle size={18} />
+                      </motion.span>
                       Loading live preview...
                     </div>
                   </div>

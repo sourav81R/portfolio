@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { ArrowUpRight, BookOpenText, Code2, Github, Trophy } from 'lucide-react'
 import AnimatedBorder from '../common/AnimatedBorder'
 import Skeleton from '../common/Skeleton'
+import { getSectionRevealProps } from '../../lib/motion'
 import { getDeveloperInsights, type DeveloperInsights } from '../../services/developerData'
 
 const DeveloperSignals = () => {
   const [data, setData] = useState<DeveloperInsights | null>(null)
   const [loading, setLoading] = useState(true)
+  const reduceMotion = useReducedMotion()
+  const sectionRevealProps = getSectionRevealProps(reduceMotion)
 
   useEffect(() => {
     let active = true
@@ -26,7 +29,10 @@ const DeveloperSignals = () => {
   }, [])
 
   return (
-    <section className="px-4 py-20 sm:px-6 sm:py-24 lg:py-28">
+    <motion.div
+      {...sectionRevealProps}
+      className="px-4 py-20 sm:px-6 sm:py-24 lg:py-28"
+    >
       <AnimatedBorder>
         <div className="mx-auto max-w-6xl p-4 sm:p-6 md:p-10">
           <div className="mb-10 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
@@ -83,7 +89,7 @@ const DeveloperSignals = () => {
                           href={repo.html_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="block rounded-xl border border-gray-200 bg-white/80 px-4 py-3 transition hover:border-sky-400 dark:border-gray-800 dark:bg-gray-950/40"
+                          className="block rounded-xl border border-gray-200 bg-white/80 px-4 py-3 hover:border-sky-400 dark:border-gray-800 dark:bg-gray-950/40"
                         >
                           <div className="flex items-center justify-between gap-3">
                             <p className="font-semibold text-gray-900 dark:text-white">{repo.name}</p>
@@ -128,7 +134,7 @@ const DeveloperSignals = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, amount: 0.18 }}
                         transition={{ duration: 0.24, delay: index * 0.06 }}
-                        className="block rounded-2xl border border-gray-200 bg-white/80 p-4 transition hover:border-sky-400 dark:border-gray-800 dark:bg-gray-950/40"
+                        className="block rounded-2xl border border-gray-200 bg-white/80 p-4 hover:border-sky-400 dark:border-gray-800 dark:bg-gray-950/40"
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div>
@@ -151,7 +157,7 @@ const DeveloperSignals = () => {
           </div>
         </div>
       </AnimatedBorder>
-    </section>
+    </motion.div>
   )
 }
 

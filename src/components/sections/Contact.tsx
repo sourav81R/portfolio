@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Mail, Github, Linkedin, Phone, MessageCircle, Send, Copy, Check, MapPin } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import AnimatedBorder from '../common/AnimatedBorder'
+import { getSectionRevealProps } from '../../lib/motion'
 
 const contactLinks = [
   {
@@ -61,6 +62,8 @@ const contactLinks = [
 ]
 
 const Contact = () => {
+  const reduceMotion = useReducedMotion()
+  const sectionRevealProps = getSectionRevealProps(reduceMotion)
   const [form, setForm] = useState({ name: '', email: '', message: '' })
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [copied, setCopied] = useState<string | null>(null)
@@ -124,7 +127,10 @@ const Contact = () => {
   )
 
   return (
-    <section className="px-4 sm:px-6 py-20 sm:py-24 lg:py-28">
+    <motion.div
+      {...sectionRevealProps}
+      className="px-4 py-20 sm:px-6 sm:py-24 lg:py-28"
+    >
       <AnimatedBorder>
         <div className="max-w-6xl mx-auto font-mono p-4 sm:p-6 md:p-10">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-8 sm:mb-10 text-center tracking-tight">
@@ -154,7 +160,7 @@ const Contact = () => {
                       flex items-center justify-between gap-3 p-3 sm:p-4 rounded-xl
                       border border-gray-200 dark:border-gray-800
                       bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-sm
-                      ${link.borderColor} hover:shadow-md transition-all duration-300
+                      ${link.borderColor} hover:shadow-md
                     `}
                   >
                     <div className="min-w-0 flex items-center gap-3 sm:gap-4">
@@ -185,7 +191,7 @@ const Contact = () => {
                     {link.name !== 'Location' && (
                       <button
                         onClick={() => copyToClipboard(link.value, link.name)}
-                        className="p-2 text-gray-400 hover:text-green-500 transition-colors"
+                        className="p-2 text-gray-400 hover:text-green-500"
                         title="Copy to clipboard"
                       >
                         {copied === link.name ? <Check size={18} /> : <Copy size={18} />}
@@ -209,7 +215,7 @@ const Contact = () => {
                       className="
                         p-3 rounded-full border border-gray-200 dark:border-gray-800
                         bg-gray-50 dark:bg-gray-900 text-gray-600 dark:text-gray-400
-                        hover:border-green-500 hover:text-green-500 transition-all duration-300
+                        hover:border-green-500 hover:text-green-500
                       "
                     >
                       <social.icon size={20} />
@@ -242,7 +248,7 @@ const Contact = () => {
                     value={form.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 rounded-lg bg-white dark:bg-black border border-gray-300 dark:border-gray-700 focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none transition-all"
+                    className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 dark:border-gray-700 dark:bg-black"
                     placeholder="John Doe"
                   />
                 </div>
@@ -257,7 +263,7 @@ const Contact = () => {
                     value={form.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 rounded-lg bg-white dark:bg-black border border-gray-300 dark:border-gray-700 focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none transition-all"
+                    className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 dark:border-gray-700 dark:bg-black"
                     placeholder="john@example.com"
                   />
                 </div>
@@ -272,7 +278,7 @@ const Contact = () => {
                     onChange={handleChange}
                     required
                     rows={4}
-                    className="w-full px-4 py-3 rounded-lg bg-white dark:bg-black border border-gray-300 dark:border-gray-700 focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none transition-all resize-none"
+                    className="w-full resize-none rounded-lg border border-gray-300 bg-white px-4 py-3 outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 dark:border-gray-700 dark:bg-black"
                     placeholder="Your message..."
                   />
                 </div>
@@ -282,7 +288,6 @@ const Contact = () => {
                     type="submit"
                     className={`
                       w-full py-3 px-6 rounded-lg font-medium flex items-center justify-center gap-2
-                      transition-all duration-300
                       ${
                         status === 'success'
                           ? 'bg-green-500 text-white'
@@ -310,7 +315,7 @@ const Contact = () => {
                   <button
                     type="button"
                     onClick={copyEmailTemplate}
-                    className="w-full py-3 px-6 rounded-lg font-medium flex items-center justify-center gap-2 border border-gray-300 dark:border-gray-700 hover:border-green-500 transition-colors"
+                    className="w-full rounded-lg border border-gray-300 px-6 py-3 font-medium flex items-center justify-center gap-2 hover:border-green-500 dark:border-gray-700"
                   >
                     {copied === 'template' ? <Check size={18} /> : <Copy size={18} />}
                     Copy Recruiter Email Template
@@ -325,7 +330,7 @@ const Contact = () => {
           </p>
         </div>
       </AnimatedBorder>
-    </section>
+    </motion.div>
   )
 }
 
