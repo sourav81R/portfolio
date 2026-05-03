@@ -1,7 +1,8 @@
+import { useRef } from 'react'
 import { Briefcase, Calendar, MapPin } from 'lucide-react'
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion, useReducedMotion, useScroll, useSpring } from 'framer-motion'
 import AnimatedBorder from '../common/AnimatedBorder'
-import { getSectionRevealProps } from '../../lib/motion'
+import { getSectionRevealProps, MOTION_TOKENS } from '../../lib/motion'
 
 const experienceData = [
   {
@@ -28,26 +29,47 @@ const Experience = () => {
   const text = 'Experience'
   const reduceMotion = useReducedMotion()
   const sectionRevealProps = getSectionRevealProps(reduceMotion)
+  const sectionRef = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start 80%', 'end 60%'],
+  })
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 60,
+    damping: 20,
+  })
+
   return (
     <motion.div
       {...sectionRevealProps}
       className="px-4 py-20 sm:px-6 sm:py-24 lg:py-28"
     >
       <AnimatedBorder>
-        <div className="max-w-5xl mx-auto font-mono p-4 sm:p-6 md:p-10">
+        <div ref={sectionRef} className="max-w-5xl mx-auto font-mono p-4 sm:p-6 md:p-10">
           {/* Section Title */}
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-10 sm:mb-14 tracking-tight">
             {text}
           </h2>
 
-          <div className="relative border-l-2 border-gray-200 dark:border-gray-800 ml-3 md:ml-6 space-y-12">
+          <div className="relative ml-3 space-y-12 md:ml-6">
+            <div className="absolute bottom-0 left-0 top-0 w-[2px] bg-gray-200 dark:bg-gray-800" />
+            <motion.div
+              className="absolute left-0 top-0 w-[2px] bg-green-500"
+              style={{
+                scaleY: reduceMotion ? 1 : smoothProgress,
+                transformOrigin: 'top',
+              }}
+            />
             {experienceData.map((exp, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, x: -20 }}
+                initial={reduceMotion ? false : { opacity: 0, x: -24 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, amount: 0.12 }}
-                transition={{ duration: 0.25 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{
+                  duration: MOTION_TOKENS.durations.medium,
+                  ease: MOTION_TOKENS.easing,
+                }}
                 className="relative pl-8 md:pl-12 group"
               >
                 {/* Timeline Dot */}

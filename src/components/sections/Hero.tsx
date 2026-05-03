@@ -24,7 +24,9 @@ import {
   Terminal as TerminalIcon,
 } from 'lucide-react'
 import AnimatedBorder from '../common/AnimatedBorder'
+import DotGrid from '../common/DotGrid'
 import MagneticButton from '../common/MagneticButton'
+import WordCycle from '../common/WordCycle'
 import { getSectionRevealProps } from '../../lib/motion'
 import { useCommandPalette } from '../../store/useCommandpalette'
 import { useAppStore } from '../../store/useAppStore'
@@ -210,6 +212,13 @@ const heroProof = [
   'Recruiter-friendly case studies',
   'Modern React and TypeScript focus',
   'Frontend, APIs, and mobile experience',
+]
+
+const headlineWords = [
+  'interfaces',
+  'dashboards',
+  'case studies',
+  'frontend systems',
 ]
 
 const socialLinks = [
@@ -449,6 +458,9 @@ const Hero = () => {
         <div className="absolute left-[-8%] top-[22%] h-[280px] w-[280px] rounded-full bg-sky-500/10 blur-[90px]" />
         <div className="absolute bottom-[-8%] right-[22%] h-[260px] w-[260px] rounded-full bg-emerald-500/10 blur-[90px]" />
       </div>
+      <div className="absolute inset-0 z-0 opacity-80">
+        <DotGrid />
+      </div>
       <div className="grain-overlay absolute inset-0 z-[1]" />
 
       <motion.div
@@ -531,11 +543,17 @@ const Hero = () => {
                 className="mb-6 max-w-2xl"
               >
                 <p className="mb-3 text-sm font-medium uppercase tracking-[0.26em] text-gray-500 dark:text-gray-400">
-                  Building polished product experiences
+                  Recruiter-ready frontend engineer
                 </p>
                 <h1 className="text-4xl font-bold leading-[0.95] tracking-tight text-gray-950 dark:text-white sm:text-6xl lg:text-7xl">
                   {fullName}
                 </h1>
+                <div className="mt-4 text-xl font-semibold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
+                  <span>I build </span>
+                  <span className="text-emerald-600 dark:text-emerald-300">
+                    <WordCycle words={headlineWords} />
+                  </span>
+                </div>
                 <p className="mt-4 max-w-xl text-base leading-relaxed text-gray-600 dark:text-gray-300 sm:text-lg">
                   Full stack developer focused on clean interfaces, practical case studies, and API-driven products that are easy for recruiters and teams to evaluate.
                 </p>

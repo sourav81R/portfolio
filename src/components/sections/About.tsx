@@ -1,5 +1,6 @@
 import { Calendar, Code, Database, Zap, Users, Rocket, Brain } from 'lucide-react'
 import { motion, useReducedMotion } from 'framer-motion'
+import CountUp from '../common/CountUp'
 import FadeIn from '../common/FadeIn'
 import AnimatedBorder from '../common/AnimatedBorder'
 import { getSectionRevealProps } from '../../lib/motion'
@@ -13,6 +14,7 @@ const About = () => {
     {
       icon: Calendar,
       value: '2026',
+      countTo: 2026,
       label: 'Graduation Year',
       color: 'text-blue-500',
       bg: 'bg-blue-500/10',
@@ -20,6 +22,8 @@ const About = () => {
     {
       icon: Code,
       value: '3+',
+      countTo: 3,
+      suffix: '+',
       label: 'Major Projects',
       color: 'text-green-500',
       bg: 'bg-green-500/10',
@@ -149,7 +153,11 @@ const About = () => {
                       <stat.icon size={24} />
                     </div>
                     <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
-                      {stat.value}
+                      {typeof stat.countTo === 'number' ? (
+                        <CountUp to={stat.countTo} suffix={stat.suffix} />
+                      ) : (
+                        stat.value
+                      )}
                     </h3>
                     <p className="text-xs font-medium text-gray-500 dark:text-gray-400 text-center uppercase tracking-wider">
                       {stat.label}

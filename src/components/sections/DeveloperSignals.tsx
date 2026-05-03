@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { ArrowUpRight, BookOpenText, Code2, Github, Trophy } from 'lucide-react'
 import AnimatedBorder from '../common/AnimatedBorder'
 import Skeleton from '../common/Skeleton'
-import { getSectionRevealProps } from '../../lib/motion'
+import { getSectionRevealProps, MOTION_TOKENS } from '../../lib/motion'
 import { getDeveloperInsights, type DeveloperInsights } from '../../services/developerData'
 
 const DeveloperSignals = () => {
@@ -78,13 +78,13 @@ const DeveloperSignals = () => {
                     value={String(data?.leetcode.solved ?? 0)}
                     detail={`${data?.leetcode.ranking ?? 'N/A'} · ${data?.leetcode.streak ?? 0} day streak`}
                   />
-                  <div className="rounded-2xl border border-gray-200 bg-gray-50/70 p-5 dark:border-gray-800 dark:bg-gray-900/50">
+                  <ShimmerCard className="rounded-2xl border border-gray-200 bg-gray-50/70 p-5 dark:border-gray-800 dark:bg-gray-900/50">
                     <p className="text-xs uppercase tracking-[0.24em] text-gray-500 dark:text-gray-400">
                       Top Repositories
                     </p>
                     <div className="mt-4 space-y-3">
                       {data?.github.repos.slice(0, 3).map((repo) => (
-                        <a
+                        <ShimmerLinkCard
                           key={repo.id}
                           href={repo.html_url}
                           target="_blank"
@@ -98,15 +98,15 @@ const DeveloperSignals = () => {
                           <p className="mt-2 text-xs text-gray-600 dark:text-gray-400">
                             {repo.language ?? 'Multi-language'} · {repo.stargazers_count} stars
                           </p>
-                        </a>
+                        </ShimmerLinkCard>
                       ))}
                     </div>
-                  </div>
+                  </ShimmerCard>
                 </>
               )}
             </div>
 
-            <div className="rounded-2xl border border-gray-200 bg-gray-50/70 p-5 dark:border-gray-800 dark:bg-gray-900/50 sm:p-6">
+            <ShimmerCard className="rounded-2xl border border-gray-200 bg-gray-50/70 p-5 dark:border-gray-800 dark:bg-gray-900/50 sm:p-6">
               <div className="flex items-center gap-3">
                 <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-sky-500/10 text-sky-600 dark:text-sky-400">
                   <BookOpenText size={20} />
@@ -125,7 +125,7 @@ const DeveloperSignals = () => {
                 {loading
                   ? [1, 2, 3].map((key) => <Skeleton key={key} className="h-28" />)
                   : data?.articles.map((article, index) => (
-                      <motion.a
+                      <ShimmerLinkCard
                         key={article.id}
                         href={article.url}
                         target={article.url.startsWith('http') ? '_blank' : undefined}
@@ -150,10 +150,10 @@ const DeveloperSignals = () => {
                         <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
                           Published {new Date(article.publishedAt).toLocaleDateString()}
                         </p>
-                      </motion.a>
+                      </ShimmerLinkCard>
                     ))}
               </div>
-            </div>
+            </ShimmerCard>
           </div>
         </div>
       </AnimatedBorder>
@@ -172,14 +172,75 @@ const StatCard = ({
   value: string
   detail: string
 }) => (
-  <div className="rounded-2xl border border-gray-200 bg-gray-50/70 p-5 dark:border-gray-800 dark:bg-gray-900/50">
+  <ShimmerCard className="rounded-2xl border border-gray-200 bg-gray-50/70 p-5 dark:border-gray-800 dark:bg-gray-900/50">
     <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-sky-500/10 text-sky-600 dark:text-sky-400">
       <Icon size={19} />
     </div>
     <p className="mt-4 text-xs uppercase tracking-[0.24em] text-gray-500 dark:text-gray-400">{label}</p>
     <p className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">{value}</p>
     <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">{detail}</p>
-  </div>
+  </ShimmerCard>
+)
+
+const ShimmerCard = ({
+  children,
+  className,
+}: {
+  children: ReactNode
+  className: string
+}) => {
+  const reduceMotion = useReducedMotion()
+
+  return (
+    <motion.div
+      initial="rest"
+      whileHover={reduceMotion ? undefined : 'hover'}
+      className={`relative overflow-hidden ${className}`}
+    >
+      {children}
+      {!reduceMotion && <CardShimmer />}
+    </motion.div>
+  )
+}
+
+const ShimmerLinkCard = ({
+  children,
+  className,
+  ...props
+}: React.ComponentProps<typeof motion.a>) => {
+  const reduceMotion = useReducedMotion()
+
+  return (
+    <motion.a
+      initial="rest"
+      whileHover={reduceMotion ? undefined : 'hover'}
+      className={`relative overflow-hidden ${className ?? ''}`}
+      {...props}
+    >
+      {children}
+      {!reduceMotion && <CardShimmer />}
+    </motion.a>
+  )
+}
+
+const CardShimmer = () => (
+  <motion.div
+    variants={{
+      rest: {
+        x: '-140%',
+        opacity: 0,
+      },
+      hover: {
+        x: '140%',
+        opacity: 1,
+      },
+    }}
+    transition={{
+      duration: MOTION_TOKENS.durations.section,
+      ease: MOTION_TOKENS.easing,
+    }}
+    className="pointer-events-none absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-transparent via-white/40 to-transparent dark:via-white/10"
+  />
 )
 
 export default DeveloperSignals

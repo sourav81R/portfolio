@@ -1,7 +1,8 @@
 import { Suspense, lazy } from 'react'
 import ReactDOM from 'react-dom/client'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { PageTransition } from './components/common/PageTransition'
 import ErrorBoundary from './components/system/ErrorBoundary'
 import './index.css'
 
@@ -64,25 +65,12 @@ function AnimatedRoutes() {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<RouteTransition><Suspense fallback={<RouteFallback />}><App /></Suspense></RouteTransition>} />
-        <Route path="/dashboard" element={<RouteTransition><Suspense fallback={<RouteFallback />}><DashboardPage /></Suspense></RouteTransition>} />
-        <Route path="/case-studies/:slug" element={<RouteTransition><Suspense fallback={<RouteFallback />}><CaseStudyPage /></Suspense></RouteTransition>} />
+        <Route path="/" element={<PageTransition><Suspense fallback={<RouteFallback />}><App /></Suspense></PageTransition>} />
+        <Route path="/dashboard" element={<PageTransition><Suspense fallback={<RouteFallback />}><DashboardPage /></Suspense></PageTransition>} />
+        <Route path="/case-studies/:slug" element={<PageTransition><Suspense fallback={<RouteFallback />}><CaseStudyPage /></Suspense></PageTransition>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AnimatePresence>
-  )
-}
-
-function RouteTransition({ children }: { children: React.ReactNode }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -12 }}
-      transition={{ duration: 0.28 }}
-    >
-      {children}
-    </motion.div>
   )
 }
 

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import {
   ArrowRight,
   Download,
@@ -31,6 +32,7 @@ const CommandPalette = () => {
   const { open, setOpen } = useCommandPalette()
   const [query, setQuery] = useState('')
   const [activeIndex, setActiveIndex] = useState(0)
+  const reduceMotion = useReducedMotion()
   const navigate = useNavigate()
   const toggleRecruiterMode = useAppStore((state) => state.toggleRecruiterMode)
   const setThemePanelOpen = useAppStore((state) => state.setThemePanelOpen)
@@ -191,6 +193,28 @@ const CommandPalette = () => {
     setActiveIndex(0)
   }, [query, open])
 
+  const ghostSuggestion = useMemo(() => {
+    const trimmedQuery = query.trim()
+    if (!trimmedQuery) return ''
+
+    const normalizedQuery = trimmedQuery.toLowerCase()
+    const prefixMatch = filtered.find((command) =>
+      command.label.toLowerCase().startsWith(normalizedQuery)
+    )
+    const topMatch = prefixMatch ?? filtered[0]
+
+    if (!topMatch) return ''
+    if (topMatch.label.toLowerCase() === normalizedQuery) return ''
+
+    return topMatch.label
+  }, [filtered, query])
+
+  const ghostSuffix =
+    ghostSuggestion &&
+    ghostSuggestion.toLowerCase().startsWith(query.trim().toLowerCase())
+      ? ghostSuggestion.slice(query.trim().length)
+      : ''
+
   useEffect(() => {
     if (!open) return
 
@@ -207,6 +231,11 @@ const CommandPalette = () => {
         setActiveIndex((current) => (current - 1 + filtered.length) % filtered.length)
       }
 
+      if (event.key === 'ArrowRight' && ghostSuggestion) {
+        event.preventDefault()
+        setQuery(ghostSuggestion)
+      }
+
       if (event.key === 'Enter') {
         event.preventDefault()
         runCommand(filtered[activeIndex].action)
@@ -215,7 +244,7 @@ const CommandPalette = () => {
 
     window.addEventListener('keydown', onPaletteKeyDown)
     return () => window.removeEventListener('keydown', onPaletteKeyDown)
-  }, [activeIndex, filtered, open])
+  }, [activeIndex, filtered, ghostSuggestion, open])
 
   const grouped = filtered.reduce<Record<string, Command[]>>((acc, command) => {
     acc[command.group] ??= []
@@ -245,13 +274,34 @@ const CommandPalette = () => {
             <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-white/5 text-cyan-300">
               <Search size={18} />
             </span>
-            <div className="flex-1">
+            <div className="relative flex-1">
+              {query && ghostSuffix && (
+                <div className="pointer-events-none absolute inset-0 z-0 flex items-center text-sm">
+                  <span className="text-transparent">{query}</span>
+                  <AnimatePresence mode="wait">
+                    <motion.span
+                      key={ghostSuggestion}
+                      initial={reduceMotion ? false : { opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={reduceMotion ? undefined : { opacity: 0 }}
+                      transition={
+                        reduceMotion
+                          ? undefined
+                          : { duration: 0.18, ease: 'easeOut' }
+                      }
+                      className="text-white/28"
+                    >
+                      {ghostSuffix}
+                    </motion.span>
+                  </AnimatePresence>
+                </div>
+              )}
               <input
                 autoFocus
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search navigation, recruiter tools, install app, resume..."
-                className="w-full bg-transparent text-sm text-white outline-none placeholder:text-white/40"
+                className="relative z-10 w-full bg-transparent text-sm text-white outline-none placeholder:text-white/40"
               />
               <p className="mt-1 text-[11px] uppercase tracking-[0.2em] text-white/35">
                 {filtered.length} quick actions

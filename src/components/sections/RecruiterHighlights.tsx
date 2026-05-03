@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import {
   BriefcaseBusiness,
   Clock3,
@@ -10,6 +11,7 @@ import {
   Share2,
 } from 'lucide-react'
 import AnimatedBorder from '../common/AnimatedBorder'
+import { useAppStore } from '../../store/useAppStore'
 
 const quickFacts = [
   {
@@ -41,10 +43,51 @@ const valuePoints = [
 ]
 
 const RecruiterHighlights = () => {
+  const recruiterMode = useAppStore((state) => state.recruiterMode)
+  const reduceMotion = useReducedMotion()
+  const [showOverlay, setShowOverlay] = useState(false)
+  const previousRecruiterMode = useRef(recruiterMode)
+
+  useEffect(() => {
+    if (reduceMotion) {
+      previousRecruiterMode.current = recruiterMode
+      return
+    }
+
+    if (!previousRecruiterMode.current && recruiterMode) {
+      setShowOverlay(true)
+
+      const timeoutId = window.setTimeout(() => {
+        setShowOverlay(false)
+      }, 2000)
+
+      previousRecruiterMode.current = recruiterMode
+      return () => window.clearTimeout(timeoutId)
+    }
+
+    previousRecruiterMode.current = recruiterMode
+    return undefined
+  }, [recruiterMode, reduceMotion])
+
   return (
     <section className="px-4 sm:px-6 py-12 sm:py-16 lg:py-20">
       <AnimatedBorder>
-        <div className="max-w-6xl mx-auto p-4 sm:p-6 md:p-10 font-mono">
+        <div className="relative max-w-6xl mx-auto p-4 sm:p-6 md:p-10 font-mono">
+          {!reduceMotion && (
+            <AnimatePresence>
+              {showOverlay && (
+                <motion.div
+                  initial={{ opacity: 0, y: -12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -12 }}
+                  transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+                  className="pointer-events-none absolute right-4 top-4 z-20 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm font-medium text-emerald-700 shadow-lg backdrop-blur-md dark:text-emerald-300"
+                >
+                  Recruiter mode on, showing what matters most.
+                </motion.div>
+              )}
+            </AnimatePresence>
+          )}
           <motion.div
             initial={{ opacity: 0, y: 18 }}
             whileInView={{ opacity: 1, y: 0 }}
