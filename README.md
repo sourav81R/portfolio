@@ -11,11 +11,13 @@ A production-style frontend portfolio built with React 19, TypeScript, Tailwind 
 
 - Single-page landing experience with modular sections and route transitions
 - Dedicated routes for case studies and a dashboard view
-- Glassy product-style UI with animated borders, motion-rich interactions, and theme support
-- Scroll-aware floating navbar with active section tracking and progress indicator
+- Glassy product-style UI with animated borders, Framer Motion-first interactions, and theme support
+- Scroll-aware floating navbar with active section tracking and spring-smoothed progress indicator
 - Command palette with navigation shortcuts and quick actions via `Ctrl/Cmd + K`
 - Recruiter mode, theme customizer, and dismissible open-to-work banner
-- Searchable, filterable, draggable projects grid with modal previews and case-study navigation
+- Searchable, filterable, draggable projects grid with modal previews, case-study navigation, and isolated 3D hover flips
+- Skill cards with staggered entry, glow states, icon motion, and single-card hover rotation
+- Hero section with floating visual elements, magnetic CTAs, and reduced-motion-aware motion behavior
 - Dashboard analytics powered by persisted interaction events in Zustand
 - Developer signals section with GitHub, LeetCode, and article data plus cache-backed fallbacks
 - AI Lab with project recommendations and resume analysis
@@ -36,6 +38,13 @@ A production-style frontend portfolio built with React 19, TypeScript, Tailwind 
 - `mammoth`
 - Vite via `rolldown-vite`
 - Vitest + Testing Library
+
+## Motion System
+
+- All primary UI animations use Framer Motion.
+- Section entry animations are centralized through [`src/lib/motion.ts`](/c:/portfolio2/sourav-portfolio/src/lib/motion.ts) for consistent reveal timing and `viewport={{ once: true }}` behavior.
+- Shared animated surfaces like [`src/components/common/AnimatedBorder.tsx`](/c:/portfolio2/sourav-portfolio/src/components/common/AnimatedBorder.tsx), [`src/components/common/MagneticButton.tsx`](/c:/portfolio2/sourav-portfolio/src/components/common/MagneticButton.tsx), and the navbar progress bar are driven by Framer Motion.
+- Reduced motion is respected with `useReducedMotion()` so heavy transforms and looping motion degrade cleanly when the user prefers less animation.
 
 ## Routes
 
@@ -67,13 +76,19 @@ Most sections are lazy-loaded and mounted near the viewport to reduce initial wo
 
 ### Navigation and shell
 
-- [`src/components/layout/Navbar.tsx`](/c:/portfolio2/sourav-portfolio/src/components/layout/Navbar.tsx) handles floating navigation, active section highlighting, recruiter mode, theme toggle, and dashboard navigation.
+- [`src/components/layout/Navbar.tsx`](/c:/portfolio2/sourav-portfolio/src/components/layout/Navbar.tsx) handles floating navigation, active section highlighting, recruiter mode, theme toggle, dashboard navigation, and spring-based scroll progress.
 - [`src/components/common/CommandPalette.tsx`](/c:/portfolio2/sourav-portfolio/src/components/common/CommandPalette.tsx) provides fuzzy command search, keyboard navigation, route shortcuts, and quick actions.
 - [`src/components/common/PwaInstallPrompt.tsx`](/c:/portfolio2/sourav-portfolio/src/components/common/PwaInstallPrompt.tsx) exposes installable-app UX when supported.
 
+### Motion-rich sections
+
+- [`src/components/sections/Hero.tsx`](/c:/portfolio2/sourav-portfolio/src/components/sections/Hero.tsx) includes floating profile visuals, magnetic CTA buttons, animated status indicators, and terminal-style interaction.
+- [`src/components/sections/Skills.tsx`](/c:/portfolio2/sourav-portfolio/src/components/sections/Skills.tsx) renders staggered skill groups, glow-on-hover cards, optional audio feedback, and isolated 3D hover rotation so only one skill card rotates at a time.
+- [`src/components/sections/Projects.tsx`](/c:/portfolio2/sourav-portfolio/src/components/sections/Projects.tsx) uses isolated hover state per card so only one project card performs the 3D `rotateY` flip at a time.
+
 ### Projects and case studies
 
-- [`src/components/sections/Projects.tsx`](/c:/portfolio2/sourav-portfolio/src/components/sections/Projects.tsx) includes category filters, fuzzy search, recruiter-aware ordering, drag-and-drop reordering, modal previews, and live demo embeds.
+- [`src/components/sections/Projects.tsx`](/c:/portfolio2/sourav-portfolio/src/components/sections/Projects.tsx) includes category filters, fuzzy search, recruiter-aware ordering, drag-and-drop reordering, modal previews, live demo embeds, and per-card motion interactions.
 - [`src/hooks/useProjectDiscovery.ts`](/c:/portfolio2/sourav-portfolio/src/hooks/useProjectDiscovery.ts) centralizes project filtering, prioritization, and recommendation inputs.
 - [`src/data/projects.ts`](/c:/portfolio2/sourav-portfolio/src/data/projects.ts) contains structured project metadata, images, impact notes, and case-study links.
 - [`src/data/caseStudies.ts`](/c:/portfolio2/sourav-portfolio/src/data/caseStudies.ts) powers the dedicated case-study routes.
@@ -97,6 +112,7 @@ Most sections are lazy-loaded and mounted near the viewport to reduce initial wo
 - [`src/components/system/SectionErrorBoundary.tsx`](/c:/portfolio2/sourav-portfolio/src/components/system/SectionErrorBoundary.tsx) isolates failures per homepage section.
 - [`src/main.tsx`](/c:/portfolio2/sourav-portfolio/src/main.tsx) lazy-loads routes and manages service worker behavior for dev and production.
 - [`src/App.tsx`](/c:/portfolio2/sourav-portfolio/src/App.tsx) defers below-the-fold section rendering with viewport-aware loading.
+- Shared loading placeholders and animated decorative layers are motion-driven rather than CSS-keyframe driven in the main app surfaces that were recently updated.
 
 ## Project Structure
 
@@ -185,3 +201,4 @@ These slugs currently have dedicated route content:
 - The active application lives in this `sourav-portfolio/` folder.
 - The workspace root duplicate `package.json` setup was removed; this folder is now the single source of truth for app dependencies.
 - Some live-data widgets use fallback/mock data when upstream data is unavailable.
+- Recent interaction updates focused on keeping hover rotations isolated per card in both the Projects and Skills sections.

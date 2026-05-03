@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type MouseEvent } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import AnimatedBorder from '../common/AnimatedBorder'
 import { projects as projectData, type ProjectCategory, type ProjectRecord } from '../../data/projects'
+import useCoarsePointer from '../../hooks/useCoarsePointer'
 import { getSectionRevealProps } from '../../lib/motion'
 import { useAppStore } from '../../store/useAppStore'
 import { useProjectDiscovery } from '../../hooks/useProjectDiscovery'
@@ -24,6 +25,7 @@ const projectFallbackImage = `${import.meta.env.BASE_URL}og-preview.png`
 
 const Projects = () => {
   const reduceMotion = useReducedMotion()
+  const isCoarsePointer = useCoarsePointer()
   const sectionRevealProps = getSectionRevealProps(reduceMotion)
   const recruiterMode = useAppStore((state) => state.recruiterMode)
   const projectOrder = useAppStore((state) => state.projectOrder)
@@ -37,6 +39,7 @@ const Projects = () => {
   const [query, setQuery] = useState('')
   const [draggingSlug, setDraggingSlug] = useState<string | null>(null)
   const [hoveredProjectSlug, setHoveredProjectSlug] = useState<string | null>(null)
+  const [projectTapRotations, setProjectTapRotations] = useState<Record<string, number>>({})
 
   useEffect(() => {
     initializeProjectOrder(projectData)
@@ -51,6 +54,21 @@ const Projects = () => {
       recruiterMode,
       projectOrder,
     })
+
+  const handleProjectCardClick =
+    (slug: string) => (event: MouseEvent<HTMLDivElement>) => {
+      if (!isCoarsePointer || reduceMotion) return
+
+      const target = event.target as HTMLElement
+      if (target.closest('button, a, input, textarea, iframe, video')) {
+        return
+      }
+
+      setProjectTapRotations((current) => ({
+        ...current,
+        [slug]: (current[slug] ?? 0) + 1,
+      }))
+    }
 
   return (
     <motion.div
@@ -183,6 +201,11 @@ const Projects = () => {
               {filteredProjects.map((project) => (
                 (() => {
                   const isHovered = hoveredProjectSlug === project.slug
+                  const projectRotation = isCoarsePointer
+                    ? (projectTapRotations[project.slug] ?? 0) * 360
+                    : isHovered
+                      ? 360
+                      : 0
 
                   return (
                     <motion.article
@@ -212,17 +235,20 @@ const Projects = () => {
                     >
                       <div className="h-full [perspective:1000px]">
                         <motion.div
+                          onClick={handleProjectCardClick(project.slug)}
                           animate={
                             reduceMotion
                               ? undefined
                               : {
-                                  rotateY: isHovered ? 360 : 0,
+                                  rotateY: projectRotation,
                                 }
                           }
                           transition={
                             reduceMotion
                               ? undefined
-                              : isHovered
+                              : isCoarsePointer
+                                ? { duration: 0.7, ease: 'easeInOut' }
+                                : isHovered
                                 ? { duration: 0.7, ease: 'easeInOut' }
                                 : { duration: 0 }
                           }

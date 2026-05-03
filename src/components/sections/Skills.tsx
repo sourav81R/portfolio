@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback, useEffect, useRef, type MouseEvent } from 'react'
 import {
   Code,
   Database,
@@ -31,6 +31,7 @@ import {
   type Variants,
 } from 'framer-motion'
 import AnimatedBorder from '../common/AnimatedBorder'
+import useCoarsePointer from '../../hooks/useCoarsePointer'
 import { getSectionRevealProps } from '../../lib/motion'
 
 const skillCategories = [
@@ -147,7 +148,9 @@ const Skills = () => {
   const noteTimeoutsRef = useRef<number[]>([])
   const soundCtxRef = useRef<AudioContext | null>(null)
   const reduceMotion = useReducedMotion()
+  const isCoarsePointer = useCoarsePointer()
   const sectionRevealProps = getSectionRevealProps(reduceMotion)
+  const [skillTapRotations, setSkillTapRotations] = useState<Record<string, number>>({})
 
   const musicIcons = [Music, Music2, Music3, Music4]
 
@@ -209,6 +212,21 @@ const Skills = () => {
     },
     [soundEnabled]
   )
+
+  const handleSkillCardClick =
+    (skillId: string) => (event: MouseEvent<HTMLDivElement>) => {
+      if (!isCoarsePointer || reduceMotion) return
+
+      const target = event.target as HTMLElement
+      if (target.closest('button, a, input, textarea')) {
+        return
+      }
+
+      setSkillTapRotations((current) => ({
+        ...current,
+        [skillId]: (current[skillId] ?? 0) + 1,
+      }))
+    }
 
   return (
     <motion.div
@@ -277,6 +295,11 @@ const Skills = () => {
                     const IconComponent = skill.icon || Box
                     const skillId = `${category.title}-${skill.name}`
                     const isHovered = hoveredSkill === skillId
+                    const skillRotation = isCoarsePointer
+                      ? (skillTapRotations[skillId] ?? 0) * 360
+                      : isHovered
+                        ? 360
+                        : 0
 
                     return (
                       <motion.div
@@ -290,18 +313,24 @@ const Skills = () => {
                       >
                         <div className="relative h-full w-full [perspective:1000px]">
                           <motion.div
+                            onClick={handleSkillCardClick(skillId)}
                             animate={
                               reduceMotion
                                 ? undefined
                                 : {
                                     scale: isHovered ? 1.08 : 1,
-                                    rotateY: isHovered ? 360 : 0,
+                                    rotateY: skillRotation,
                                   }
                             }
                             transition={
                               reduceMotion
                                 ? undefined
-                                : isHovered
+                                : isCoarsePointer
+                                  ? {
+                                      duration: 0.7,
+                                      ease: 'easeInOut',
+                                    }
+                                  : isHovered
                                   ? {
                                       type: 'spring',
                                       stiffness: 300,
