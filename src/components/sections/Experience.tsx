@@ -6,9 +6,27 @@ import { getSectionRevealProps, MOTION_TOKENS } from '../../lib/motion'
 
 const experienceData = [
   {
+    role: 'Full Stack Developer Intern',
+    company: 'Euphoria GenX',
+    period: 'Aug 2025 - Feb 2026',
+    location: 'Remote',
+    description: [
+      'Completed a structured skill development and internship program focused on full-stack web development.',
+      'Built the Foodooza real-time food delivery application with end-to-end frontend and backend functionality.',
+      'Implemented responsive UI flows, real-time interactions, and integration across core product features.',
+      'Strengthened debugging, deployment, and collaboration skills in an industry-style development environment.',
+    ],
+    metrics: [
+      '6-month internship program completed',
+      '1 end-to-end food delivery app built',
+      'Real-time UX and backend integration delivered',
+    ],
+    tech: ['React.js', 'Node.js', 'Express.js', 'MongoDB', 'REST APIs', 'Tailwind CSS'],
+  },
+  {
     role: 'Full-Stack Developer Intern',
     company: 'Pinnacle Labs Pvt Ltd',
-    period: '2024',
+    period: 'Oct 2024 - Nov 2024',
     location: 'Remote',
     description: [
       'Developed frontend components using React and modern JavaScript',
