@@ -1,0 +1,75 @@
+<svg width="1200" height="820" viewBox="0 0 1200 820" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Euphoria GenX internship certificate for Sourav Chowdhury</title>
+  <desc id="desc">Certificate of internship awarded to Sourav Chowdhury for the PetPooja real-time food delivery web app project, issued on 18 February 2026.</desc>
+  <defs>
+    <linearGradient id="navyGradient" x1="600" y1="24" x2="600" y2="290" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F4D87"/>
+      <stop offset="1" stop-color="#0A2E5D"/>
+    </linearGradient>
+    <linearGradient id="goldGradient" x1="431" y1="249" x2="769" y2="249" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E3A81B"/>
+      <stop offset="0.5" stop-color="#FFD76A"/>
+      <stop offset="1" stop-color="#C88A11"/>
+    </linearGradient>
+    <radialGradient id="watermark" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(600 450) rotate(90) scale(140 140)">
+      <stop stop-color="#F4DA7A" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#F4DA7A" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="cardShadow" x="18" y="10" width="1164" height="800" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#111827" flood-opacity="0.22"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="820" fill="#1D1D1D"/>
+  <g filter="url(#cardShadow)">
+    <rect x="48" y="22" width="1104" height="756" fill="#F8F6F2"/>
+    <rect x="48" y="22" width="1104" height="756" stroke="#D49A1E" stroke-width="2"/>
+  </g>
+
+  <path d="M48 54H1152V178L664 318H536L48 178V54Z" fill="url(#navyGradient)"/>
+  <path d="M48 134L536 278H664L1152 134V172L664 316H536L48 172V134Z" fill="url(#goldGradient)"/>
+  <path d="M48 178L538 316H662L1152 178V248L820 414L48 248V178Z" fill="#0D244A" opacity="0.92"/>
+
+  <path d="M48 248L430 432L48 432V248Z" fill="#EBE7E1"/>
+  <path d="M1152 248L770 432L1152 432V248Z" fill="#EBE7E1"/>
+  <path d="M48 778V432L430 432L600 520L770 432H1152V778H48Z" fill="#FCFBF9"/>
+  <circle cx="600" cy="450" r="138" fill="url(#watermark)"/>
+
+  <rect x="84" y="58" width="1032" height="684" stroke="#D8A439" stroke-width="2"/>
+
+  <text x="600" y="150" text-anchor="middle" fill="#F7F3E8" font-family="Georgia, 'Times New Roman', serif" font-size="76" font-weight="700">Certificate</text>
+  <text x="600" y="206" text-anchor="middle" fill="#FFD14A" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700">OF</text>
+
+  <g>
+    <circle cx="600" cy="274" r="56" fill="#082755" stroke="#E0A92A" stroke-width="12"/>
+    <circle cx="600" cy="274" r="42" fill="#0B3978" stroke="#F5D262" stroke-width="6"/>
+    <path d="M600 242L616 278H605V306H595V278H584L600 242Z" fill="#F9DC72"/>
+    <path d="M572 286C576 304 589 318 600 318C611 318 624 304 628 286" stroke="#F9DC72" stroke-width="8" stroke-linecap="round"/>
+  </g>
+
+  <text x="600" y="390" text-anchor="middle" fill="#111827" font-family="Georgia, 'Times New Roman', serif" font-size="66" font-weight="700">Internship</text>
+  <text x="600" y="430" text-anchor="middle" fill="#44403C" font-family="Arial, Helvetica, sans-serif" font-size="19">This Certificate is awarded to</text>
+  <text x="600" y="474" text-anchor="middle" fill="#111827" font-family="'Palatino Linotype', Georgia, serif" font-size="46" font-style="italic">Sourav Chowdhury</text>
+  <text x="600" y="510" text-anchor="middle" fill="#111827" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="700">Greater Kolkata College Of Engineering &amp; Management</text>
+  <text x="600" y="548" text-anchor="middle" fill="#57534E" font-family="Arial, Helvetica, sans-serif" font-size="18" font-style="italic">This candidate has successfully completed the Skill Development and Internship programme</text>
+  <text x="600" y="580" text-anchor="middle" fill="#111827" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">(from 5th August 2025 to 16th February 2026)</text>
+  <text x="600" y="612" text-anchor="middle" fill="#57534E" font-family="Arial, Helvetica, sans-serif" font-size="18" font-style="italic">and successfully worked on the</text>
+  <text x="600" y="644" text-anchor="middle" fill="#111827" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="700">PetPooja - Real-Time Food Delivery Web App Project</text>
+
+  <g transform="translate(122 632)">
+    <text x="0" y="0" fill="#3F3FB5" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700">Euphoria</text>
+    <text x="3" y="32" fill="#5B5BD6" font-family="Arial, Helvetica, sans-serif" font-size="24">genX</text>
+    <text x="0" y="62" fill="#3F3FB5" font-family="Arial, Helvetica, sans-serif" font-size="18" letter-spacing="4">GET YOURSELF IT READY</text>
+  </g>
+
+  <g transform="translate(842 620)">
+    <path d="M0 56H154" stroke="#111827" stroke-width="2"/>
+    <path d="M118 10C110 28 104 52 111 58C118 64 132 42 126 30C122 22 108 20 96 38C86 52 82 48 86 32" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="77" y="88" text-anchor="middle" fill="#111827" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">Avoy Debnath</text>
+    <text x="77" y="116" text-anchor="middle" fill="#44403C" font-family="Arial, Helvetica, sans-serif" font-size="16">Vice President</text>
+  </g>
+
+  <text x="96" y="716" fill="#111827" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">SL NO: EG-26-1586</text>
+  <text x="600" y="716" text-anchor="middle" fill="#0F274D" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">ISO 9001:2015</text>
+  <text x="886" y="716" fill="#111827" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">Date: 18th February 2026</text>
+</svg>

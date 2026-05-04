@@ -1,8 +1,12 @@
 import { useRef } from 'react'
-import { Briefcase, Calendar, MapPin } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { Briefcase, Calendar, ExternalLink, FileText, MapPin, ShieldCheck } from 'lucide-react'
 import { motion, useReducedMotion, useScroll, useSpring } from 'framer-motion'
 import AnimatedBorder from '../common/AnimatedBorder'
 import { getSectionRevealProps, MOTION_TOKENS } from '../../lib/motion'
+
+const resolvePublicAsset = (path: string) =>
+  `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`
 
 const experienceData = [
   {
@@ -22,6 +26,20 @@ const experienceData = [
       'Real-time UX and backend integration delivered',
     ],
     tech: ['React.js', 'Node.js', 'Express.js', 'MongoDB', 'REST APIs', 'Tailwind CSS'],
+    credential: {
+      label: 'Verified internship credential',
+      title: 'Certificate of Internship',
+      summary:
+        'Issued by Euphoria GenX for successfully completing the internship programme and delivering the PetPooja/Foodooza real-time food delivery web app project.',
+      fileSrc: resolvePublicAsset('/images/euphoria-internship-certificate.svg'),
+      previewImageSrc: resolvePublicAsset('/images/euphoria-internship-certificate.svg'),
+      previewImageAlt:
+        'Euphoria GenX internship certificate awarded to Sourav Chowdhury for the PetPooja real-time food delivery web app project.',
+      credentialId: 'EG-26-1586',
+      issuedOn: '18 Feb 2026',
+      projectLabel: 'PetPooja / Foodooza case study',
+      projectHref: '/case-studies/foodooza',
+    },
   },
   {
     role: 'Full-Stack Developer Intern',
@@ -40,6 +58,15 @@ const experienceData = [
       '<24h turnaround on recurring UI and data bugs',
     ],
     tech: ['React', 'JavaScript', 'REST APIs', 'Git'],
+    credential: {
+      label: 'Internship completion certificate',
+      title: 'Pinnacle Labs Internship Certificate',
+      summary:
+        'Certificate PDF for the remote full-stack internship at Pinnacle Labs Pvt Ltd, covering frontend delivery, API integration, debugging, and SDLC-based development practices.',
+      fileSrc: resolvePublicAsset('/images/pinnacle-certificate.pdf'),
+      verifyLabel: 'Verify on Pinnacle Labs',
+      verifyHref: 'https://pinnaclelabs.tech/verify/',
+    },
   },
 ]
 
@@ -146,6 +173,121 @@ const Experience = () => {
                       </span>
                     ))}
                   </div>
+
+                  {exp.credential && (
+                    <div className="mb-6 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.92fr)]">
+                      <div className="rounded-2xl border border-sky-500/20 bg-sky-500/10 p-4 sm:p-5">
+                        <p className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.24em] text-sky-700 dark:text-sky-300">
+                          <ShieldCheck size={14} />
+                          {exp.credential.label}
+                        </p>
+                        <h4 className="mt-3 text-lg font-semibold text-gray-900 dark:text-white">
+                          {exp.credential.title}
+                        </h4>
+                        <p className="mt-2 text-sm leading-relaxed text-gray-700 dark:text-gray-300">
+                          {exp.credential.summary}
+                        </p>
+
+                        {(exp.credential.credentialId || exp.credential.issuedOn) && (
+                          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                            {exp.credential.credentialId && (
+                              <div className="rounded-2xl border border-white/50 bg-white/70 p-3 dark:border-white/10 dark:bg-black/20">
+                                <p className="text-[11px] uppercase tracking-[0.22em] text-gray-500 dark:text-gray-400">
+                                  Credential ID
+                                </p>
+                                <p className="mt-2 text-sm font-semibold text-gray-900 dark:text-white">
+                                  {exp.credential.credentialId}
+                                </p>
+                              </div>
+                            )}
+                            {exp.credential.issuedOn && (
+                              <div className="rounded-2xl border border-white/50 bg-white/70 p-3 dark:border-white/10 dark:bg-black/20">
+                                <p className="text-[11px] uppercase tracking-[0.22em] text-gray-500 dark:text-gray-400">
+                                  Issue Date
+                                </p>
+                                <p className="mt-2 text-sm font-semibold text-gray-900 dark:text-white">
+                                  {exp.credential.issuedOn}
+                                </p>
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        <div className="mt-4 flex flex-wrap gap-2">
+                          <a
+                            href={exp.credential.fileSrc}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 rounded-full bg-gray-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+                          >
+                            Open certificate
+                            <ExternalLink size={15} />
+                          </a>
+                          {exp.credential.projectHref && exp.credential.projectLabel && (
+                            <Link
+                              to={exp.credential.projectHref}
+                              className="inline-flex items-center gap-2 rounded-full border border-sky-500/30 px-4 py-2 text-sm font-semibold text-sky-700 transition hover:bg-sky-500/10 dark:text-sky-300"
+                            >
+                              {exp.credential.projectLabel}
+                            </Link>
+                          )}
+                          {exp.credential.verifyHref && exp.credential.verifyLabel && (
+                            <a
+                              href={exp.credential.verifyHref}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 px-4 py-2 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-500/10 dark:text-emerald-300"
+                            >
+                              {exp.credential.verifyLabel}
+                            </a>
+                          )}
+                        </div>
+                      </div>
+
+                      {exp.credential.previewImageSrc ? (
+                        <a
+                          href={exp.credential.fileSrc}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-gray-800 dark:bg-gray-950"
+                        >
+                          <img
+                            src={exp.credential.previewImageSrc}
+                            alt={exp.credential.previewImageAlt}
+                            loading="lazy"
+                            decoding="async"
+                            className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+                          />
+                        </a>
+                      ) : (
+                        <a
+                          href={exp.credential.fileSrc}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group flex min-h-[260px] flex-col justify-between rounded-2xl border border-gray-200 bg-gradient-to-br from-white via-slate-50 to-sky-50 p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-sky-300 hover:shadow-md dark:border-gray-800 dark:from-gray-950 dark:via-slate-950 dark:to-sky-950/50"
+                        >
+                          <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-red-500/10 text-red-600 dark:text-red-400">
+                            <FileText size={24} />
+                          </div>
+                          <div className="mt-6">
+                            <p className="text-xs uppercase tracking-[0.24em] text-sky-700 dark:text-sky-300">
+                              Certificate PDF
+                            </p>
+                            <h5 className="mt-3 text-xl font-semibold text-gray-900 dark:text-white">
+                              {exp.company}
+                            </h5>
+                            <p className="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+                              Open the uploaded certificate document for the full internship proof and issuer verification details.
+                            </p>
+                          </div>
+                          <div className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-sky-700 dark:text-sky-300">
+                            View PDF
+                            <ExternalLink size={15} />
+                          </div>
+                        </a>
+                      )}
+                    </div>
+                  )}
 
                   <div className="flex flex-wrap gap-2">
                     {exp.tech.map((tech) => (
