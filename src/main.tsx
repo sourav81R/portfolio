@@ -9,6 +9,8 @@ import './index.css'
 const App = lazy(() => import('./App'))
 const DashboardPage = lazy(() => import('./pages/DashboardView'))
 const CaseStudyPage = lazy(() => import('./pages/CaseStudyPage'))
+const baseUrl = import.meta.env.BASE_URL
+const routerBasename = baseUrl === '/' ? undefined : baseUrl.replace(/\/$/, '')
 
 const savedTheme = localStorage.getItem('theme')
 
@@ -21,7 +23,7 @@ if (savedTheme === 'dark') {
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     if (import.meta.env.PROD) {
-      navigator.serviceWorker.register('/sw.js').catch((error) => {
+      navigator.serviceWorker.register(`${baseUrl}sw.js`).catch((error) => {
         console.error('Service worker registration failed', error)
       })
       return
@@ -53,7 +55,7 @@ if (!rootElement) {
 
 ReactDOM.createRoot(rootElement).render(
   <ErrorBoundary>
-    <BrowserRouter>
+    <BrowserRouter basename={routerBasename}>
       <AnimatedRoutes />
     </BrowserRouter>
   </ErrorBoundary>
