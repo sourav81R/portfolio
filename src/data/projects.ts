@@ -21,8 +21,11 @@ export type ProjectRecord = {
   previewVideo?: string
 }
 
-const resolvePublicAsset = (path: string) =>
-  `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`
+const resolvePublicAsset = (path: string) => {
+  const baseUrl = import.meta.env.BASE_URL || '/';
+  const normalizedBase = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
+  return `${normalizedBase}${path.replace(/^\//, '')}`;
+};
 
 export const projects: ProjectRecord[] = [
   {
