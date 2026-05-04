@@ -22,6 +22,12 @@ type Category = 'All' | ProjectCategory
 
 const categories: Category[] = ['All', 'Web', 'AI', 'Mobile', 'Realtime']
 const projectFallbackImage = `${import.meta.env.BASE_URL}og-preview.png`
+const mobileSpinKeyframes = [0, 90, 180, 270, 360]
+const mobileSpinTransition = {
+  duration: 0.7,
+  ease: 'easeInOut',
+  times: [0, 0.28, 0.56, 0.82, 1],
+} as const
 
 const Projects = () => {
   const reduceMotion = useReducedMotion()
@@ -201,11 +207,9 @@ const Projects = () => {
               {filteredProjects.map((project) => (
                 (() => {
                   const isHovered = hoveredProjectSlug === project.slug
-                  const projectRotation = isCoarsePointer
-                    ? (projectTapRotations[project.slug] ?? 0) * 360
-                    : isHovered
-                      ? 360
-                      : 0
+                  const projectTapCount = projectTapRotations[project.slug] ?? 0
+                  const shouldSpinOnTap = isCoarsePointer && projectTapCount > 0
+                  const projectRotation = isHovered ? 360 : 0
 
                   return (
                     <motion.article
@@ -235,19 +239,25 @@ const Projects = () => {
                     >
                       <div className="h-full [perspective:1000px]">
                         <motion.div
+                          key={shouldSpinOnTap ? `${project.slug}-${projectTapCount}` : project.slug}
                           onClick={handleProjectCardClick(project.slug)}
+                          initial={{ rotateY: 0 }}
                           animate={
                             reduceMotion
                               ? undefined
-                              : {
+                              : shouldSpinOnTap
+                                ? {
+                                    rotateY: mobileSpinKeyframes,
+                                  }
+                                : {
                                   rotateY: projectRotation,
                                 }
                           }
                           transition={
                             reduceMotion
                               ? undefined
-                              : isCoarsePointer
-                                ? { duration: 0.7, ease: 'easeInOut' }
+                              : shouldSpinOnTap
+                                ? mobileSpinTransition
                                 : isHovered
                                 ? { duration: 0.7, ease: 'easeInOut' }
                                 : { duration: 0 }

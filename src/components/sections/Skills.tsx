@@ -116,6 +116,13 @@ const skillItemVariants: Variants = {
   },
 }
 
+const mobileSpinKeyframes = [0, 90, 180, 270, 360]
+const mobileSpinTransition = {
+  duration: 0.7,
+  ease: 'easeInOut',
+  times: [0, 0.28, 0.56, 0.82, 1],
+} as const
+
 const playSkillSound = (index: number) => {
   const audioWindow = window as AudioWindow
   const AudioContextCtor = window.AudioContext || audioWindow.webkitAudioContext
@@ -295,11 +302,9 @@ const Skills = () => {
                     const IconComponent = skill.icon || Box
                     const skillId = `${category.title}-${skill.name}`
                     const isHovered = hoveredSkill === skillId
-                    const skillRotation = isCoarsePointer
-                      ? (skillTapRotations[skillId] ?? 0) * 360
-                      : isHovered
-                        ? 360
-                        : 0
+                    const skillTapCount = skillTapRotations[skillId] ?? 0
+                    const shouldSpinOnTap = isCoarsePointer && skillTapCount > 0
+                    const skillRotation = isHovered ? 360 : 0
 
                     return (
                       <motion.div
@@ -313,11 +318,18 @@ const Skills = () => {
                       >
                         <div className="relative h-full w-full [perspective:1000px]">
                           <motion.div
+                            key={shouldSpinOnTap ? `${skillId}-${skillTapCount}` : skillId}
                             onClick={handleSkillCardClick(skillId)}
+                            initial={{ rotateY: 0, scale: 1 }}
                             animate={
                               reduceMotion
                                 ? undefined
-                                : {
+                                : shouldSpinOnTap
+                                  ? {
+                                      rotateY: mobileSpinKeyframes,
+                                      scale: [1, 1.04, 1],
+                                    }
+                                  : {
                                     scale: isHovered ? 1.08 : 1,
                                     rotateY: skillRotation,
                                   }
@@ -325,11 +337,8 @@ const Skills = () => {
                             transition={
                               reduceMotion
                                 ? undefined
-                                : isCoarsePointer
-                                  ? {
-                                      duration: 0.7,
-                                      ease: 'easeInOut',
-                                    }
+                                : shouldSpinOnTap
+                                  ? mobileSpinTransition
                                   : isHovered
                                   ? {
                                       type: 'spring',
