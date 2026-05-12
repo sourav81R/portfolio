@@ -123,29 +123,42 @@ const mobileSpinTransition = {
   times: [0, 0.28, 0.56, 0.82, 1],
 } as const
 
-const playSkillSound = (index: number) => {
+const skillScale = [293.66, 329.63, 369.99, 440.0, 493.88, 587.33, 659.25, 739.99]
+
+const getOrCreateAudioContext = () => {
   const audioWindow = window as AudioWindow
   const AudioContextCtor = window.AudioContext || audioWindow.webkitAudioContext
   if (!AudioContextCtor) return null
 
-  const ctx = new AudioContextCtor()
-  const osc = ctx.createOscillator()
+  return new AudioContextCtor()
+}
+
+const playSkillSound = (ctx: AudioContext, index: number) => {
+  const now = ctx.currentTime
+  const baseFrequency = skillScale[index % skillScale.length]
+
+  const primaryOsc = ctx.createOscillator()
+  const overtoneOsc = ctx.createOscillator()
   const gain = ctx.createGain()
 
-  osc.connect(gain)
+  primaryOsc.connect(gain)
+  overtoneOsc.connect(gain)
   gain.connect(ctx.destination)
 
-  const scale = [261.63, 293.66, 329.63, 349.23, 392.0, 440.0, 493.88, 523.25]
-  osc.frequency.value = scale[index % scale.length]
-  osc.type = 'sine'
+  primaryOsc.type = 'triangle'
+  overtoneOsc.type = 'sine'
+  primaryOsc.frequency.setValueAtTime(baseFrequency, now)
+  overtoneOsc.frequency.setValueAtTime(baseFrequency * 2, now)
+  overtoneOsc.detune.setValueAtTime(8, now)
 
-  gain.gain.setValueAtTime(0.1, ctx.currentTime)
-  gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.5)
+  gain.gain.setValueAtTime(0.0001, now)
+  gain.gain.linearRampToValueAtTime(0.14, now + 0.008)
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22)
 
-  osc.start()
-  osc.stop(ctx.currentTime + 0.5)
-
-  return ctx
+  primaryOsc.start(now)
+  overtoneOsc.start(now)
+  primaryOsc.stop(now + 0.22)
+  overtoneOsc.stop(now + 0.2)
 }
 
 const Skills = () => {
@@ -184,23 +197,14 @@ const Skills = () => {
       globalIndex += skillIndex
 
       if (!soundCtxRef.current || soundCtxRef.current.state === 'closed') {
-        soundCtxRef.current = playSkillSound(globalIndex)
-      } else {
-        const osc = soundCtxRef.current.createOscillator()
-        const gain = soundCtxRef.current.createGain()
-        osc.connect(gain)
-        gain.connect(soundCtxRef.current.destination)
+        soundCtxRef.current = getOrCreateAudioContext()
+      }
 
-        const scale = [261.63, 293.66, 329.63, 349.23, 392.0, 440.0, 493.88, 523.25]
-        osc.frequency.value = scale[globalIndex % scale.length]
-        osc.type = 'sine'
-        gain.gain.setValueAtTime(0.1, soundCtxRef.current.currentTime)
-        gain.gain.exponentialRampToValueAtTime(
-          0.00001,
-          soundCtxRef.current.currentTime + 0.5
-        )
-        osc.start()
-        osc.stop(soundCtxRef.current.currentTime + 0.5)
+      if (soundCtxRef.current) {
+        if (soundCtxRef.current.state === 'suspended') {
+          void soundCtxRef.current.resume()
+        }
+        playSkillSound(soundCtxRef.current, globalIndex)
       }
 
       const newNote = {
@@ -272,7 +276,7 @@ const Skills = () => {
             <p className="mx-auto mt-4 max-w-2xl px-4 text-base text-gray-600 dark:text-gray-400 sm:text-lg">
               Powers and tools I use to build amazing things.
               <span className="mt-2 block text-sm font-medium text-green-500">
-                {soundEnabled ? 'Hover over skills to hear soft marimba notes.' : ''}
+                {soundEnabled ? 'Hover over skills to hear snappier marimba tones.' : ''}
               </span>
             </p>
           </motion.div>
