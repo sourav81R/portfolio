@@ -55,6 +55,7 @@ const CommandPalette = () => {
     { label: 'Go to Home', group: 'Navigate', action: () => go('#home'), shortcut: ['G', 'H'], keywords: ['hero', 'top'], icon: Search },
     { label: 'Go to About', group: 'Navigate', action: () => go('#about'), shortcut: ['G', 'A'], icon: Search },
     { label: 'Go to Projects', group: 'Navigate', action: () => go('#projects'), shortcut: ['G', 'P'], keywords: ['work', 'portfolio'], icon: Search },
+    { label: 'Go to GitHub', group: 'Navigate', action: () => go('#github'), keywords: ['contributions', 'activity', 'calendar'], icon: Github },
     { label: 'Go to Skills', group: 'Navigate', action: () => go('#skills'), icon: Search },
     { label: 'Go to Contact', group: 'Navigate', action: () => go('#contact'), shortcut: ['G', 'C'], icon: Mail },
     { label: 'Open Dashboard', group: 'Navigate', action: () => navigate('/dashboard'), keywords: ['analytics'], icon: LayoutDashboard },

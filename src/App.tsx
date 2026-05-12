@@ -22,6 +22,7 @@ const About = lazy(() => import('./components/sections/About'))
 const Experience = lazy(() => import('./components/sections/Experience'))
 const Skills = lazy(() => import('./components/sections/Skills'))
 const Projects = lazy(() => import('./components/sections/Projects'))
+const GitHubActivity = lazy(() => import('./components/sections/GitHubActivity'))
 const Education = lazy(() => import('./components/sections/Education'))
 const Certifications = lazy(() => import('./components/sections/Certifications'))
 const Contact = lazy(() => import('./components/sections/Contact'))
@@ -31,6 +32,7 @@ const sectionOrder = [
   'experience',
   'skills',
   'projects',
+  'github',
   'education',
   'certifications',
   'contact',
@@ -104,9 +106,10 @@ function App() {
       <LazySection id="experience" title="Experience" activeHash={activeHash} sectionIndex={1}><Experience /></LazySection>
       <LazySection id="skills" title="Skills" activeHash={activeHash} sectionIndex={2}><Skills /></LazySection>
       <LazySection id="projects" title="Projects" activeHash={activeHash} sectionIndex={3}><Projects /></LazySection>
-      <LazySection id="education" title="Education" activeHash={activeHash} sectionIndex={4}><Education /></LazySection>
-      <LazySection id="certifications" title="Certifications" activeHash={activeHash} sectionIndex={5}><Certifications /></LazySection>
-      <LazySection id="contact" title="Contact" activeHash={activeHash} sectionIndex={6}><Contact /></LazySection>
+      <LazySection id="github" title="GitHub Activity" activeHash={activeHash} sectionIndex={4}><GitHubActivity /></LazySection>
+      <LazySection id="education" title="Education" activeHash={activeHash} sectionIndex={5}><Education /></LazySection>
+      <LazySection id="certifications" title="Certifications" activeHash={activeHash} sectionIndex={6}><Certifications /></LazySection>
+      <LazySection id="contact" title="Contact" activeHash={activeHash} sectionIndex={7}><Contact /></LazySection>
       <Footer />
     </div>
   )

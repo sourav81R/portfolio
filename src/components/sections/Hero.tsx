@@ -137,6 +137,19 @@ const sectionCommands: SectionCommand[] = [
     ],
   },
   {
+    id: 'github',
+    label: 'GitHub',
+    commands: [
+      'github',
+      'github section',
+      'github activity',
+      'contribution graph',
+      'go to github',
+      'go to github section',
+      'go to github activity',
+    ],
+  },
+  {
     id: 'skills',
     label: 'Skills',
     commands: [
