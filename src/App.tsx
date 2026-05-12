@@ -18,27 +18,19 @@ import ThemeCustomizer from './components/common/ThemeCustomizer'
 import SectionErrorBoundary from './components/system/SectionErrorBoundary'
 import { useAppStore } from './store/useAppStore'
 
-const RecruiterHighlights = lazy(() => import('./components/sections/RecruiterHighlights'))
 const About = lazy(() => import('./components/sections/About'))
 const Experience = lazy(() => import('./components/sections/Experience'))
-const Testimonials = lazy(() => import('./components/sections/Testimonials'))
 const Skills = lazy(() => import('./components/sections/Skills'))
 const Projects = lazy(() => import('./components/sections/Projects'))
-const DeveloperSignals = lazy(() => import('./components/sections/DeveloperSignals'))
-const AIWorkbench = lazy(() => import('./components/sections/AIWorkbench'))
 const Education = lazy(() => import('./components/sections/Education'))
 const Certifications = lazy(() => import('./components/sections/Certifications'))
 const Contact = lazy(() => import('./components/sections/Contact'))
 
 const sectionOrder = [
-  'highlights',
   'about',
   'experience',
-  'testimonials',
   'skills',
   'projects',
-  'signals',
-  'ai-workbench',
   'education',
   'certifications',
   'contact',
@@ -108,17 +100,13 @@ function App() {
       <Navbar />
 
       <Hero />
-      <LazySection id="highlights" title="Recruiter Highlights" activeHash={activeHash} sectionIndex={0}><RecruiterHighlights /></LazySection>
-      <LazySection id="about" title="About" activeHash={activeHash} sectionIndex={1}><About /></LazySection>
-      <LazySection id="experience" title="Experience" activeHash={activeHash} sectionIndex={2}><Experience /></LazySection>
-      <LazySection id="testimonials" title="Testimonials" activeHash={activeHash} sectionIndex={3}><Testimonials /></LazySection>
-      <LazySection id="skills" title="Skills" activeHash={activeHash} sectionIndex={4}><Skills /></LazySection>
-      <LazySection id="projects" title="Projects" activeHash={activeHash} sectionIndex={5}><Projects /></LazySection>
-      <LazySection id="signals" title="Developer Signals" activeHash={activeHash} sectionIndex={6}><DeveloperSignals /></LazySection>
-      <LazySection id="ai-workbench" title="AI Workbench" activeHash={activeHash} sectionIndex={7}><AIWorkbench /></LazySection>
-      <LazySection id="education" title="Education" activeHash={activeHash} sectionIndex={8}><Education /></LazySection>
-      <LazySection id="certifications" title="Certifications" activeHash={activeHash} sectionIndex={9}><Certifications /></LazySection>
-      <LazySection id="contact" title="Contact" activeHash={activeHash} sectionIndex={10}><Contact /></LazySection>
+      <LazySection id="about" title="About" activeHash={activeHash} sectionIndex={0}><About /></LazySection>
+      <LazySection id="experience" title="Experience" activeHash={activeHash} sectionIndex={1}><Experience /></LazySection>
+      <LazySection id="skills" title="Skills" activeHash={activeHash} sectionIndex={2}><Skills /></LazySection>
+      <LazySection id="projects" title="Projects" activeHash={activeHash} sectionIndex={3}><Projects /></LazySection>
+      <LazySection id="education" title="Education" activeHash={activeHash} sectionIndex={4}><Education /></LazySection>
+      <LazySection id="certifications" title="Certifications" activeHash={activeHash} sectionIndex={5}><Certifications /></LazySection>
+      <LazySection id="contact" title="Contact" activeHash={activeHash} sectionIndex={6}><Contact /></LazySection>
       <Footer />
     </div>
   )

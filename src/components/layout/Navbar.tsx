@@ -1,20 +1,16 @@
 import { useEffect, useState } from 'react'
 import { motion, useScroll, useSpring } from 'framer-motion'
-import { LayoutDashboard, Menu, Moon, Sun, Users, X } from 'lucide-react'
+import { LayoutDashboard, Menu, Moon, Sun, X } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { sectionTextColors } from '../../constants/sectionColor'
 import { useAppStore } from '../../store/useAppStore'
 
 const sections = [
   'home',
-  'highlights',
   'about',
   'experience',
-  'testimonials',
   'skills',
   'projects',
-  'signals',
-  'ai-workbench',
   'education',
   'certifications',
   'contact',
@@ -22,14 +18,10 @@ const sections = [
 
 const sectionLabels: Record<string, string> = {
   home: 'Home',
-  highlights: 'Highlights',
   about: 'About',
   experience: 'Experience',
-  testimonials: 'Testimonials',
   skills: 'Skills',
   projects: 'Projects',
-  signals: 'Signals',
-  'ai-workbench': 'AI Lab',
   education: 'Education',
   certifications: 'Certifications',
   contact: 'Contact',
@@ -42,8 +34,6 @@ const Navbar = () => {
     const saved = localStorage.getItem('theme') as 'dark' | 'light' | null
     return saved ?? 'dark'
   })
-  const recruiterMode = useAppStore((state) => state.recruiterMode)
-  const toggleRecruiterMode = useAppStore((state) => state.toggleRecruiterMode)
   const recordClick = useAppStore((state) => state.recordClick)
   const { scrollYProgress } = useScroll()
   const scaleX = useSpring(scrollYProgress, {
@@ -142,7 +132,7 @@ const Navbar = () => {
               <li key={item}>
                 <a
                   href={`#${item}`}
-                    className={`relative text-[13px] transition ${
+                    className={`relative text-[15px] transition ${
                       active === item
                       ? sectionTextColors[item]
                       : 'text-gray-600 dark:text-gray-400 hover:text-green-500'
@@ -161,24 +151,6 @@ const Navbar = () => {
                 </a>
               </li>
             ))}
-
-            <button
-              aria-label="Toggle recruiter mode"
-              onClick={() => {
-                toggleRecruiterMode()
-                recordClick('recruiter-mode')
-              }}
-              className={`ml-1 rounded-full px-3 py-2 text-xs font-semibold transition ${
-                recruiterMode
-                  ? 'bg-indigo-600 text-white'
-                  : 'text-gray-600 hover:text-indigo-500 dark:text-gray-400'
-              }`}
-            >
-              <span className="inline-flex items-center gap-2">
-                <Users size={14} />
-                Recruiter
-              </span>
-            </button>
 
             <Link
               to="/dashboard"
@@ -208,17 +180,6 @@ const Navbar = () => {
             </button>
 
             <button
-              aria-label="Toggle recruiter mode"
-              onClick={() => {
-                toggleRecruiterMode()
-                recordClick('recruiter-mode')
-              }}
-              className={`rounded-full p-2 ${recruiterMode ? 'text-indigo-500' : 'text-gray-700 dark:text-gray-300'}`}
-            >
-              <Users size={18} />
-            </button>
-
-            <button
               aria-label={isOpen ? 'Close menu' : 'Open menu'}
               onClick={() => setIsOpen(!isOpen)}
               className="rounded-full p-2 text-gray-700 dark:text-gray-300"
@@ -236,7 +197,7 @@ const Navbar = () => {
                   <a
                     href={`#${item}`}
                     onClick={() => setIsOpen(false)}
-                    className={`block rounded-lg px-3 py-2 text-sm transition sm:text-base ${
+                    className={`block rounded-lg px-3 py-2 text-base transition sm:text-lg ${
                       active === item
                         ? sectionTextColors[item]
                         : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'

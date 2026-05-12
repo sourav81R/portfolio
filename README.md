@@ -14,13 +14,11 @@ A production-style frontend portfolio built with React 19, TypeScript, Tailwind 
 - Glassy product-style UI with animated borders, Framer Motion-first interactions, and theme support
 - Scroll-aware floating navbar with active section tracking and spring-smoothed progress indicator
 - Command palette with navigation shortcuts and quick actions via `Ctrl/Cmd + K`
-- Recruiter mode, theme customizer, and dismissible open-to-work banner
+- Theme customizer, recruiter mode, and dismissible open-to-work banner
 - Searchable, filterable, draggable projects grid with modal previews, case-study navigation, and isolated 3D hover flips
 - Skill cards with staggered entry, glow states, icon motion, and single-card hover rotation
 - Hero section with floating visual elements, magnetic CTAs, and reduced-motion-aware motion behavior
 - Dashboard analytics powered by persisted interaction events in Zustand
-- Developer signals section with GitHub, LeetCode, and article data plus cache-backed fallbacks
-- AI Lab with project recommendations and resume analysis
 - Resume preview and animated download flow
 - PWA manifest, service worker, and install prompt support
 - Error boundaries, route/section lazy loading, and test coverage for utility logic
@@ -58,17 +56,13 @@ A production-style frontend portfolio built with React 19, TypeScript, Tailwind 
 The homepage is composed in [`src/App.tsx`](/c:/portfolio2/sourav-portfolio/src/App.tsx).
 
 1. `Hero`
-2. `RecruiterHighlights`
-3. `About`
-4. `Experience`
-5. `Testimonials`
-6. `Skills`
-7. `Projects`
-8. `DeveloperSignals`
-9. `AIWorkbench`
-10. `Education`
-11. `Certifications`
-12. `Contact`
+2. `About`
+3. `Experience`
+4. `Skills`
+5. `Projects`
+6. `Education`
+7. `Certifications`
+8. `Contact`
 
 Most sections are lazy-loaded and mounted near the viewport to reduce initial work on first visit.
 
@@ -76,8 +70,9 @@ Most sections are lazy-loaded and mounted near the viewport to reduce initial wo
 
 ### Navigation and shell
 
-- [`src/components/layout/Navbar.tsx`](/c:/portfolio2/sourav-portfolio/src/components/layout/Navbar.tsx) handles floating navigation, active section highlighting, recruiter mode, theme toggle, dashboard navigation, and spring-based scroll progress.
+- [`src/components/layout/Navbar.tsx`](/c:/portfolio2/sourav-portfolio/src/components/layout/Navbar.tsx) handles floating navigation, active section highlighting, theme toggle, dashboard navigation, and spring-based scroll progress.
 - [`src/components/common/CommandPalette.tsx`](/c:/portfolio2/sourav-portfolio/src/components/common/CommandPalette.tsx) provides fuzzy command search, keyboard navigation, route shortcuts, and quick actions.
+- [`src/components/common/ThemeCustomizer.tsx`](/c:/portfolio2/sourav-portfolio/src/components/common/ThemeCustomizer.tsx) controls accent theme settings and recruiter mode prioritization.
 - [`src/components/common/PwaInstallPrompt.tsx`](/c:/portfolio2/sourav-portfolio/src/components/common/PwaInstallPrompt.tsx) exposes installable-app UX when supported.
 
 ### Motion-rich sections
@@ -98,11 +93,9 @@ Most sections are lazy-loaded and mounted near the viewport to reduce initial wo
 - [`src/store/useAppStore.ts`](/c:/portfolio2/sourav-portfolio/src/store/useAppStore.ts) stores recruiter mode, accent theme, analytics events, and project order with persisted Zustand state.
 - [`src/pages/DashboardView.tsx`](/c:/portfolio2/sourav-portfolio/src/pages/DashboardView.tsx) visualizes page views, clicks, project interactions, and time-range filtering.
 
-### Developer data and AI Lab
+### Resume and recommendation utilities
 
-- [`src/components/sections/DeveloperSignals.tsx`](/c:/portfolio2/sourav-portfolio/src/components/sections/DeveloperSignals.tsx) fetches GitHub, LeetCode, and article data with graceful fallback behavior.
-- [`src/services/developerData.ts`](/c:/portfolio2/sourav-portfolio/src/services/developerData.ts) manages external data retrieval and caching.
-- [`src/components/sections/AIWorkbench.tsx`](/c:/portfolio2/sourav-portfolio/src/components/sections/AIWorkbench.tsx) combines project recommendations with resume analysis.
+- [`src/services/developerData.ts`](/c:/portfolio2/sourav-portfolio/src/services/developerData.ts) manages external data retrieval and caching for reusable developer insight feeds.
 - [`src/lib/extractResumeText.ts`](/c:/portfolio2/sourav-portfolio/src/lib/extractResumeText.ts) supports `PDF`, `DOCX`, and text-based resume uploads.
 - [`src/lib/resumeAnalyzer.ts`](/c:/portfolio2/sourav-portfolio/src/lib/resumeAnalyzer.ts) scores resume content and highlights missing keywords by role.
 

@@ -53,11 +53,7 @@ const CommandPalette = () => {
 
   const commands: Command[] = [
     { label: 'Go to Home', group: 'Navigate', action: () => go('#home'), shortcut: ['G', 'H'], keywords: ['hero', 'top'], icon: Search },
-    { label: 'Go to Highlights', group: 'Navigate', action: () => go('#highlights'), keywords: ['recruiter'], icon: Users },
     { label: 'Go to About', group: 'Navigate', action: () => go('#about'), shortcut: ['G', 'A'], icon: Search },
-    { label: 'Go to Developer Signals', group: 'Navigate', action: () => go('#signals'), keywords: ['github', 'leetcode', 'blog'], icon: Sparkles },
-    { label: 'Go to AI Workbench', group: 'Navigate', action: () => go('#ai-workbench'), keywords: ['ai lab', 'resume analyzer'], icon: Sparkles },
-    { label: 'Go to Testimonials', group: 'Navigate', action: () => go('#testimonials'), icon: Search },
     { label: 'Go to Projects', group: 'Navigate', action: () => go('#projects'), shortcut: ['G', 'P'], keywords: ['work', 'portfolio'], icon: Search },
     { label: 'Go to Skills', group: 'Navigate', action: () => go('#skills'), icon: Search },
     { label: 'Go to Contact', group: 'Navigate', action: () => go('#contact'), shortcut: ['G', 'C'], icon: Mail },
