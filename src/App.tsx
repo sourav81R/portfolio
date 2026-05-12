@@ -14,7 +14,6 @@ import OpenToWorkBanner from './components/layout/OpenToWorkBanner'
 import Hero from './components/sections/Hero'
 import CommandPalette from './components/common/CommandPalette'
 import PwaInstallPrompt from './components/common/PwaInstallPrompt'
-import ThemeCustomizer from './components/common/ThemeCustomizer'
 import AmbientBackground from './components/common/AmbientBackground'
 import CursorSpiderEffect from './components/common/CursorSpiderEffect'
 import SectionErrorBoundary from './components/system/SectionErrorBoundary'
@@ -99,7 +98,6 @@ function App() {
     <div className="relative min-h-screen bg-transparent text-gray-900 dark:text-gray-300">
       <CommandPalette />
       <PwaInstallPrompt />
-      <ThemeCustomizer />
       <AmbientBackground />
       <CursorSpiderEffect />
       <div className="relative z-10">

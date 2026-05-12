@@ -22,12 +22,10 @@ type AnalyticsState = {
 
 type AppState = {
   recruiterMode: boolean
-  themePanelOpen: boolean
   accent: Accent
   projectOrder: string[]
   analytics: AnalyticsState
   toggleRecruiterMode: () => void
-  setThemePanelOpen: (open: boolean) => void
   setAccent: (accent: Accent) => void
   recordPageView: (route: string) => void
   recordClick: (target: string) => void
@@ -70,13 +68,11 @@ export const useAppStore = create<AppState>()(
   persist(
     (set, get) => ({
       recruiterMode: false,
-      themePanelOpen: false,
       accent: 'cyan',
       projectOrder: [],
       analytics: createEmptyAnalyticsState(),
       toggleRecruiterMode: () =>
         set((state) => ({ recruiterMode: !state.recruiterMode })),
-      setThemePanelOpen: (open) => set({ themePanelOpen: open }),
       setAccent: (accent) => set({ accent }),
       recordPageView: (route) =>
         set((state) => ({

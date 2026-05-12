@@ -14,7 +14,7 @@ A production-style frontend portfolio built with React 19, TypeScript, Tailwind 
 - Glassy product-style UI with animated borders, Framer Motion-first interactions, and theme support
 - Scroll-aware floating navbar with active section tracking and spring-smoothed progress indicator
 - Command palette with navigation shortcuts and quick actions via `Ctrl/Cmd + K`
-- Theme customizer, recruiter mode, and dismissible open-to-work banner
+- Recruiter mode, animated background effects, and dismissible open-to-work banner
 - Searchable, filterable, draggable projects grid with modal previews, case-study navigation, and isolated 3D hover flips
 - Skill cards with staggered entry, glow states, icon motion, and single-card hover rotation
 - Hero section with floating visual elements, magnetic CTAs, and reduced-motion-aware motion behavior
@@ -60,9 +60,10 @@ The homepage is composed in [`src/App.tsx`](/c:/portfolio2/sourav-portfolio/src/
 3. `Experience`
 4. `Skills`
 5. `Projects`
-6. `Education`
-7. `Certifications`
-8. `Contact`
+6. `GitHubActivity`
+7. `Education`
+8. `Certifications`
+9. `Contact`
 
 Most sections are lazy-loaded and mounted near the viewport to reduce initial work on first visit.
 
@@ -72,7 +73,6 @@ Most sections are lazy-loaded and mounted near the viewport to reduce initial wo
 
 - [`src/components/layout/Navbar.tsx`](/c:/portfolio2/sourav-portfolio/src/components/layout/Navbar.tsx) handles floating navigation, active section highlighting, theme toggle, dashboard navigation, and spring-based scroll progress.
 - [`src/components/common/CommandPalette.tsx`](/c:/portfolio2/sourav-portfolio/src/components/common/CommandPalette.tsx) provides fuzzy command search, keyboard navigation, route shortcuts, and quick actions.
-- [`src/components/common/ThemeCustomizer.tsx`](/c:/portfolio2/sourav-portfolio/src/components/common/ThemeCustomizer.tsx) controls accent theme settings and recruiter mode prioritization.
 - [`src/components/common/PwaInstallPrompt.tsx`](/c:/portfolio2/sourav-portfolio/src/components/common/PwaInstallPrompt.tsx) exposes installable-app UX when supported.
 
 ### Motion-rich sections

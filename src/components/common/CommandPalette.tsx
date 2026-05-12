@@ -8,7 +8,6 @@ import {
   Linkedin,
   Mail,
   MoonStar,
-  Palette,
   Search,
   Sparkles,
   Users,
@@ -35,7 +34,6 @@ const CommandPalette = () => {
   const reduceMotion = useReducedMotion()
   const navigate = useNavigate()
   const toggleRecruiterMode = useAppStore((state) => state.toggleRecruiterMode)
-  const setThemePanelOpen = useAppStore((state) => state.setThemePanelOpen)
   const recordClick = useAppStore((state) => state.recordClick)
 
   useEffect(() => {
@@ -80,16 +78,6 @@ const CommandPalette = () => {
       },
       keywords: ['hiring', 'recruiter'],
       icon: Users,
-    },
-    {
-      label: 'Open Theme Panel',
-      group: 'Preferences',
-      action: () => {
-        setThemePanelOpen(true)
-        recordClick('theme-panel')
-      },
-      keywords: ['accent', 'color', 'customize'],
-      icon: Palette,
     },
     {
       label: 'Install Portfolio App',
