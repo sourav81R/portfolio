@@ -1,4 +1,11 @@
-import { useState, useCallback, useEffect, useRef, type MouseEvent } from 'react'
+import {
+  useState,
+  useCallback,
+  useEffect,
+  useRef,
+  type MouseEvent,
+  type PointerEvent,
+} from 'react'
 import {
   Code,
   Database,
@@ -226,6 +233,21 @@ const Skills = () => {
     [noteId, soundEnabled]
   )
 
+  const handleSkillPointerDown =
+    (categoryIndex: number, skillIndex: number, skillId: string) =>
+    (event: PointerEvent<HTMLDivElement>) => {
+      if (reduceMotion) return
+
+      const target = event.target as HTMLElement
+      if (target.closest('button, a, input, textarea')) {
+        return
+      }
+
+      if (isCoarsePointer) {
+        handleSkillHover(categoryIndex, skillIndex, skillId)
+      }
+    }
+
   const handleSkillCardClick =
     (skillId: string) => (event: MouseEvent<HTMLDivElement>) => {
       if (!isCoarsePointer || reduceMotion) return
@@ -272,7 +294,11 @@ const Skills = () => {
             <p className="mx-auto mt-4 max-w-2xl px-4 text-base text-gray-600 dark:text-gray-400 sm:text-lg">
               Powers and tools I use to build amazing things.
               <span className="mt-2 block text-sm font-medium text-green-500">
-                {soundEnabled ? 'Hover over skills to hear marimba notes.' : ''}
+                {soundEnabled
+                  ? isCoarsePointer
+                    ? 'Tap skills to hear marimba notes.'
+                    : 'Hover over skills to hear marimba notes.'
+                  : ''}
               </span>
             </p>
           </motion.div>
@@ -339,6 +365,11 @@ const Skills = () => {
                           handleSkillHover(categoryIndex, skillIndex, skillId)
                         }
                         onMouseLeave={() => setHoveredSkill(null)}
+                        onPointerDown={handleSkillPointerDown(
+                          categoryIndex,
+                          skillIndex,
+                          skillId
+                        )}
                         className="group h-24 w-24 overflow-visible sm:h-28 sm:w-28"
                       >
                         <div className="relative h-full w-full [perspective:1000px]">

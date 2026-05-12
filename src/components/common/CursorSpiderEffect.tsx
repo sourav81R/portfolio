@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react'
 import { useReducedMotion } from 'framer-motion'
-import useCoarsePointer from '../../hooks/useCoarsePointer'
 
 type TrailSegment = {
   x1: number
@@ -39,10 +38,9 @@ const CursorSpiderEffect = () => {
   const rafRef = useRef<number>(0)
   const lastTimeRef = useRef<number>(0)
   const reduceMotion = useReducedMotion()
-  const isCoarsePointer = useCoarsePointer()
 
   useEffect(() => {
-    if (reduceMotion || isCoarsePointer) return
+    if (reduceMotion) return
     const canvas = canvasRef.current
     if (!canvas) return
 
@@ -59,7 +57,7 @@ const CursorSpiderEffect = () => {
     }
 
     const onPointerMove = (event: PointerEvent) => {
-      if (event.pointerType !== 'mouse') return
+      if (event.pointerType !== 'mouse' && event.pointerType !== 'pen') return
       const pointer = pointerRef.current
       const x = event.clientX
       const y = event.clientY
@@ -85,7 +83,6 @@ const CursorSpiderEffect = () => {
     }
 
     const onPointerDown = (event: PointerEvent) => {
-      if (event.pointerType !== 'mouse') return
       burstsRef.current.push({
         x: event.clientX,
         y: event.clientY,
@@ -216,10 +213,12 @@ const CursorSpiderEffect = () => {
       }
       trailRef.current = []
       burstsRef.current = []
+      pointerRef.current.hasLast = false
+      lastTimeRef.current = 0
     }
-  }, [isCoarsePointer, reduceMotion])
+  }, [reduceMotion])
 
-  if (reduceMotion || isCoarsePointer) {
+  if (reduceMotion) {
     return null
   }
 
