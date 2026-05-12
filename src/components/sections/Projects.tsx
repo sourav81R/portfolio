@@ -22,6 +22,7 @@ type Category = 'All' | ProjectCategory
 
 const categories: Category[] = ['All', 'Web', 'AI', 'Mobile', 'Realtime']
 const projectFallbackImage = `${import.meta.env.BASE_URL}og-preview.png`
+const INITIAL_VISIBLE_PROJECTS = 6
 const mobileSpinKeyframes = [0, 90, 180, 270, 360]
 const mobileSpinTransition = {
   duration: 0.7,
@@ -46,6 +47,7 @@ const Projects = () => {
   const [draggingSlug, setDraggingSlug] = useState<string | null>(null)
   const [hoveredProjectSlug, setHoveredProjectSlug] = useState<string | null>(null)
   const [projectTapRotations, setProjectTapRotations] = useState<Record<string, number>>({})
+  const [visibleProjectCount, setVisibleProjectCount] = useState(INITIAL_VISIBLE_PROJECTS)
 
   useEffect(() => {
     initializeProjectOrder(projectData)
@@ -60,6 +62,15 @@ const Projects = () => {
       recruiterMode,
       projectOrder,
     })
+
+  useEffect(() => {
+    setVisibleProjectCount(INITIAL_VISIBLE_PROJECTS)
+  }, [selectedCategory, featuredOnly, query, recruiterMode])
+
+  const visibleProjects = filteredProjects.slice(0, visibleProjectCount)
+  const hasMoreProjects = filteredProjects.length > visibleProjectCount
+  const canToggleProjectVisibility =
+    filteredProjects.length > INITIAL_VISIBLE_PROJECTS
 
   const handleProjectCardClick =
     (slug: string) => (event: MouseEvent<HTMLDivElement>) => {
@@ -204,7 +215,7 @@ const Projects = () => {
 
           <motion.div layout className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
             <AnimatePresence>
-              {filteredProjects.map((project) => (
+              {visibleProjects.map((project) => (
                 (() => {
                   const isHovered = hoveredProjectSlug === project.slug
                   const projectTapCount = projectTapRotations[project.slug] ?? 0
@@ -356,6 +367,32 @@ const Projects = () => {
               ))}
             </AnimatePresence>
           </motion.div>
+
+          {canToggleProjectVisibility && (
+            <div className="mt-10 flex flex-col items-center gap-3">
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                Showing {visibleProjects.length} of {filteredProjects.length} matching projects
+              </p>
+              <motion.button
+                type="button"
+                onClick={() =>
+                  setVisibleProjectCount(
+                    hasMoreProjects ? filteredProjects.length : INITIAL_VISIBLE_PROJECTS
+                  )
+                }
+                whileHover={reduceMotion ? undefined : { y: -2, scale: 1.03 }}
+                whileTap={reduceMotion ? undefined : { scale: 0.98 }}
+                className={`inline-flex items-center gap-2 rounded-full border px-6 py-3 text-sm font-semibold shadow-lg transition focus:outline-none focus:ring-2 focus:ring-sky-400/50 ${
+                  hasMoreProjects
+                    ? 'border-sky-400/60 bg-sky-500 text-white shadow-sky-500/30 hover:bg-sky-400 hover:border-sky-300'
+                    : 'border-fuchsia-400/60 bg-fuchsia-500 text-white shadow-fuchsia-500/30 hover:bg-fuchsia-400 hover:border-fuchsia-300'
+                }`}
+              >
+                <Sparkles size={16} />
+                {hasMoreProjects ? 'View More Projects' : 'View Less'}
+              </motion.button>
+            </div>
+          )}
 
           {filteredProjects.length === 0 && (
             <div className="mt-8 rounded-2xl border border-dashed border-gray-300 bg-white/70 px-6 py-10 text-center dark:border-gray-700 dark:bg-gray-950/40">
