@@ -1,3 +1,5 @@
+import resumeIqImage from '../assets/projects/resumeiq.jpeg'
+
 export type CaseStudyMetric = {
   label: string
   value: string
@@ -105,7 +107,7 @@ export const caseStudies: CaseStudy[] = [
     tech: ['Next.js 14', 'TypeScript', 'Tailwind CSS', 'Firebase', 'OpenAI'],
     github: 'https://resume-iq-coral.vercel.app',
     demo: 'https://resume-iq-coral.vercel.app',
-    image: '/resumeiq.jpeg',
+    image: resumeIqImage,
   },
   {
     slug: 'foodooza',

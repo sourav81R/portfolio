@@ -1,3 +1,5 @@
+import resumeIqImage from '../assets/projects/resumeiq.jpeg'
+
 export type ProjectCategory = 'Web' | 'AI' | 'Mobile' | 'Realtime'
 
 export type ProjectRecord = {
@@ -50,7 +52,7 @@ export const projects: ProjectRecord[] = [
     featured: true,
     github: 'https://resume-iq-coral.vercel.app',
     liveUrl: 'https://resume-iq-coral.vercel.app',
-    bgImage: resolvePublicAsset('/resumeiq.jpeg'),
+    bgImage: resumeIqImage,
     caseStudySlug: 'resumeiq',
     recruiterPriority: 10,
     impact: 'End-to-end ATS workflow with auth, AI, scoring, and history.',
