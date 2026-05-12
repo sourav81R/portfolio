@@ -15,6 +15,7 @@ import Hero from './components/sections/Hero'
 import CommandPalette from './components/common/CommandPalette'
 import PwaInstallPrompt from './components/common/PwaInstallPrompt'
 import ThemeCustomizer from './components/common/ThemeCustomizer'
+import CursorSpiderEffect from './components/common/CursorSpiderEffect'
 import SectionErrorBoundary from './components/system/SectionErrorBoundary'
 import { useAppStore } from './store/useAppStore'
 
@@ -98,6 +99,7 @@ function App() {
       <CommandPalette />
       <PwaInstallPrompt />
       <ThemeCustomizer />
+      <CursorSpiderEffect />
       <OpenToWorkBanner />
       <Navbar />
 
