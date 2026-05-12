@@ -17,7 +17,14 @@ type SpiderBurst = {
   age: number
   maxAge: number
   spokes: number
+  rings: number
   rotation: number
+  baseRadiusX: number
+  baseRadiusY: number
+  growRadiusX: number
+  growRadiusY: number
+  warp: number
+  strokeWidth: number
 }
 
 const CursorSpiderEffect = () => {
@@ -83,9 +90,16 @@ const CursorSpiderEffect = () => {
         x: event.clientX,
         y: event.clientY,
         age: 0,
-        maxAge: 620,
-        spokes: 9,
+        maxAge: 520 + Math.random() * 360,
+        spokes: 7 + Math.floor(Math.random() * 5),
+        rings: 4 + Math.floor(Math.random() * 4),
         rotation: Math.random() * Math.PI,
+        baseRadiusX: 12 + Math.random() * 20,
+        baseRadiusY: 12 + Math.random() * 20,
+        growRadiusX: 86 + Math.random() * 84,
+        growRadiusY: 78 + Math.random() * 92,
+        warp: 0.1 + Math.random() * 0.18,
+        strokeWidth: 1.8 + Math.random() * 1.4,
       })
     }
 
@@ -128,17 +142,19 @@ const CursorSpiderEffect = () => {
         if (progress >= 1) continue
 
         const alpha = 1 - progress
-        const radius = 24 + progress * 122
-        const ringSpacing = radius / 5
+        const radiusX = burst.baseRadiusX + progress * burst.growRadiusX
+        const radiusY = burst.baseRadiusY + progress * burst.growRadiusY
 
         context.strokeStyle = `rgba(${webColor[0]}, ${webColor[1]}, ${webColor[2]}, ${alpha})`
-        context.lineWidth = 2.2
+        context.lineWidth = burst.strokeWidth
         context.lineCap = 'round'
 
         for (let spoke = 0; spoke < burst.spokes; spoke += 1) {
-          const angle = burst.rotation + (Math.PI * 2 * spoke) / burst.spokes
-          const x = burst.x + Math.cos(angle) * radius
-          const y = burst.y + Math.sin(angle) * radius
+          const baseAngle = burst.rotation + (Math.PI * 2 * spoke) / burst.spokes
+          const wobble = Math.sin(progress * 6 + spoke * 1.7) * burst.warp
+          const angle = baseAngle + wobble * 0.7
+          const x = burst.x + Math.cos(angle) * radiusX
+          const y = burst.y + Math.sin(angle) * radiusY
 
           context.beginPath()
           context.moveTo(burst.x, burst.y)
@@ -146,10 +162,29 @@ const CursorSpiderEffect = () => {
           context.stroke()
         }
 
-        for (let ring = 1; ring <= 5; ring += 1) {
-          const ringRadius = ringSpacing * ring
+        for (let ring = 1; ring <= burst.rings; ring += 1) {
+          const ringProgress = ring / burst.rings
           context.beginPath()
-          context.arc(burst.x, burst.y, ringRadius, 0, Math.PI * 2)
+          for (let spoke = 0; spoke < burst.spokes; spoke += 1) {
+            const baseAngle = burst.rotation + (Math.PI * 2 * spoke) / burst.spokes
+            const ringWobble =
+              Math.sin(ring * 0.9 + spoke * 1.35 + progress * 5.2) * burst.warp
+            const angle = baseAngle + ringWobble * 0.65
+            const localRadiusX =
+              radiusX *
+              ringProgress *
+              (1 + Math.sin(spoke * 2.1 + ring * 1.3) * burst.warp * 0.35)
+            const localRadiusY =
+              radiusY *
+              ringProgress *
+              (1 + Math.cos(spoke * 1.8 + ring * 1.1) * burst.warp * 0.35)
+            const x = burst.x + Math.cos(angle) * localRadiusX
+            const y = burst.y + Math.sin(angle) * localRadiusY
+
+            if (spoke === 0) context.moveTo(x, y)
+            else context.lineTo(x, y)
+          }
+          context.closePath()
           context.stroke()
         }
 

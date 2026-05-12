@@ -15,6 +15,7 @@ import Hero from './components/sections/Hero'
 import CommandPalette from './components/common/CommandPalette'
 import PwaInstallPrompt from './components/common/PwaInstallPrompt'
 import ThemeCustomizer from './components/common/ThemeCustomizer'
+import AmbientBackground from './components/common/AmbientBackground'
 import CursorSpiderEffect from './components/common/CursorSpiderEffect'
 import SectionErrorBoundary from './components/system/SectionErrorBoundary'
 import { useAppStore } from './store/useAppStore'
@@ -95,24 +96,27 @@ function App() {
   }, [location.hash])
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top_right,rgba(34,197,94,0.12),transparent_26%),radial-gradient(circle_at_top_left,rgba(59,130,246,0.08),transparent_24%),#ffffff] text-gray-900 dark:bg-[radial-gradient(circle_at_top_right,rgba(34,197,94,0.12),transparent_24%),radial-gradient(circle_at_top_left,rgba(56,189,248,0.09),transparent_24%),#020617] dark:text-gray-300">
+    <div className="relative min-h-screen bg-transparent text-gray-900 dark:text-gray-300">
       <CommandPalette />
       <PwaInstallPrompt />
       <ThemeCustomizer />
+      <AmbientBackground />
       <CursorSpiderEffect />
-      <OpenToWorkBanner />
-      <Navbar />
+      <div className="relative z-10">
+        <OpenToWorkBanner />
+        <Navbar />
 
-      <Hero />
-      <LazySection id="about" title="About" activeHash={activeHash} sectionIndex={0}><About /></LazySection>
-      <LazySection id="experience" title="Experience" activeHash={activeHash} sectionIndex={1}><Experience /></LazySection>
-      <LazySection id="skills" title="Skills" activeHash={activeHash} sectionIndex={2}><Skills /></LazySection>
-      <LazySection id="projects" title="Projects" activeHash={activeHash} sectionIndex={3}><Projects /></LazySection>
-      <LazySection id="github" title="GitHub Activity" activeHash={activeHash} sectionIndex={4}><GitHubActivity /></LazySection>
-      <LazySection id="education" title="Education" activeHash={activeHash} sectionIndex={5}><Education /></LazySection>
-      <LazySection id="certifications" title="Certifications" activeHash={activeHash} sectionIndex={6}><Certifications /></LazySection>
-      <LazySection id="contact" title="Contact" activeHash={activeHash} sectionIndex={7}><Contact /></LazySection>
-      <Footer />
+        <Hero />
+        <LazySection id="about" title="About" activeHash={activeHash} sectionIndex={0}><About /></LazySection>
+        <LazySection id="experience" title="Experience" activeHash={activeHash} sectionIndex={1}><Experience /></LazySection>
+        <LazySection id="skills" title="Skills" activeHash={activeHash} sectionIndex={2}><Skills /></LazySection>
+        <LazySection id="projects" title="Projects" activeHash={activeHash} sectionIndex={3}><Projects /></LazySection>
+        <LazySection id="github" title="GitHub Activity" activeHash={activeHash} sectionIndex={4}><GitHubActivity /></LazySection>
+        <LazySection id="education" title="Education" activeHash={activeHash} sectionIndex={5}><Education /></LazySection>
+        <LazySection id="certifications" title="Certifications" activeHash={activeHash} sectionIndex={6}><Certifications /></LazySection>
+        <LazySection id="contact" title="Contact" activeHash={activeHash} sectionIndex={7}><Contact /></LazySection>
+        <Footer />
+      </div>
     </div>
   )
 }
