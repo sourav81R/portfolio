@@ -162,9 +162,10 @@ const playSkillSound = (ctx: AudioContext, index: number) => {
 }
 
 const Skills = () => {
-  const [soundEnabled, setSoundEnabled] = useState(false)
+  const [soundEnabled, setSoundEnabled] = useState(true)
   const [hoveredSkill, setHoveredSkill] = useState<string | null>(null)
   const [musicNotes, setMusicNotes] = useState<SkillNote[]>([])
+  const [noteId, setNoteId] = useState(0)
   const noteTimeoutsRef = useRef<number[]>([])
   const soundCtxRef = useRef<AudioContext | null>(null)
   const reduceMotion = useReducedMotion()
@@ -207,21 +208,22 @@ const Skills = () => {
         playSkillSound(soundCtxRef.current, globalIndex)
       }
 
-      const newNote = {
-        id: Date.now(),
+      const newNote: SkillNote = {
+        id: noteId,
         icon: musicIcons[Math.floor(Math.random() * musicIcons.length)],
         x: Math.random() * 40 - 20,
         skillId,
       }
 
-      setMusicNotes((prev) => [...prev.slice(-4), newNote])
+      setMusicNotes((prev) => [...prev, newNote])
+      setNoteId((prev) => prev + 1)
 
       const timeoutId = window.setTimeout(() => {
         setMusicNotes((prev) => prev.filter((note) => note.id !== newNote.id))
       }, 3500)
       noteTimeoutsRef.current.push(timeoutId)
     },
-    [soundEnabled]
+    [noteId, soundEnabled]
   )
 
   const handleSkillCardClick =
@@ -255,28 +257,22 @@ const Skills = () => {
           >
             <div className="mb-4 flex items-center justify-center gap-3 sm:gap-4">
               <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-3xl md:text-4xl">
-                My Skills
+                My Arsenal
               </h2>
-              <motion.button
+              <button
                 type="button"
                 onClick={() => setSoundEnabled(!soundEnabled)}
-                whileHover={reduceMotion ? undefined : { scale: 1.08 }}
-                whileTap={reduceMotion ? undefined : { scale: 0.96 }}
-                className="rounded-full p-2 text-gray-700 dark:text-gray-300"
+                className="text-2xl transition-transform hover:scale-110"
                 title={soundEnabled ? 'Mute sounds' : 'Enable sounds'}
                 aria-label={soundEnabled ? 'Mute sounds' : 'Enable sounds'}
               >
-                {soundEnabled ? (
-                  <Volume2 className="h-6 w-6" />
-                ) : (
-                  <VolumeX className="h-6 w-6" />
-                )}
-              </motion.button>
+                {soundEnabled ? <Volume2 className="h-6 w-6" /> : <VolumeX className="h-6 w-6" />}
+              </button>
             </div>
             <p className="mx-auto mt-4 max-w-2xl px-4 text-base text-gray-600 dark:text-gray-400 sm:text-lg">
               Powers and tools I use to build amazing things.
               <span className="mt-2 block text-sm font-medium text-green-500">
-                {soundEnabled ? 'Hover over skills to hear snappier marimba tones.' : ''}
+                {soundEnabled ? 'Hover over skills to hear marimba notes.' : ''}
               </span>
             </p>
           </motion.div>
@@ -314,6 +310,31 @@ const Skills = () => {
                       <motion.div
                         key={skill.name}
                         variants={reduceMotion ? undefined : skillItemVariants}
+                        initial={reduceMotion ? undefined : { opacity: 0, y: 20 }}
+                        whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={
+                          reduceMotion
+                            ? undefined
+                            : {
+                                delay: skillIndex * 0.05,
+                                duration: 0.4,
+                                ease: 'easeOut',
+                              }
+                        }
+                        whileHover={
+                          reduceMotion
+                            ? undefined
+                            : {
+                                y: -8,
+                                scale: 1.1,
+                                transition: {
+                                  type: 'spring',
+                                  stiffness: 400,
+                                  damping: 10,
+                                },
+                              }
+                        }
                         onMouseEnter={() =>
                           handleSkillHover(categoryIndex, skillIndex, skillId)
                         }
@@ -324,19 +345,13 @@ const Skills = () => {
                           <motion.div
                             key={shouldSpinOnTap ? `${skillId}-${skillTapCount}` : skillId}
                             onClick={handleSkillCardClick(skillId)}
-                            initial={{ rotateY: 0, scale: 1 }}
+                            initial={{ rotateY: 0 }}
                             animate={
                               reduceMotion
                                 ? undefined
                                 : shouldSpinOnTap
-                                  ? {
-                                      rotateY: mobileSpinKeyframes,
-                                      scale: [1, 1.04, 1],
-                                    }
-                                  : {
-                                    scale: isHovered ? 1.08 : 1,
-                                    rotateY: skillRotation,
-                                  }
+                                  ? { rotateY: mobileSpinKeyframes }
+                                  : { rotateY: skillRotation }
                             }
                             transition={
                               reduceMotion
@@ -344,47 +359,22 @@ const Skills = () => {
                                 : shouldSpinOnTap
                                   ? mobileSpinTransition
                                   : isHovered
-                                  ? {
-                                      type: 'spring',
-                                      stiffness: 300,
-                                      damping: 18,
-                                    }
-                                  : { duration: 0 }
+                                    ? { duration: 0.7, ease: 'easeInOut' }
+                                    : { duration: 0 }
                             }
-                            className="relative flex h-full w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border border-gray-200 bg-white p-3 text-center shadow-sm dark:border-gray-800 dark:bg-gray-900 will-change-transform"
+                            className="relative flex h-full w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-gray-200 bg-white p-2 text-center shadow-md transition-shadow group-hover:shadow-xl dark:border-gray-700 dark:bg-gray-900"
                             style={{
                               transformStyle: 'preserve-3d',
                               willChange: 'transform',
                             }}
                           >
-                            <motion.span
-                              className="pointer-events-none absolute inset-0 rounded-xl border border-indigo-400/0"
-                              animate={
-                                isHovered && !reduceMotion
-                                  ? {
-                                      boxShadow: '0 0 12px rgba(99,102,241,0.6)',
-                                      borderColor: 'rgba(99,102,241,0.7)',
-                                    }
-                                  : {
-                                      boxShadow: '0 0 0px transparent',
-                                      borderColor: 'rgba(99,102,241,0)',
-                                    }
-                              }
-                              transition={{
-                                type: 'spring',
-                                stiffness: 300,
-                                damping: 18,
-                              }}
-                            />
-
                             <AnimatePresence>
-                              {isHovered && !reduceMotion &&
+                              {isHovered &&
                                 musicNotes
                                   .filter((note) => note.skillId === skillId)
                                   .slice(-1)
                                   .map((note) => {
                                     const NoteIcon = note.icon
-
                                     return (
                                       <motion.div
                                         key={note.id}
@@ -398,52 +388,57 @@ const Skills = () => {
                                         animate={{
                                           opacity: [0, 1, 1, 1, 0],
                                           y: [-10, -30, -60, -90, -120],
-                                          x: [
-                                            0,
-                                            note.x * 0.3,
-                                            note.x * 0.6,
-                                            note.x * 0.8,
-                                            note.x,
-                                          ],
+                                          x: [0, note.x * 0.3, note.x * 0.6, note.x * 0.8, note.x],
                                           scale: [0.3, 0.8, 1.1, 1.2, 0.9],
                                           rotate: [-20, 0, 10, 5, 15],
                                         }}
                                         exit={{ opacity: 0, scale: 0.5 }}
                                         transition={{
-                                          duration: 2,
-                                          ease: 'easeOut',
+                                          duration: 3.5,
+                                          ease: [0.25, 0.46, 0.45, 0.94],
+                                          opacity: {
+                                            times: [0, 0.1, 0.5, 0.8, 1],
+                                            ease: 'easeInOut',
+                                          },
+                                          y: {
+                                            ease: [0.33, 1, 0.68, 1],
+                                          },
+                                          x: {
+                                            ease: 'easeInOut',
+                                          },
+                                          scale: {
+                                            times: [0, 0.2, 0.5, 0.7, 1],
+                                            ease: 'easeOut',
+                                          },
+                                          rotate: {
+                                            ease: 'easeInOut',
+                                          },
                                         }}
                                         className="pointer-events-none absolute z-50"
                                         style={{
                                           left: '50%',
                                           top: '50%',
                                           color: skill.color || '#22c55e',
-                                          filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
+                                          filter: 'drop-shadow(0 3px 8px rgba(0,0,0,0.4))',
                                           transformOrigin: 'center',
-                                          marginLeft: '-12px',
-                                          marginTop: '-12px',
                                         }}
                                       >
-                                        <NoteIcon className="h-6 w-6" strokeWidth={2.5} />
+                                        <NoteIcon className="h-6 w-6 sm:h-8 sm:w-8" strokeWidth={2.5} />
                                       </motion.div>
                                     )
                                   })}
                             </AnimatePresence>
 
                             <motion.div
-                              animate={
-                                isHovered && !reduceMotion
-                                  ? { rotate: [0, 10, -10, 0] }
-                                  : { rotate: 0 }
-                              }
-                              transition={{ duration: 0.45, ease: 'easeInOut' }}
+                              whileHover={reduceMotion ? undefined : { rotate: [0, -10, 10, -10, 0] }}
+                              transition={{ duration: 0.5 }}
                             >
                               <IconComponent
-                                className="h-8 w-8 sm:h-10 sm:w-10"
+                                className="h-7 w-7 transition-colors sm:h-8 sm:w-8"
                                 style={{ color: skill.color }}
                               />
                             </motion.div>
-                            <span className="text-xs font-bold leading-tight text-gray-700 dark:text-gray-300">
+                            <span className="text-[10px] font-bold leading-tight text-gray-700 dark:text-gray-300 sm:text-xs">
                               {skill.name}
                             </span>
                           </motion.div>
