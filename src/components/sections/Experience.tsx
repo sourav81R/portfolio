@@ -48,7 +48,7 @@ const experienceData: ExperienceEntry[] = [
     },
   },
   {
-    role: 'Full-Stack Developer Intern',
+    role: 'Web Developer Intern',
     company: 'Pinnacle Labs Pvt Ltd',
     period: 'Oct 2024 - Nov 2024',
     location: 'Remote',
