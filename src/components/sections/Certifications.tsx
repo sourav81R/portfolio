@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Award, CheckCircle, ExternalLink, FileText } from 'lucide-react'
+import { Award, Calendar, CheckCircle, ExternalLink } from 'lucide-react'
 import { motion, useReducedMotion } from 'framer-motion'
 import AnimatedBorder from '../common/AnimatedBorder'
 import CertificationModal, {
@@ -18,6 +18,7 @@ const certifications: CertificationItem[] = [
     summary:
       'AWS Academy graduate certificate for the Data Engineering learning track and foundational cloud/data workflow training.',
     fileSrc: resolvePublicAsset('/images/certifications/aws-academy-data-engineering.pdf'),
+    completedOn: '13 Feb 2024',
   },
   {
     title: 'AI-ML Virtual Internship / Tech Camp',
@@ -26,6 +27,7 @@ const certifications: CertificationItem[] = [
     summary:
       'EduSkills certificate document for the tech camp and virtual internship learning experience.',
     fileSrc: resolvePublicAsset('/images/certifications/eduskills-tech-camp.pdf'),
+    completedOn: '26 Feb 2025',
   },
   {
     title: 'Full-Stack (MERN) Training & Internship',
@@ -36,6 +38,7 @@ const certifications: CertificationItem[] = [
     fileSrc: resolvePublicAsset(
       '/images/certifications/euphoria-genx-internship-certificate.jpg'
     ),
+    completedOn: '18 Feb 2026',
   },
   {
     title: 'Digital Literacy Certificate',
@@ -44,6 +47,7 @@ const certifications: CertificationItem[] = [
     summary:
       'Capgemini certificate document covering digital literacy and foundational professional skills.',
     fileSrc: resolvePublicAsset('/images/certifications/capgemini-digital-literacy.pdf'),
+    completedOn: 'Nov 2022',
   },
 ]
 
@@ -99,8 +103,8 @@ const Certifications = () => {
                             </p>
                           </div>
                           <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-sky-500/20 bg-sky-500/10 px-2.5 py-1 text-[11px] font-medium text-sky-700 dark:text-sky-300">
-                            <FileText size={12} />
-                            Document
+                            <Calendar size={12} />
+                            {cert.completedOn}
                           </span>
                         </div>
 

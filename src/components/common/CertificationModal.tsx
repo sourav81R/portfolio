@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Award, Download, ExternalLink, FileText, ImageIcon, X } from 'lucide-react'
+import { Award, Download, ExternalLink, FileText, X } from 'lucide-react'
 import useCoarsePointer from '../../hooks/useCoarsePointer'
 
 export type CertificationItem = {
@@ -10,6 +10,7 @@ export type CertificationItem = {
   category: string
   summary: string
   fileSrc: string
+  completedOn: string
 }
 
 type CertificationModalProps = {
@@ -116,11 +117,11 @@ const CertificationModal = ({
 
                   <div className="rounded-[20px] border border-white/10 bg-white/[0.04] p-4">
                     <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/70">
-                      Document Type
+                      Completed On
                     </p>
                     <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-3 py-2 text-xs text-white/80">
-                      {isPdf ? <FileText size={14} /> : <ImageIcon size={14} />}
-                      {isPdf ? 'PDF Certificate' : 'Image Certificate'}
+                      <Award size={14} />
+                      {certification.completedOn}
                     </div>
                   </div>
 
