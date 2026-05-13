@@ -336,9 +336,9 @@ const GitHubActivity = () => {
               rel="noopener noreferrer"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center gap-2 rounded-lg border border-gray-900 bg-gray-900 px-6 py-3 text-lg font-semibold text-white transition-colors hover:bg-emerald-600 hover:border-emerald-600 dark:border-white dark:bg-white dark:text-gray-900 dark:hover:bg-emerald-300"
+              className="inline-flex items-center gap-2 rounded-lg border border-gray-900 bg-gray-900 px-4 py-2.5 text-base font-semibold text-white transition-colors hover:bg-emerald-600 hover:border-emerald-600 dark:border-white dark:bg-white dark:text-gray-900 dark:hover:bg-emerald-300"
             >
-              <Github className="h-5 w-5" />
+              <Github className="h-4 w-4" />
               View Full Profile
             </motion.a>
           </div>
