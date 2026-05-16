@@ -109,32 +109,24 @@ const Experience = () => {
         <AnimatedBorder>
           <div
             ref={sectionRef}
-            className="relative mx-auto max-w-5xl overflow-hidden rounded-[28px] border border-gray-200 bg-white/85 px-4 py-10 text-gray-900 shadow-[0_24px_80px_-60px_rgba(15,23,42,0.35)] backdrop-blur-sm dark:border-gray-800/80 dark:bg-gradient-to-br dark:from-[#040816] dark:via-[#020617] dark:to-emerald-950/10 dark:text-white dark:shadow-[0_32px_110px_-70px_rgba(14,165,233,0.35)] sm:px-5 sm:py-12 lg:px-8"
+            className="relative mx-auto max-w-5xl px-4 py-10 text-gray-900 sm:px-5 sm:py-12 lg:px-8"
           >
-            <div className="absolute inset-0 pointer-events-none">
-              <div className="absolute left-[-8%] top-[24%] h-48 w-48 rounded-full bg-emerald-500/[0.06] blur-3xl dark:bg-emerald-500/10" />
-              <div className="absolute right-[-6%] top-[10%] h-44 w-44 rounded-full bg-sky-500/[0.06] blur-3xl dark:bg-sky-500/10" />
-              <div className="absolute bottom-[-12%] right-[18%] h-48 w-48 rounded-full bg-cyan-500/[0.06] blur-3xl dark:bg-cyan-500/10" />
-              <div className="absolute left-[12%] top-[12%] h-9 w-9 rotate-12 rounded-2xl border border-emerald-500/[0.08] bg-emerald-500/[0.04] dark:border-emerald-500/10 dark:bg-emerald-500/5" />
-              <div className="absolute right-[14%] top-[22%] h-14 w-14 rotate-12 border border-sky-500/[0.08] bg-sky-500/[0.04] dark:border-sky-500/10 dark:bg-sky-500/5" />
-            </div>
-
             <div className="relative z-10">
               <div className="mx-auto max-w-xl text-center">
-                <p className="text-[11px] uppercase tracking-[0.4em] text-gray-500 dark:text-white/45">
+                <p className="text-[11px] uppercase tracking-[0.4em] text-gray-500">
                   Real Work Timeline
                 </p>
-                <h2 className="mt-3 text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
+                <h2 className="mt-3 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
                   Experience
                 </h2>
-                <p className="mt-3 text-xs leading-relaxed text-gray-600 dark:text-white/60 sm:text-sm">
+                <p className="mt-3 text-xs leading-relaxed text-gray-600 sm:text-sm">
                   Compact internship cards first, with deeper proof and certificate access
                   only when someone asks for it.
                 </p>
               </div>
 
               <div className="relative mx-auto mt-10 max-w-4xl">
-                <div className="absolute bottom-0 left-5 top-0 w-px bg-gray-200 dark:bg-white/10 md:left-1/2 md:-translate-x-1/2" />
+                <div className="absolute bottom-0 left-5 top-0 w-px bg-gray-200 md:left-1/2 md:-translate-x-1/2" />
                 <motion.div
                   className="absolute bottom-0 left-5 top-0 w-px bg-emerald-400 md:left-1/2 md:-translate-x-1/2"
                   style={{
@@ -166,7 +158,7 @@ const Experience = () => {
                           alignsLeft ? 'md:justify-start' : 'md:justify-end'
                         )}
                       >
-                        <div className="absolute left-5 top-8 h-3 w-3 -translate-x-1/2 rounded-full bg-emerald-400 ring-4 ring-white dark:ring-[#06101f] md:left-1/2" />
+                        <div className="absolute left-5 top-8 h-3 w-3 -translate-x-1/2 rounded-full bg-emerald-400 ring-4 ring-white md:left-1/2" />
 
                         <div
                           className={clsx(
@@ -174,36 +166,36 @@ const Experience = () => {
                             alignsLeft ? 'md:mr-auto' : 'md:ml-auto'
                           )}
                         >
-                          <div className="rounded-[24px] border border-gray-200 bg-white/90 p-4 shadow-sm backdrop-blur-sm transition duration-300 hover:border-emerald-500/35 hover:shadow-[0_18px_45px_-34px_rgba(16,185,129,0.45)] dark:border-gray-800/80 dark:bg-[#0b1220]/90 dark:shadow-[0_22px_65px_-48px_rgba(14,165,233,0.45)] dark:hover:border-emerald-500/40 sm:p-5">
+                          <div className="rounded-[24px] border border-gray-200 bg-white p-4 shadow-sm transition duration-300 hover:border-emerald-500/35 hover:shadow-[0_18px_45px_-34px_rgba(16,185,129,0.28)] sm:p-5">
                             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                               <div className="max-w-xl">
                                 <div className="flex flex-wrap items-center gap-2">
-                                  <span className="inline-flex rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-700 dark:text-emerald-200">
+                                  <span className="inline-flex rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-700">
                                     {experience.badge}
                                   </span>
                                 </div>
-                                <h3 className="mt-3 text-xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white sm:text-2xl">
+                                <h3 className="mt-3 text-xl font-bold leading-tight tracking-tight text-gray-900 sm:text-2xl">
                                   {experience.role}
                                 </h3>
-                                <p className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 dark:text-emerald-200 sm:text-[15px]">
-                                  <Briefcase size={15} className="text-emerald-500 dark:text-emerald-400" />
+                                <p className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 sm:text-[15px]">
+                                  <Briefcase size={15} className="text-emerald-500" />
                                   {experience.company}
                                 </p>
                               </div>
 
-                              <div className="flex flex-col gap-2 text-xs text-gray-500 dark:text-white/55 sm:items-end">
-                                <span className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 dark:border-white/10 dark:bg-white/[0.03]">
+                              <div className="flex flex-col gap-2 text-xs text-gray-500 sm:items-end">
+                                <span className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5">
                                   <Calendar size={13} />
                                   {experience.period}
                                 </span>
-                                <span className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 dark:border-white/10 dark:bg-white/[0.03]">
+                                <span className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5">
                                   <MapPin size={13} />
                                   {experience.location}
                                 </span>
                               </div>
                             </div>
 
-                            <p className="mt-4 text-xs leading-relaxed text-gray-700 dark:text-white/72 sm:text-sm">
+                            <p className="mt-4 text-sm leading-relaxed text-gray-700">
                               {experience.summary}
                             </p>
 
@@ -211,7 +203,7 @@ const Experience = () => {
                               {experience.tech.slice(0, 4).map((tech) => (
                                 <span
                                   key={tech}
-                                  className="rounded-full border border-gray-200 bg-gray-50 px-2.5 py-1 text-[11px] font-medium text-gray-600 dark:border-white/10 dark:bg-white/[0.04] dark:text-white/72"
+                                  className="rounded-full border border-gray-200 bg-gray-50 px-2.5 py-1 text-[11px] font-medium text-gray-600"
                                 >
                                   {tech}
                                 </span>
