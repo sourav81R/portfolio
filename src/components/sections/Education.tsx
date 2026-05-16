@@ -1,6 +1,7 @@
+import { useRef } from 'react'
 import clsx from 'clsx'
 import { Calendar, GraduationCap, School, Sparkles } from 'lucide-react'
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion, useReducedMotion, useScroll, useSpring } from 'framer-motion'
 import AnimatedBorder from '../common/AnimatedBorder'
 import { getSectionRevealProps } from '../../lib/motion'
 
@@ -34,6 +35,15 @@ const educationData = [
 const Education = () => {
   const reduceMotion = useReducedMotion()
   const sectionRevealProps = getSectionRevealProps(reduceMotion)
+  const timelineRef = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({
+    target: timelineRef,
+    offset: ['start 82%', 'end 62%'],
+  })
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 60,
+    damping: 18,
+  })
 
   return (
     <motion.div
@@ -55,8 +65,15 @@ const Education = () => {
             </p>
           </div>
 
-          <div className="relative mx-auto mt-12 max-w-4xl">
-            <div className="absolute bottom-0 left-5 top-0 w-px bg-gradient-to-b from-emerald-200 via-sky-200 to-transparent dark:from-emerald-500/40 dark:via-sky-500/30 dark:to-transparent md:left-1/2 md:-translate-x-1/2" />
+          <div ref={timelineRef} className="relative mx-auto mt-12 max-w-4xl">
+            <div className="absolute bottom-0 left-5 top-0 w-px bg-gray-200 dark:bg-gray-800 md:left-1/2 md:-translate-x-1/2" />
+            <motion.div
+              className="absolute bottom-0 left-5 top-0 w-px bg-emerald-400 md:left-1/2 md:-translate-x-1/2"
+              style={{
+                scaleY: reduceMotion ? 1 : smoothProgress,
+                transformOrigin: 'top',
+              }}
+            />
 
             <div className="space-y-6 md:space-y-10">
               {educationData.map((edu, index) => {

@@ -109,24 +109,24 @@ const Experience = () => {
         <AnimatedBorder>
           <div
             ref={sectionRef}
-            className="relative mx-auto max-w-5xl px-4 py-10 text-gray-900 sm:px-5 sm:py-12 lg:px-8"
+            className="relative mx-auto max-w-5xl px-4 py-10 text-gray-900 dark:text-white sm:px-5 sm:py-12 lg:px-8"
           >
             <div className="relative z-10">
               <div className="mx-auto max-w-xl text-center">
-                <p className="text-[11px] uppercase tracking-[0.4em] text-gray-500">
+                <p className="text-[11px] uppercase tracking-[0.4em] text-gray-500 dark:text-gray-400">
                   Real Work Timeline
                 </p>
-                <h2 className="mt-3 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                <h2 className="mt-3 text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
                   Experience
                 </h2>
-                <p className="mt-3 text-xs leading-relaxed text-gray-600 sm:text-sm">
+                <p className="mt-3 text-xs leading-relaxed text-gray-600 dark:text-gray-400 sm:text-sm">
                   Compact internship cards first, with deeper proof and certificate access
                   only when someone asks for it.
                 </p>
               </div>
 
               <div className="relative mx-auto mt-10 max-w-4xl">
-                <div className="absolute bottom-0 left-5 top-0 w-px bg-gray-200 md:left-1/2 md:-translate-x-1/2" />
+                <div className="absolute bottom-0 left-5 top-0 w-px bg-gray-200 dark:bg-gray-800 md:left-1/2 md:-translate-x-1/2" />
                 <motion.div
                   className="absolute bottom-0 left-5 top-0 w-px bg-emerald-400 md:left-1/2 md:-translate-x-1/2"
                   style={{
@@ -158,7 +158,7 @@ const Experience = () => {
                           alignsLeft ? 'md:justify-start' : 'md:justify-end'
                         )}
                       >
-                        <div className="absolute left-5 top-8 h-3 w-3 -translate-x-1/2 rounded-full bg-emerald-400 ring-4 ring-white md:left-1/2" />
+                        <div className="absolute left-5 top-8 h-3 w-3 -translate-x-1/2 rounded-full bg-emerald-400 ring-4 ring-white dark:ring-[#0b1220] md:left-1/2" />
 
                         <div
                           className={clsx(
@@ -166,36 +166,36 @@ const Experience = () => {
                             alignsLeft ? 'md:mr-auto' : 'md:ml-auto'
                           )}
                         >
-                          <div className="rounded-[24px] border border-gray-200 bg-white p-4 shadow-sm transition duration-300 hover:border-emerald-500/35 hover:shadow-[0_18px_45px_-34px_rgba(16,185,129,0.28)] sm:p-5">
+                          <div className="rounded-[24px] border border-gray-200 bg-gray-50/70 p-4 shadow-sm transition duration-300 hover:border-emerald-500/35 hover:shadow-[0_18px_45px_-34px_rgba(16,185,129,0.28)] dark:border-gray-800 dark:bg-gray-900/50 sm:p-5">
                             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                               <div className="max-w-xl">
                                 <div className="flex flex-wrap items-center gap-2">
-                                  <span className="inline-flex rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-700">
+                                  <span className="inline-flex rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-700 dark:text-emerald-200">
                                     {experience.badge}
                                   </span>
                                 </div>
-                                <h3 className="mt-3 text-xl font-bold leading-tight tracking-tight text-gray-900 sm:text-2xl">
+                                <h3 className="mt-3 text-xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white sm:text-2xl">
                                   {experience.role}
                                 </h3>
-                                <p className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 sm:text-[15px]">
-                                  <Briefcase size={15} className="text-emerald-500" />
+                                <p className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 dark:text-emerald-300 sm:text-[15px]">
+                                  <Briefcase size={15} className="text-emerald-500 dark:text-emerald-400" />
                                   {experience.company}
                                 </p>
                               </div>
 
-                              <div className="flex flex-col gap-2 text-xs text-gray-500 sm:items-end">
-                                <span className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5">
+                              <div className="flex flex-col gap-2 text-xs text-gray-500 dark:text-gray-400 sm:items-end">
+                                <span className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 dark:border-gray-700 dark:bg-gray-800">
                                   <Calendar size={13} />
                                   {experience.period}
                                 </span>
-                                <span className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5">
+                                <span className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 dark:border-gray-700 dark:bg-gray-800">
                                   <MapPin size={13} />
                                   {experience.location}
                                 </span>
                               </div>
                             </div>
 
-                            <p className="mt-4 text-sm leading-relaxed text-gray-700">
+                            <p className="mt-4 text-sm leading-relaxed text-gray-700 dark:text-gray-400">
                               {experience.summary}
                             </p>
 
@@ -203,7 +203,7 @@ const Experience = () => {
                               {experience.tech.slice(0, 4).map((tech) => (
                                 <span
                                   key={tech}
-                                  className="rounded-full border border-gray-200 bg-gray-50 px-2.5 py-1 text-[11px] font-medium text-gray-600"
+                                  className="rounded-full border border-gray-200 bg-gray-50 px-2.5 py-1 text-[11px] font-medium text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
                                 >
                                   {tech}
                                 </span>
