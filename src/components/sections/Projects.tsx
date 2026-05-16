@@ -1,5 +1,10 @@
 import { useEffect, useState, type MouseEvent } from 'react'
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import {
+  AnimatePresence,
+  motion,
+  useReducedMotion,
+  type Transition,
+} from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import {
   ExternalLink,
@@ -24,11 +29,11 @@ const categories: Category[] = ['All', 'Web', 'AI', 'Mobile', 'Realtime']
 const projectFallbackImage = `${import.meta.env.BASE_URL}og-preview.png`
 const INITIAL_VISIBLE_PROJECTS = 6
 const mobileSpinKeyframes = [0, 90, 180, 270, 360]
-const mobileSpinTransition = {
+const mobileSpinTransition: Transition = {
   duration: 0.7,
   ease: 'easeInOut',
   times: [0, 0.28, 0.56, 0.82, 1],
-} as const
+}
 
 const Projects = () => {
   const reduceMotion = useReducedMotion()

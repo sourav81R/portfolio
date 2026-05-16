@@ -35,6 +35,7 @@ import {
   motion,
   AnimatePresence,
   useReducedMotion,
+  type Transition,
   type Variants,
 } from 'framer-motion'
 import AnimatedBorder from '../common/AnimatedBorder'
@@ -124,11 +125,11 @@ const skillItemVariants: Variants = {
 }
 
 const mobileSpinKeyframes = [0, 90, 180, 270, 360]
-const mobileSpinTransition = {
+const mobileSpinTransition: Transition = {
   duration: 0.7,
   ease: 'easeInOut',
   times: [0, 0.28, 0.56, 0.82, 1],
-} as const
+}
 
 const skillScale = [293.66, 329.63, 369.99, 440.0, 493.88, 587.33, 659.25, 739.99]
 

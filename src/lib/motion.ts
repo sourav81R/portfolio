@@ -26,7 +26,9 @@ export const sectionRevealTransition = {
   ease: MOTION_TOKENS.easing,
 } as const
 
-export const getSectionRevealProps = (reduceMotion: boolean): MotionProps =>
+export const getSectionRevealProps = (
+  reduceMotion: boolean | null | undefined
+): MotionProps =>
   reduceMotion
     ? {}
     : {
