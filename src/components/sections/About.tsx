@@ -1,223 +1,281 @@
-import { Calendar, Code, Database, Zap, Users, Rocket, Brain } from 'lucide-react'
+import {
+  Brain,
+  Calendar,
+  Code,
+  Database,
+  Rocket,
+  Users,
+  Zap,
+} from 'lucide-react'
 import { motion, useReducedMotion } from 'framer-motion'
 import CountUp from '../common/CountUp'
-import FadeIn from '../common/FadeIn'
-import AnimatedBorder from '../common/AnimatedBorder'
 import { getSectionRevealProps } from '../../lib/motion'
 
+type StatItem = {
+  icon: typeof Calendar
+  value: string
+  countTo?: number
+  suffix?: string
+  label: string
+  color: string
+  bg: string
+}
+
+const stats: StatItem[] = [
+  {
+    icon: Calendar,
+    value: '2026',
+    countTo: 2026,
+    label: 'Graduation Year',
+    color: 'text-sky-500 dark:text-sky-300',
+    bg: 'bg-sky-500/12',
+  },
+  {
+    icon: Code,
+    value: '3+',
+    countTo: 3,
+    suffix: '+',
+    label: 'Major Projects',
+    color: 'text-emerald-500 dark:text-emerald-300',
+    bg: 'bg-emerald-500/12',
+  },
+  {
+    icon: Database,
+    value: 'MERN',
+    label: 'Full Stack Exposure',
+    color: 'text-cyan-500 dark:text-cyan-300',
+    bg: 'bg-cyan-500/12',
+  },
+  {
+    icon: Zap,
+    value: 'APIs',
+    label: 'REST Integration',
+    color: 'text-blue-500 dark:text-blue-300',
+    bg: 'bg-blue-500/12',
+  },
+]
+
+const qualities = [
+  {
+    title: 'Problem Solver',
+    description:
+      'I like breaking down messy requirements into clear, practical steps that a team can actually ship.',
+    icon: Brain,
+    color: 'text-sky-500 dark:text-sky-300',
+    bg: 'bg-sky-500/12',
+  },
+  {
+    title: 'Fast Learner',
+    description:
+      'I adapt quickly, enjoy exploring new tools, and keep tightening both engineering habits and product judgment.',
+    icon: Rocket,
+    color: 'text-emerald-500 dark:text-emerald-300',
+    bg: 'bg-emerald-500/12',
+  },
+  {
+    title: 'Collaborator',
+    description:
+      'I value clear communication, steady iteration, and dependable follow-through when building with others.',
+    icon: Users,
+    color: 'text-cyan-500 dark:text-cyan-300',
+    bg: 'bg-cyan-500/12',
+  },
+] as const
+
+const tags = [
+  'Frontend Enthusiast',
+  'API Integrator',
+  'React Native Explorer',
+  'Product-Focused Learner',
+] as const
+
+const focusAreas = [
+  'Next.js 14',
+  'System Design',
+  'Cloud Architecture',
+  'Performance Thinking',
+] as const
+
 const About = () => {
-  const text = 'About Me'
   const reduceMotion = useReducedMotion()
   const sectionRevealProps = getSectionRevealProps(reduceMotion)
-
-  const stats = [
-    {
-      icon: Calendar,
-      value: '2026',
-      countTo: 2026,
-      label: 'Graduation Year',
-      color: 'text-blue-500',
-      bg: 'bg-blue-500/10',
-    },
-    {
-      icon: Code,
-      value: '3+',
-      countTo: 3,
-      suffix: '+',
-      label: 'Major Projects',
-      color: 'text-green-500',
-      bg: 'bg-green-500/10',
-    },
-    {
-      icon: Database,
-      value: 'MERN',
-      label: 'Full Stack Exposure',
-      color: 'text-purple-500',
-      bg: 'bg-purple-500/10',
-    },
-    {
-      icon: Zap,
-      value: 'APIs',
-      label: 'REST Integration',
-      color: 'text-yellow-500',
-      bg: 'bg-yellow-500/10',
-    },
-  ]
-
-  const qualities = [
-    {
-      title: 'Problem Solver',
-      description:
-        'Approaching challenges with a logical mindset to build efficient solutions.',
-      icon: Brain,
-      color: 'text-pink-500',
-      bg: 'bg-pink-500/10',
-    },
-    {
-      title: 'Fast Learner',
-      description:
-        'Constantly exploring new technologies and adapting to changing requirements.',
-      icon: Rocket,
-      color: 'text-orange-500',
-      bg: 'bg-orange-500/10',
-    },
-    {
-      title: 'Collaborator',
-      description:
-        'Believing in open communication and teamwork to achieve shared goals.',
-      icon: Users,
-      color: 'text-blue-500',
-      bg: 'bg-blue-500/10',
-    },
-  ]
 
   return (
     <motion.div
       {...sectionRevealProps}
-      className="px-4 py-20 sm:px-6 sm:py-24 lg:py-28"
+      className="relative overflow-hidden px-4 py-20 sm:px-6 sm:py-24 lg:py-28"
     >
-      <AnimatedBorder>
-        <div className="max-w-5xl mx-auto font-mono p-4 sm:p-6 md:p-10">
-          {/* Section Title */}
-          <FadeIn>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-10 sm:mb-14 tracking-tight">
-              {text}
-            </h2>
-          </FadeIn>
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/65 to-transparent dark:via-white/15" />
+        <div className="absolute left-[10%] top-20 h-40 w-40 rounded-full bg-sky-500/10 blur-[95px]" />
+        <div className="absolute right-[12%] top-[18%] h-44 w-44 rounded-full bg-emerald-500/10 blur-[100px]" />
+        <div className="absolute bottom-10 left-[22%] h-36 w-36 rounded-full bg-cyan-500/8 blur-[80px]" />
+      </div>
 
-          <FadeIn delay={0.1}>
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              {/* Left: Description */}
-              <div className="text-gray-700 dark:text-gray-400 leading-relaxed space-y-5 sm:space-y-6 text-base sm:text-lg">
-                <p>
-                  I am a{' '}
-                  <span className="text-gray-900 dark:text-white font-semibold border-b-2 border-green-500/30">
-                    final-year B.Tech Computer Science & Engineering student
-                  </span>{' '}
-                  with a strong foundation in programming, software development,
-                  and API-driven applications.
-                </p>
+      <div className="relative mx-auto max-w-6xl">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.3 }}
+          className="text-center"
+        >
+          <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.36em] text-sky-600 dark:text-sky-300">
+            About Me
+          </p>
+          <h2 className="display-poster poster-shadow mt-5 text-[2.6rem] uppercase leading-[0.9] text-gray-950 dark:text-white sm:text-[3.35rem] lg:text-[3.8rem]">
+            <span className="inline-block -skew-x-6">Built with focus,</span>{' '}
+            <span className="inline-block -skew-x-6">growing with intent.</span>
+          </h2>
+        </motion.div>
 
-                <p>
-                  I have hands-on experience building modern web and mobile
-                  applications using{' '}
-                  <span className="text-gray-900 dark:text-white font-medium">
-                    React, TypeScript, and React Native
-                  </span>
-                  , along with integrating REST APIs. I enjoy debugging,
-                  improving application performance, and following structured
-                  development workflows.
-                </p>
-
-                <p>
-                  I am actively seeking an{' '}
-                  <span className="text-gray-900 dark:text-white font-medium">
-                    entry-level software developer role
-                  </span>{' '}
-                  where I can contribute to real-world projects while
-                  continuously learning and growing as a developer.
-                </p>
-
-                <div className="flex flex-wrap gap-2 pt-4">
-                  {['Problem Solver', 'Frontend Enthusiast', 'API Integrator'].map(
-                    (tag) => (
-                      <span
-                        key={tag}
-                        className="px-3 py-1 text-xs font-medium rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300"
-                      >
-                        {tag}
-                      </span>
-                    )
-                  )}
-                </div>
-              </div>
-
-              {/* Right: Highlights */}
-              <div className="grid grid-cols-2 gap-4">
-                {stats.map((stat, index) => (
-                  <motion.div
-                    key={index}
-                    whileHover={{ y: -5 }}
-                    className="
-                      flex flex-col items-center justify-center
-                      p-6 rounded-2xl
-                      border border-gray-200 dark:border-gray-800
-                      bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-sm
-                      hover:border-green-500/30 hover:shadow-lg hover:shadow-green-500/5
-                      group
-                    "
-                  >
-                    <div
-                      className={`mb-4 rounded-full p-3 ${stat.bg} ${stat.color}`}
-                    >
-                      <stat.icon size={24} />
-                    </div>
-                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
-                      {typeof stat.countTo === 'number' ? (
-                        <CountUp to={stat.countTo} suffix={stat.suffix} />
-                      ) : (
-                        stat.value
-                      )}
-                    </h3>
-                    <p className="text-xs font-medium text-gray-500 dark:text-gray-400 text-center uppercase tracking-wider">
-                      {stat.label}
-                    </p>
-                  </motion.div>
-                ))}
-              </div>
+        <motion.div
+          initial={{ opacity: 0, y: 22 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.18 }}
+          transition={{ duration: 0.34, delay: 0.08 }}
+          className="relative mx-auto mt-16 max-w-5xl"
+        >
+          <div className="absolute -inset-x-2 -inset-y-2 rounded-[34px] border border-white/10 bg-white/6 dark:bg-white/[0.02]" />
+          <div className="premium-panel about-feature-panel soft-panel relative rounded-[30px] border border-white/14 px-6 py-8 pt-16 backdrop-blur-md sm:px-10 sm:py-11 sm:pt-16">
+            <div className="about-feature-label absolute -left-3 -top-5 z-20 rounded-[12px] border border-white/20 bg-gradient-to-r from-sky-500 to-emerald-500 px-5 py-2.5 font-mono text-sm font-semibold uppercase tracking-[0.18em] text-white sm:-left-4 sm:-top-6 sm:px-6 sm:py-3 sm:text-[15px]">
+              About Me
             </div>
 
-            {/* What I Bring */}
-            <div className="mt-20">
-              <h3 className="text-xl sm:text-2xl font-bold mb-8 text-center text-gray-900 dark:text-white">
-                What I Bring to the Table
+            <p className="text-base leading-8 text-gray-700 dark:text-gray-100 sm:text-[1.08rem] sm:leading-9">
+              I am a final-year B.Tech Computer Science and Engineering student
+              with hands-on experience building web and mobile applications
+              using{' '}
+              <span className="font-semibold text-gray-900 dark:text-white">
+                React, TypeScript, React Native, and REST APIs
+              </span>
+              . I enjoy turning ideas into clean, practical interfaces,
+              debugging edge cases, and improving how a product feels in actual
+              use. I am now looking for an{' '}
+              <span className="font-semibold text-gray-900 dark:text-white">
+                entry-level software developer role
+              </span>{' '}
+              where I can keep learning fast while contributing dependable work
+              to real teams.
+            </p>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              {tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="premium-chip rounded-full border border-white/12 bg-white/78 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-gray-700 shadow-[0_18px_42px_-32px_rgba(15,23,42,0.24)] backdrop-blur-md dark:bg-white/7 dark:text-gray-200"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+
+        <div className="mt-10 grid gap-4 lg:grid-cols-4">
+          {stats.map((stat, index) => (
+            <motion.article
+              key={stat.label}
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.14 }}
+              transition={{ duration: 0.28, delay: 0.1 + index * 0.06 }}
+              className="premium-panel soft-panel rounded-[24px] border border-white/12 bg-white/78 p-5 backdrop-blur-md dark:bg-[#07111a]/78"
+            >
+              <div className={`inline-flex rounded-2xl p-3 ${stat.bg} ${stat.color}`}>
+                <stat.icon size={22} />
+              </div>
+              <h3 className="mt-4 text-2xl font-bold text-gray-900 dark:text-white">
+                {typeof stat.countTo === 'number' ? (
+                  <CountUp to={stat.countTo} suffix={stat.suffix} />
+                ) : (
+                  stat.value
+                )}
               </h3>
-              <div className="grid md:grid-cols-3 gap-6">
-                {qualities.map((q, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.12 }}
-                    transition={{ duration: 0.25 }}
-                    whileHover={{ y: -5 }}
-                    className="
-                      p-6 rounded-2xl
-                      border border-gray-200 dark:border-gray-800
-                      bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-sm
-                      hover:border-green-500/30 hover:shadow-lg
-                    "
-                  >
-                    <div
-                      className={`w-12 h-12 rounded-lg ${q.bg} ${q.color} flex items-center justify-center mb-4`}
-                    >
-                      <q.icon size={24} />
-                    </div>
-                    <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                      {q.title}
-                    </h4>
-                    <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
-                      {q.description}
-                    </p>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
+              <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.22em] text-gray-500 dark:text-gray-400">
+                {stat.label}
+              </p>
+            </motion.article>
+          ))}
+        </div>
 
-            {/* Current Focus */}
-            <div className="mt-12 p-6 rounded-xl bg-green-500/5 border border-green-500/20 text-center">
-              <p className="text-gray-700 dark:text-gray-300">
-                <span className="font-bold text-green-600 dark:text-green-400">
-                  Current Focus:
-                </span>{' '}
-                Deepening my knowledge of <span className="font-medium">Next.js 14</span>,{' '}
-                <span className="font-medium">System Design</span>, and{' '}
-                <span className="font-medium">Cloud Architecture</span>.
+        <div className="mt-10 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.16 }}
+            transition={{ duration: 0.32, delay: 0.14 }}
+            className="premium-panel soft-panel rounded-[30px] border border-white/12 bg-white/78 p-6 backdrop-blur-md dark:bg-[#07111a]/78 sm:p-7"
+          >
+            <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.28em] text-emerald-600 dark:text-emerald-300">
+              Current Focus
+            </p>
+            <p className="mt-4 text-base leading-8 text-gray-700 dark:text-gray-300 sm:text-lg">
+              Deepening my knowledge of modern React architecture, shipping
+              stronger case studies, and building a better understanding of how
+              interface decisions connect with performance, scale, and product
+              clarity.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              {focusAreas.map((item) => (
+                <span
+                  key={item}
+                  className="premium-chip rounded-full border border-emerald-400/18 bg-emerald-500/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-emerald-700 dark:text-emerald-300"
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.16 }}
+            transition={{ duration: 0.32, delay: 0.18 }}
+            className="premium-panel soft-panel rounded-[30px] border border-white/12 bg-white/78 p-6 backdrop-blur-md dark:bg-[#07111a]/78 sm:p-7"
+          >
+            <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.28em] text-sky-600 dark:text-sky-300">
+              Snapshot
+            </p>
+            <div className="mt-4 space-y-4 text-sm leading-7 text-gray-700 dark:text-gray-300">
+              <p>
+                I enjoy structured workflows, clear debugging, and interfaces
+                that feel intentional rather than overdesigned.
+              </p>
+              <p>
+                My goal is to keep growing from portfolio projects into team
+                environments where quality, communication, and momentum matter.
               </p>
             </div>
-          </FadeIn>
+          </motion.div>
         </div>
-      </AnimatedBorder>
+
+        <div className="mt-10 grid gap-6 md:grid-cols-3">
+          {qualities.map((quality, index) => (
+            <motion.article
+              key={quality.title}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.16 }}
+              transition={{ duration: 0.3, delay: 0.2 + index * 0.06 }}
+              className="premium-panel soft-panel rounded-[28px] border border-white/12 bg-white/74 p-6 backdrop-blur-md dark:bg-[#07111a]/74"
+            >
+              <div
+                className={`inline-flex h-14 w-14 items-center justify-center rounded-[20px] ${quality.bg} ${quality.color}`}
+              >
+                <quality.icon size={24} />
+              </div>
+              <h3 className="mt-5 text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+                {quality.title}
+              </h3>
+              <p className="mt-3 text-sm leading-7 text-gray-600 dark:text-gray-300">
+                {quality.description}
+              </p>
+            </motion.article>
+          ))}
+        </div>
+      </div>
     </motion.div>
   )
 }

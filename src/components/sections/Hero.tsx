@@ -9,21 +9,14 @@ import {
 } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import {
-  ArrowRight,
-  BadgeCheck,
-  Code2,
-  Cpu,
-  Download,
-  Eye,
+  ArrowUpRight,
+  FileText,
   Github,
-  Globe,
   Linkedin,
   Mail,
-  MapPin,
   Sparkles,
   Terminal as TerminalIcon,
 } from 'lucide-react'
-import AnimatedBorder from '../common/AnimatedBorder'
 import DotGrid from '../common/DotGrid'
 import MagneticButton from '../common/MagneticButton'
 import WordCycle from '../common/WordCycle'
@@ -31,8 +24,8 @@ import { getSectionRevealProps } from '../../lib/motion'
 import { useCommandPalette } from '../../store/useCommandpalette'
 import { useAppStore } from '../../store/useAppStore'
 
-const SmartResume = lazy(() => import('../common/SmartResume'))
 const ResumePreviewModal = lazy(() => import('../common/ResumePreviewModal'))
+
 type Line = {
   prompt: string
   text: string
@@ -45,27 +38,19 @@ type SectionCommand = {
 }
 
 const terminalLines: Line[] = [
-  { prompt: '>> ~', text: 'whoami' },
-  { prompt: '>> ~', text: 'Sourav Chowdhury' },
-  { prompt: '>> ~', text: 'cat role.txt' },
-  {
-    prompt: '>> ~',
-    text: 'Full stack developer focused on product-quality interfaces',
-  },
-  { prompt: '>> ~', text: 'ls stack/' },
-  {
-    prompt: '>> ~',
-    text: 'React | TypeScript | REST APIs | React Native | Node.js',
-  },
-  { prompt: '>> ~', text: 'echo "Ready to build!"' },
+  { prompt: '>> ~', text: 'npx intro --profile sourav' },
+  { prompt: '>> ~', text: 'Loading product-minded developer profile...' },
+  { prompt: '>> ~', text: 'Role: Frontend + Full Stack Developer' },
+  { prompt: '>> ~', text: 'Focus: React, TypeScript, APIs, and clean UX' },
+  { prompt: '>> ~', text: 'Status: Open to interviews and collaborations' },
 ]
 
 const terminalSequence: Line[] = [
   ...terminalLines,
-  { prompt: '>> ~', text: 'Ready to build' },
+  { prompt: '>> ~', text: 'Try: about | projects | contact' },
 ]
 
-const TERMINAL_TYPING_SPEED = 32
+const TERMINAL_TYPING_SPEED = 34
 const TERMINAL_LINE_PAUSE = 220
 
 const sectionCommands: SectionCommand[] = [
@@ -165,33 +150,14 @@ const sectionCommands: SectionCommand[] = [
   },
 ]
 
-const heroSignals = [
-  {
-    label: 'Availability',
-    value: 'Open for 2026 roles',
-  },
-  {
-    label: 'Location',
-    value: 'Kolkata / Remote-friendly',
-  },
-  {
-    label: 'Core stack',
-    value: 'React, TypeScript, Node.js',
-  },
-]
-
-const heroProof = [
-  'Recruiter-friendly case studies',
-  'Modern React and TypeScript focus',
-  'Frontend, APIs, and mobile experience',
-]
-
 const headlineWords = [
-  'interfaces',
-  'dashboards',
-  'case studies',
   'frontend systems',
+  'dashboard experiences',
+  'API-led products',
+  'case-study interfaces',
 ]
+
+const quickCommands = ['about', 'projects', 'contact'] as const
 
 const socialLinks = [
   {
@@ -211,7 +177,6 @@ const socialLinks = [
   },
 ] as const
 
-const fullName = 'SOURAV CHOWDHURY'
 const BADGE_WORDS = [
   'COMPUTER SCIENCE ENGINEER',
   'FULL STACK DEVELOPER',
@@ -244,7 +209,7 @@ const TypingBadge = () => {
   }, [subIndex, index, reverse])
 
   return (
-    <span className="inline-block max-w-[180px] overflow-hidden text-ellipsis whitespace-nowrap align-bottom sm:max-w-none">
+    <span className="inline-block max-w-[240px] overflow-hidden text-ellipsis whitespace-nowrap align-bottom sm:max-w-none">
       {BADGE_WORDS[index].substring(0, subIndex)}
       <motion.span
         className="ml-1 inline-block"
@@ -266,7 +231,6 @@ const Hero = () => {
   const reduceMotion = useReducedMotion()
   const sectionRevealProps = getSectionRevealProps(reduceMotion)
   const recordClick = useAppStore((state) => state.recordClick)
-  const [showResume, setShowResume] = useState(false)
   const [showResumePreview, setShowResumePreview] = useState(false)
   const terminalInputRef = useRef<HTMLInputElement>(null)
   const [typedTerminalLines, setTypedTerminalLines] = useState<Line[]>(() =>
@@ -278,8 +242,6 @@ const Hero = () => {
   const [activeTerminalChar, setActiveTerminalChar] = useState(0)
   const [terminalInput, setTerminalInput] = useState('')
   const [isTerminalReady, setIsTerminalReady] = useState(reduceMotion)
-
-  const handleResumeClose = useCallback(() => setShowResume(false), [])
 
   const startTerminalSequence = useCallback(() => {
     setTerminalInput('')
@@ -423,312 +385,188 @@ const Hero = () => {
         opacity: open ? 0.9 : 1,
       }}
       transition={{ duration: reduceMotion ? 0.15 : 0.3 }}
-      className="relative min-h-screen overflow-hidden px-4 pb-14 pt-28 sm:px-6 sm:pb-10 sm:pt-32 lg:pt-36"
+      className="relative min-h-screen overflow-hidden px-4 pb-16 pt-28 sm:px-6 sm:pb-14 sm:pt-32 lg:pt-36"
     >
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute right-[2%] top-[-8%] h-[360px] w-[360px] rounded-full bg-green-500/12 blur-[90px]" />
-        <div className="absolute left-[-8%] top-[22%] h-[280px] w-[280px] rounded-full bg-sky-500/10 blur-[90px]" />
-        <div className="absolute bottom-[-8%] right-[22%] h-[260px] w-[260px] rounded-full bg-emerald-500/10 blur-[90px]" />
+      <div className="pointer-events-none absolute inset-0 z-0">
+        <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/60 to-transparent dark:via-white/20" />
+        <div className="absolute inset-x-0 bottom-12 h-[1px] bg-gradient-to-r from-transparent via-emerald-400/50 to-transparent dark:via-emerald-300/25" />
+        <div className="absolute left-[-8%] top-[12%] h-[360px] w-[360px] rounded-full bg-sky-500/12 blur-[120px]" />
+        <div className="absolute right-[-5%] top-[22%] h-[420px] w-[420px] rounded-full bg-emerald-500/12 blur-[140px]" />
+        <div className="absolute bottom-[-10%] left-[26%] h-[320px] w-[320px] rounded-full bg-cyan-500/10 blur-[120px]" />
       </div>
-      <div className="absolute inset-0 z-0 opacity-80">
+      <div className="absolute inset-0 z-0 opacity-40">
         <DotGrid />
       </div>
       <div className="grain-overlay absolute inset-0 z-[1]" />
 
       <motion.div
         {...sectionRevealProps}
-        className="relative z-10 w-full"
+        className="relative z-10 mx-auto flex min-h-[calc(100vh-8.5rem)] max-w-6xl items-center"
       >
-        <AnimatedBorder>
-          <div className="mx-auto grid min-h-[560px] max-w-6xl gap-8 rounded-2xl border border-white/70 bg-gradient-to-br from-white via-white to-emerald-50/70 p-4 shadow-[0_35px_120px_-55px_rgba(15,23,42,0.45)] sm:p-6 md:p-10 lg:min-h-[72vh] lg:grid-cols-[1.08fr_0.92fr] lg:gap-14 lg:p-12 dark:border-gray-800/80 dark:bg-gradient-to-br dark:from-[#030712] dark:via-[#020617] dark:to-emerald-950/20">
-            <div className="flex flex-col items-start font-mono">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5 }}
-                className="relative mb-6 sm:mb-8"
-              >
-                <motion.div
-                  className="absolute inset-0 rounded-full bg-green-500/30 blur-xl"
-                  animate={
-                    reduceMotion
-                      ? undefined
-                      : { opacity: [0.35, 0.75, 0.35], scale: [0.96, 1.06, 0.96] }
-                  }
-                  transition={
-                    reduceMotion
-                      ? undefined
-                      : { duration: 2.8, repeat: Infinity, ease: 'easeInOut' }
-                  }
-                />
-                <motion.div
-                  animate={reduceMotion ? undefined : { y: [0, -12, 0] }}
-                  transition={
-                    reduceMotion
-                      ? undefined
-                      : { duration: 3, repeat: Infinity, ease: 'easeInOut' }
-                  }
-                >
-                  <img
-                    src="/profile.jpg"
-                    alt="Sourav Chowdhury"
-                    className="relative h-24 w-24 rounded-3xl border-2 border-green-500/40 object-cover shadow-xl sm:h-28 sm:w-28 md:h-32 md:w-32"
-                  />
-                </motion.div>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.12 }}
-                className="mb-5 flex flex-wrap items-center gap-2"
-              >
-                <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.18em] text-emerald-700 dark:text-emerald-300">
-                  <span className="relative flex h-2 w-2">
-                    <motion.span
-                      className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"
-                      animate={
-                        reduceMotion
-                          ? undefined
-                          : { scale: [1, 1.8], opacity: [0.75, 0] }
-                      }
-                      transition={
-                        reduceMotion
-                          ? undefined
-                          : { duration: 1.6, repeat: Infinity, ease: 'easeOut' }
-                      }
-                    />
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-                  </span>
-                  Open to work
-                </span>
-                <span className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white/75 px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.18em] text-gray-600 dark:border-gray-800 dark:bg-white/5 dark:text-gray-300">
-                  <Sparkles size={14} />
-                  <TypingBadge />
-                </span>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.18 }}
-                className="mb-6 max-w-2xl"
-              >
-                <p className="mb-3 text-sm font-medium uppercase tracking-[0.26em] text-gray-500 dark:text-gray-400">
-                  Recruiter-ready frontend engineer
-                </p>
-                <h1 className="text-4xl font-bold leading-[0.95] tracking-tight text-gray-950 dark:text-white sm:text-6xl lg:text-7xl">
-                  {fullName}
-                </h1>
-                <div className="mt-4 text-xl font-semibold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
-                  <span>I build </span>
-                  <span className="text-emerald-600 dark:text-emerald-300">
-                    <WordCycle words={headlineWords} />
-                  </span>
-                </div>
-                <p className="mt-4 max-w-xl text-base leading-relaxed text-gray-600 dark:text-gray-300 sm:text-lg">
-                  Full stack developer focused on clean interfaces, practical case studies, and API-driven products that are easy for recruiters and teams to evaluate.
-                </p>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.24 }}
-                className="mb-8 grid w-full gap-3 sm:grid-cols-3"
-              >
-                {heroSignals.map((signal) => (
-                  <div
-                    key={signal.label}
-                    className="rounded-2xl border border-gray-200/80 bg-white/80 px-4 py-3 backdrop-blur-sm dark:border-gray-800 dark:bg-white/5"
-                  >
-                    <p className="text-[11px] uppercase tracking-[0.22em] text-gray-500 dark:text-gray-400">
-                      {signal.label}
-                    </p>
-                    <p className="mt-2 text-sm font-semibold text-gray-900 dark:text-white">
-                      {signal.value}
-                    </p>
-                  </div>
-                ))}
-              </motion.div>
-
-              <div className="flex w-full flex-wrap gap-3 sm:gap-4">
-                <MagneticButton>
-                  <motion.a
-                    href="#projects"
-                    onClick={() => recordClick('hero-view-projects')}
-                    animate={reduceMotion ? undefined : { scale: [1, 1.04, 1] }}
+        <div className="grid w-full gap-12 lg:grid-cols-[0.98fr_1.02fr] lg:items-center lg:gap-16">
+          <div className="relative">
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.08 }}
+              className="flex flex-wrap items-center gap-3 font-mono"
+            >
+              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-500/12 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-emerald-700 shadow-[0_18px_38px_-26px_rgba(16,185,129,0.48)] dark:text-emerald-300">
+                <span className="relative flex h-2.5 w-2.5">
+                  <motion.span
+                    className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-70"
+                    animate={
+                      reduceMotion
+                        ? undefined
+                        : { scale: [1, 1.8], opacity: [0.7, 0] }
+                    }
                     transition={
                       reduceMotion
                         ? undefined
-                        : { duration: 2.5, repeat: Infinity, ease: 'easeInOut' }
+                        : { duration: 1.6, repeat: Infinity, ease: 'easeOut' }
                     }
-                    whileHover={reduceMotion ? undefined : { y: -2 }}
+                  />
+                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
+                </span>
+                Open to work
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/18 bg-transparent px-4 py-2 text-[13px] font-semibold uppercase tracking-[0.24em] text-gray-700 dark:text-gray-100">
+                <Sparkles size={14} />
+                <TypingBadge />
+              </span>
+            </motion.div>
+
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.14 }}
+              className="mt-6 font-mono text-xs font-semibold uppercase tracking-[0.36em] text-sky-600 dark:text-sky-300"
+            >
+              Recruiter-ready frontend engineer
+            </motion.p>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 22 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="display-poster poster-shadow mt-5 max-w-2xl text-[4.4rem] uppercase leading-[0.82] text-gray-950 dark:text-white sm:text-[5.8rem] lg:text-[6.5rem]"
+            >
+              <span className="block -skew-x-6">Sourav</span>
+              <span className="block -skew-x-6">Chowdhury</span>
+            </motion.h1>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.28 }}
+              className="mt-5 flex flex-wrap items-center gap-3 font-mono text-sm font-semibold uppercase tracking-[0.18em] text-gray-700 dark:text-gray-200 sm:text-base"
+            >
+              <span className="text-sky-600 dark:text-sky-300">Full stack developer</span>
+              <span className="h-2 w-2 rounded-full bg-emerald-500" />
+              <span className="text-gray-500 dark:text-gray-400">I build</span>
+              <span className="text-emerald-600 dark:text-emerald-300">
+                <WordCycle words={headlineWords} />
+              </span>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.38 }}
+              className="mt-7 flex flex-wrap items-center gap-3"
+            >
+              <MagneticButton>
+                <motion.a
+                  href="#projects"
+                  onClick={() => recordClick('hero-view-projects')}
+                  whileHover={reduceMotion ? undefined : { y: -3 }}
+                  whileTap={reduceMotion ? undefined : { scale: 0.98 }}
+                  className="inline-flex min-h-[50px] items-center justify-center gap-2 rounded-[14px] border-[3px] border-white px-5 py-3 font-mono text-sm font-extrabold uppercase tracking-[0.12em] text-white shadow-[0_10px_0_0_rgba(255,255,255,0.88),0_26px_55px_-30px_rgba(14,165,233,0.7)] transition-all"
+                  style={{
+                    background: 'linear-gradient(135deg, var(--accent), #10b981)',
+                  }}
+                >
+                  View Project
+                  <ArrowUpRight size={17} />
+                </motion.a>
+              </MagneticButton>
+
+              <MagneticButton>
+                <motion.button
+                  type="button"
+                  onClick={() => {
+                    recordClick('hero-open-resume-preview')
+                    setShowResumePreview(true)
+                  }}
+                  whileHover={reduceMotion ? undefined : { y: -3 }}
+                  whileTap={reduceMotion ? undefined : { scale: 0.98 }}
+                  className="inline-flex min-h-[50px] items-center justify-center gap-2 rounded-[14px] border-[3px] border-white/85 bg-white/10 px-5 py-3 font-mono text-sm font-extrabold uppercase tracking-[0.12em] text-white shadow-[0_10px_0_0_rgba(255,255,255,0.28),0_24px_52px_-34px_rgba(16,185,129,0.44)] backdrop-blur-md transition-all hover:bg-white/14"
+                >
+                  <FileText size={17} />
+                  Resume
+                </motion.button>
+              </MagneticButton>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.44 }}
+              className="mt-7 flex flex-wrap items-center gap-3"
+            >
+              {socialLinks.map((link) => {
+                const Icon = link.icon
+
+                return (
+                  <motion.a
+                    key={link.label}
+                    href={link.href}
+                    target={link.href.startsWith('http') ? '_blank' : undefined}
+                    rel={
+                      link.href.startsWith('http')
+                        ? 'noopener noreferrer'
+                        : undefined
+                    }
+                    whileHover={reduceMotion ? undefined : { y: -3, scale: 1.02 }}
                     whileTap={reduceMotion ? undefined : { scale: 0.98 }}
-                    className="flex w-full items-center justify-center gap-2 rounded-full px-5 py-3 font-medium text-white shadow-lg sm:w-auto sm:px-6"
-                    style={{
-                      background: 'linear-gradient(135deg, var(--accent), #6366f1)',
-                    }}
+                    className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/74 px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-[0_18px_42px_-30px_rgba(15,23,42,0.26)] backdrop-blur-md dark:bg-white/7 dark:text-gray-200"
+                    onClick={() =>
+                      recordClick(`hero-social-${link.label.toLowerCase()}`)
+                    }
                   >
-                    View Projects
-                    <ArrowRight size={18} />
+                    <Icon size={16} />
+                    {link.label}
                   </motion.a>
-                </MagneticButton>
+                )
+              })}
+            </motion.div>
 
-                <MagneticButton>
-                  <motion.button
-                    type="button"
-                    onClick={() => {
-                      recordClick('hero-preview-resume')
-                      setShowResumePreview(true)
-                    }}
-                    whileHover={reduceMotion ? undefined : { y: -2 }}
-                    whileTap={reduceMotion ? undefined : { scale: 0.98 }}
-                    className="flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white/70 px-5 py-3 font-medium dark:border-gray-700 dark:bg-white/5 sm:w-auto sm:px-6"
-                  >
-                    <Eye size={18} />
-                    Preview Resume
-                  </motion.button>
-                </MagneticButton>
-
-                <MagneticButton>
-                  <motion.button
-                    onClick={() => {
-                      recordClick('hero-download-resume')
-                      setShowResume(true)
-                    }}
-                    whileHover={reduceMotion ? undefined : { y: -2 }}
-                    whileTap={reduceMotion ? undefined : { scale: 0.98 }}
-                    className="flex w-full items-center justify-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-5 py-3 font-medium text-emerald-700 dark:text-emerald-300 sm:w-auto sm:px-6"
-                  >
-                    <Download size={18} />
-                    Download
-                  </motion.button>
-                </MagneticButton>
-              </div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="mt-5 flex flex-wrap items-center gap-3"
-              >
-                {socialLinks.map((link) => {
-                  const Icon = link.icon
-
-                  return (
-                    <motion.a
-                      key={link.label}
-                      href={link.href}
-                      target={link.href.startsWith('http') ? '_blank' : undefined}
-                      rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                      whileHover={{ y: -3, scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="inline-flex items-center gap-2 rounded-full border border-gray-200/80 bg-white/70 px-4 py-2 text-sm font-medium text-gray-700 shadow-sm backdrop-blur-md dark:border-gray-800 dark:bg-white/5 dark:text-gray-300"
-                      onClick={() => recordClick(`hero-social-${link.label.toLowerCase()}`)}
-                    >
-                      <Icon size={16} />
-                      {link.label}
-                    </motion.a>
-                  )
-                })}
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.34 }}
-                className="mt-8 flex w-full flex-col gap-3"
-              >
-                <div className="flex flex-wrap gap-2">
-                  <span className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white/80 px-3 py-1.5 text-xs text-gray-600 dark:border-gray-800 dark:bg-white/5 dark:text-gray-300">
-                    <MapPin size={14} />
-                    Kolkata, India
-                  </span>
-                  <span className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white/80 px-3 py-1.5 text-xs text-gray-600 dark:border-gray-800 dark:bg-white/5 dark:text-gray-300">
-                    <BadgeCheck size={14} />
-                    Recruiter-ready portfolio
-                  </span>
-                </div>
-
-                <div className="grid gap-2 md:hidden">
-                  {heroProof.map((point) => (
-                    <div
-                      key={point}
-                      className="rounded-2xl border border-gray-200/80 bg-white/75 px-4 py-3 text-sm text-gray-700 dark:border-gray-800 dark:bg-white/5 dark:text-gray-300"
-                    >
-                      {point}
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-            </div>
-
-            <div className="relative hidden self-center md:block">
-              <motion.div
-                animate={reduceMotion ? undefined : { y: [0, -10, 0] }}
-                transition={
-                  reduceMotion
-                    ? undefined
-                    : { duration: 4, repeat: Infinity, ease: 'easeInOut' }
-                }
-                className="absolute -right-4 -top-12 z-20 rounded-xl border border-gray-100 bg-white p-3 shadow-lg dark:border-gray-700 dark:bg-gray-800"
-              >
-                <Code2 className="text-blue-500" size={24} />
-              </motion.div>
-              <motion.div
-                animate={reduceMotion ? undefined : { y: [0, 10, 0] }}
-                transition={
-                  reduceMotion
-                    ? undefined
-                    : {
-                        duration: 5,
-                        repeat: Infinity,
-                        ease: 'easeInOut',
-                        delay: 1,
-                      }
-                }
-                className="absolute -left-8 top-1/2 z-20 rounded-xl border border-gray-100 bg-white p-3 shadow-lg dark:border-gray-700 dark:bg-gray-800"
-              >
-                <Cpu className="text-purple-500" size={24} />
-              </motion.div>
-              <motion.div
-                animate={reduceMotion ? undefined : { y: [0, -8, 0] }}
-                transition={
-                  reduceMotion
-                    ? undefined
-                    : {
-                        duration: 3,
-                        repeat: Infinity,
-                        ease: 'easeInOut',
-                        delay: 2,
-                      }
-                }
-                className="absolute -bottom-8 right-12 z-20 rounded-xl border border-gray-100 bg-white p-3 shadow-lg dark:border-gray-700 dark:bg-gray-800"
-              >
-                <Globe className="text-green-500" size={24} />
-              </motion.div>
-
-              <div className="mx-auto w-full max-w-xl rounded-[28px] border border-gray-800/50 bg-gray-900/95 p-1 font-mono text-gray-300 shadow-2xl backdrop-blur-sm">
-                <div className="flex items-center justify-between rounded-t-lg border-b border-gray-700/50 bg-gray-800/50 px-4 py-3">
-                  <div className="flex gap-2">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="tech-frame soft-panel mt-8 overflow-hidden rounded-[28px] bg-[#030712]/94 p-1 font-mono text-gray-300"
+            >
+              <div className="rounded-[24px] border border-white/6 bg-gradient-to-br from-[#040813] via-[#07131c] to-[#08161a] px-5 py-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
                     <div className="h-3 w-3 rounded-full bg-red-500/80" />
                     <div className="h-3 w-3 rounded-full bg-yellow-500/80" />
-                    <div className="h-3 w-3 rounded-full bg-green-500/80" />
+                    <div className="h-3 w-3 rounded-full bg-emerald-500/80" />
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-gray-500">
+                  <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-gray-500">
                     <TerminalIcon size={12} />
-                    <span>bash -- 80x24</span>
+                    Interactive console
                   </div>
                 </div>
 
                 <div
-                  className="min-h-[300px] space-y-4 overflow-hidden p-6 text-sm"
+                  className="mt-5 min-h-[180px] space-y-3 overflow-hidden text-sm"
                   onClick={() => terminalInputRef.current?.focus()}
                 >
-                  {typedTerminalLines.map((line, i) => (
-                    <div key={i} className="break-words">
-                      <span className="mr-2 font-bold text-green-400">
+                  {typedTerminalLines.map((line, index) => (
+                    <div key={`${line.text}-${index}`} className="break-words">
+                      <span className="mr-2 font-bold text-emerald-400">
                         {line.prompt}
                       </span>
                       <span className="text-gray-100">{line.text}</span>
@@ -736,17 +574,23 @@ const Hero = () => {
                   ))}
                   {liveTerminalLine ? (
                     <div className="break-words">
-                      <span className="mr-2 font-bold text-green-400">
+                      <span className="mr-2 font-bold text-emerald-400">
                         {liveTerminalLine.prompt}
                       </span>
                       <span className="text-gray-100">{liveTerminalLine.text}</span>
                       <motion.span
                         className="ml-1 inline-block h-4 w-2 bg-gray-400 align-middle"
-                        animate={reduceMotion ? undefined : { opacity: [1, 0, 1] }}
+                        animate={
+                          reduceMotion ? undefined : { opacity: [1, 0, 1] }
+                        }
                         transition={
                           reduceMotion
                             ? undefined
-                            : { duration: 1, repeat: Infinity, ease: 'easeInOut' }
+                            : {
+                                duration: 1,
+                                repeat: Infinity,
+                                ease: 'easeInOut',
+                              }
                         }
                       />
                     </div>
@@ -754,7 +598,9 @@ const Hero = () => {
                   {isTerminalReady ? (
                     <form onSubmit={handleTerminalSubmit} className="break-words">
                       <label className="flex items-center">
-                        <span className="mr-2 font-bold text-green-400">&gt;&gt; ~</span>
+                        <span className="mr-2 font-bold text-emerald-400">
+                          &gt;&gt; ~
+                        </span>
                         <input
                           ref={terminalInputRef}
                           value={terminalInput}
@@ -763,26 +609,104 @@ const Hero = () => {
                           autoComplete="off"
                           autoCapitalize="none"
                           spellCheck={false}
+                          placeholder="type a section name or clear"
                         />
                       </label>
                     </form>
                   ) : null}
                 </div>
 
-                <div className="grid gap-2 border-t border-gray-800/80 bg-black/20 px-4 py-4 md:grid-cols-3">
-                  {heroProof.map((point) => (
-                    <div
-                      key={point}
-                      className="rounded-xl border border-gray-800 bg-white/5 px-3 py-3 text-xs text-gray-300"
+                <div className="mt-5 flex flex-wrap items-center gap-2">
+                  {quickCommands.map((command) => (
+                    <button
+                      key={command}
+                      type="button"
+                      onClick={() => handleTerminalCommand(command)}
+                      className="rounded-full border border-emerald-400/20 bg-white/6 px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] text-emerald-300 transition hover:bg-emerald-400/12"
                     >
-                      {point}
-                    </div>
+                      {command}
+                    </button>
                   ))}
+                  <button
+                    type="button"
+                    onClick={startTerminalSequence}
+                    className="rounded-full border border-white/12 bg-white/6 px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] text-gray-300 transition hover:bg-white/10"
+                  >
+                    restart
+                  </button>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
-        </AnimatedBorder>
+
+          <div className="relative flex items-start justify-center pt-0 lg:-mt-20 lg:justify-end">
+            <div className="pointer-events-none absolute inset-0 hidden lg:block">
+              <motion.div
+                className="absolute right-[14%] top-[8%] h-[2px] w-28 origin-left bg-gradient-to-r from-white/10 via-sky-300/90 to-transparent"
+                animate={reduceMotion ? undefined : { rotate: [-22, -16, -22] }}
+                transition={
+                  reduceMotion
+                    ? undefined
+                    : { duration: 3.2, repeat: Infinity, ease: 'easeInOut' }
+                }
+              />
+              <motion.div
+                className="absolute right-[9%] top-[3%] h-2.5 w-2.5 rounded-full border border-white/30 bg-sky-300"
+                animate={reduceMotion ? undefined : { x: [0, 8, 0], y: [0, -4, 0] }}
+                transition={
+                  reduceMotion
+                    ? undefined
+                    : { duration: 3.2, repeat: Infinity, ease: 'easeInOut' }
+                }
+              />
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 24, y: 14 }}
+              animate={{ opacity: 1, x: 0, y: 0 }}
+              transition={{ delay: 0.32 }}
+              className="relative w-full max-w-[21rem] lg:max-w-[22rem]"
+            >
+              <div className="absolute inset-x-[12%] top-[10%] h-[72%] rounded-full bg-gradient-to-br from-sky-500/18 via-emerald-500/16 to-transparent blur-[85px]" />
+
+              <div className="absolute inset-x-9 top-5 h-[calc(100%-1.8rem)] rounded-[30px] border border-white/14 bg-white/8 backdrop-blur-[2px] dark:bg-white/4" />
+              <div className="absolute inset-x-6 top-2 h-[calc(100%-1.8rem)] rounded-[30px] border border-sky-400/20 bg-sky-500/6 dark:bg-sky-500/5" />
+
+              <motion.div
+                animate={
+                  reduceMotion ? undefined : { y: [0, -8, 0], rotate: [0, 0.8, 0] }
+                }
+                transition={
+                  reduceMotion
+                    ? undefined
+                    : { duration: 4.4, repeat: Infinity, ease: 'easeInOut' }
+                }
+                className="tech-frame relative overflow-hidden rounded-[30px] border border-white/16 bg-white/85 p-3 shadow-[0_40px_110px_-52px_rgba(15,23,42,0.6)] dark:bg-[#08111a]/88"
+              >
+                <div className="absolute right-4 top-4 rounded-full border border-white/15 bg-white/80 px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.22em] text-gray-700 shadow-sm dark:bg-white/8 dark:text-gray-200">
+                  <span className="inline-flex items-center gap-1.5">
+                    Featured profile
+                    <ArrowUpRight size={12} />
+                  </span>
+                </div>
+
+                <div className="overflow-hidden rounded-[24px] border border-white/14 bg-gradient-to-br from-sky-100 via-white to-emerald-50 dark:from-[#0d1724] dark:via-[#0a121b] dark:to-[#0f171f]">
+                  <div className="relative aspect-[0.86]">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(14,165,233,0.18),transparent_58%)] dark:bg-[radial-gradient(circle_at_center,rgba(14,165,233,0.22),transparent_58%)]" />
+                    <img
+                      src="/profile.jpg"
+                      alt="Portrait of Sourav Chowdhury"
+                      loading="eager"
+                      className="absolute inset-0 h-full w-full object-cover object-top"
+                    />
+                    <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#020617]/85 via-[#020617]/25 to-transparent" />
+                  </div>
+                </div>
+
+              </motion.div>
+            </motion.div>
+          </div>
+        </div>
       </motion.div>
 
       <motion.div
@@ -790,20 +714,24 @@ const Hero = () => {
         animate={reduceMotion ? undefined : { y: [0, 10, 0] }}
         transition={reduceMotion ? undefined : { duration: 2, repeat: Infinity }}
       >
-        <span className="text-xs uppercase tracking-widest">Scroll</span>
+        <span className="font-mono text-xs uppercase tracking-[0.32em]">Scroll</span>
         <div className="h-12 w-[1px] bg-gradient-to-b from-gray-400 to-transparent dark:from-gray-600" />
       </motion.div>
 
-      {(showResume || showResumePreview) && (
+      {showResumePreview ? (
         <Suspense fallback={null}>
-          <SmartResume open={showResume} onClose={handleResumeClose} />
           <ResumePreviewModal
             open={showResumePreview}
             onClose={() => setShowResumePreview(false)}
             pdfUrl="/images/resume.pdf"
           />
         </Suspense>
-      )}
+      ) : null}
+
+      <div className="pointer-events-none absolute inset-x-0 bottom-0">
+        <div className="h-[2px] w-screen bg-emerald-300/75 shadow-[0_0_20px_rgba(52,211,153,0.34)] dark:bg-emerald-200/70" />
+        <div className="h-[4px] w-screen bg-gradient-to-r from-emerald-400/28 via-emerald-300/78 to-emerald-400/28 shadow-[0_0_28px_rgba(52,211,153,0.3)] dark:from-emerald-300/22 dark:via-emerald-200/68 dark:to-emerald-300/22" />
+      </div>
     </motion.section>
   )
 }

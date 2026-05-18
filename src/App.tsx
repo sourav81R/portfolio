@@ -57,6 +57,13 @@ const SectionFallback = () => {
   )
 }
 
+const SectionDivider = () => (
+  <div className="pointer-events-none absolute inset-x-0 bottom-0">
+    <div className="h-[2px] w-screen bg-emerald-300/75 shadow-[0_0_20px_rgba(52,211,153,0.34)] dark:bg-emerald-200/70" />
+    <div className="h-[4px] w-screen bg-gradient-to-r from-emerald-400/28 via-emerald-300/78 to-emerald-400/28 shadow-[0_0_28px_rgba(52,211,153,0.3)] dark:from-emerald-300/22 dark:via-emerald-200/68 dark:to-emerald-300/22" />
+  </div>
+)
+
 function App() {
   const location = useLocation()
   const recordPageView = useAppStore((state) => state.recordPageView)
@@ -164,7 +171,7 @@ function LazySection({
   }, [shouldRender])
 
   return (
-    <section id={id} ref={sectionRef}>
+    <section id={id} ref={sectionRef} className="relative">
       {shouldRender ? (
         <SectionErrorBoundary title={title}>
           <Suspense fallback={<SectionFallback />}>{children}</Suspense>
@@ -172,6 +179,7 @@ function LazySection({
       ) : (
         <SectionFallback />
       )}
+      <SectionDivider />
     </section>
   )
 }

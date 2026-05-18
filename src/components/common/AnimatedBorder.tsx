@@ -36,18 +36,21 @@ const AnimatedBorder = ({ children }: AnimatedBorderProps) => {
   const shouldAnimate = inView && !reduceMotion
 
   return (
-    <div ref={ref} className="relative overflow-hidden rounded-2xl p-[1.5px]">
+    <div ref={ref} className="relative overflow-hidden">
       <motion.div
-        className="absolute inset-0"
+        aria-hidden="true"
+        className="pointer-events-none absolute left-[8%] top-10 z-0 h-36 w-36 rounded-full blur-3xl"
         animate={
           shouldAnimate
             ? {
-                backgroundPosition: ['0% 50%', '200% 50%'],
-                opacity: [0.78, 0.95, 0.78],
+                opacity: [0.05, 0.12, 0.05],
+                scale: [0.96, 1.04, 0.96],
+                x: ['-3%', '2%', '-3%'],
               }
             : {
-                backgroundPosition: '0% 50%',
-                opacity: 0.55,
+                opacity: 0.06,
+                scale: 1,
+                x: '0%',
               }
         }
         transition={
@@ -55,7 +58,7 @@ const AnimatedBorder = ({ children }: AnimatedBorderProps) => {
             ? {
                 duration: 7,
                 repeat: Infinity,
-                ease: 'linear',
+                ease: 'easeInOut',
               }
             : {
                 duration: 0.3,
@@ -64,14 +67,44 @@ const AnimatedBorder = ({ children }: AnimatedBorderProps) => {
         }
         style={{
           backgroundImage: gradient,
-          backgroundSize: '220% 220%',
-          willChange: shouldAnimate ? 'background-position, opacity' : 'opacity',
         }}
       />
 
-      <div className="relative rounded-2xl bg-white dark:bg-black">
-        {children}
-      </div>
+      <motion.div
+        aria-hidden="true"
+        className="pointer-events-none absolute bottom-12 right-[10%] z-0 h-28 w-28 rounded-full blur-2xl"
+        animate={
+          shouldAnimate
+            ? {
+                opacity: [0.04, 0.1, 0.04],
+                scale: [1, 1.08, 1],
+                y: ['0%', '-6%', '0%'],
+              }
+            : {
+                opacity: 0.05,
+                scale: 1,
+                y: '0%',
+              }
+        }
+        transition={
+          shouldAnimate
+            ? {
+                duration: 8,
+                repeat: Infinity,
+                ease: 'easeInOut',
+                delay: 0.8,
+              }
+            : {
+                duration: 0.3,
+                ease: 'easeOut',
+              }
+        }
+        style={{
+          backgroundImage: gradient,
+        }}
+      />
+
+      <div className="relative z-10">{children}</div>
     </div>
   )
 }
