@@ -209,7 +209,7 @@ const TypingBadge = () => {
   }, [subIndex, index, reverse])
 
   return (
-    <span className="inline-block max-w-[240px] overflow-hidden text-ellipsis whitespace-nowrap align-bottom sm:max-w-none">
+    <span className="inline-block max-w-full overflow-hidden text-ellipsis whitespace-nowrap align-bottom sm:max-w-none">
       {BADGE_WORDS[index].substring(0, subIndex)}
       <motion.span
         className="ml-1 inline-block"
@@ -385,7 +385,7 @@ const Hero = () => {
         opacity: open ? 0.9 : 1,
       }}
       transition={{ duration: reduceMotion ? 0.15 : 0.3 }}
-      className="relative min-h-[84vh] overflow-hidden px-4 pb-10 pt-18 sm:px-6 sm:pb-10 sm:pt-22 lg:pt-24"
+      className="relative min-h-[84vh] overflow-hidden px-4 pb-10 pt-28 sm:px-6 sm:pb-10 sm:pt-22 lg:pt-24"
     >
       <div className="pointer-events-none absolute inset-0 z-0">
         <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/60 to-transparent dark:via-white/20" />
@@ -409,9 +409,9 @@ const Hero = () => {
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.08 }}
-              className="flex flex-wrap items-center gap-2.5 font-mono"
+              className="flex flex-col items-start gap-2.5 font-mono sm:flex-row sm:flex-wrap sm:items-center"
             >
-              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-500/12 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-emerald-700 shadow-[0_18px_38px_-26px_rgba(16,185,129,0.48)] dark:text-emerald-300">
+              <span className="inline-flex max-w-full items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-500/12 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-emerald-700 shadow-[0_18px_38px_-26px_rgba(16,185,129,0.48)] dark:text-emerald-300 sm:text-[11px] sm:tracking-[0.24em]">
                 <span className="relative flex h-2.5 w-2.5">
                   <motion.span
                     className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-70"
@@ -430,7 +430,7 @@ const Hero = () => {
                 </span>
                 Open to work
               </span>
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/18 bg-transparent px-4 py-2 text-[13px] font-semibold uppercase tracking-[0.24em] text-gray-700 dark:text-gray-100">
+              <span className="inline-flex min-w-0 max-w-full items-center gap-2 rounded-full border border-white/18 bg-transparent px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-gray-700 dark:text-gray-100 sm:max-w-none sm:text-[13px] sm:tracking-[0.24em]">
                 <Sparkles size={14} />
                 <TypingBadge />
               </span>
