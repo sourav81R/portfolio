@@ -639,7 +639,7 @@ const Hero = () => {
             </motion.div>
           </div>
 
-          <div className="relative flex items-start justify-center pt-0 lg:-mt-20 lg:justify-end">
+          <div className="relative flex items-start justify-center pt-0 lg:-mt-28 lg:justify-end">
             <div className="pointer-events-none absolute inset-0 hidden lg:block">
               <motion.div
                 className="absolute right-[14%] top-[8%] h-[2px] w-28 origin-left bg-gradient-to-r from-white/10 via-sky-300/90 to-transparent"
