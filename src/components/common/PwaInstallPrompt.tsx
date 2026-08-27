@@ -43,7 +43,7 @@ const PwaInstallPrompt = () => {
   }
 
   return (
-    <div className="fixed bottom-5 left-5 z-[90] w-[min(92vw,22rem)] rounded-2xl border border-white/15 bg-slate-950/85 p-4 text-white shadow-2xl backdrop-blur-xl">
+    <div className="fixed bottom-24 left-5 z-[90] w-[min(92vw,22rem)] rounded-2xl border border-white/15 bg-slate-950/85 p-4 text-white shadow-2xl backdrop-blur-xl">
       <button
         type="button"
         onClick={() => setDismissed(true)}

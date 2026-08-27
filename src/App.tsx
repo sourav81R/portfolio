@@ -16,6 +16,7 @@ import CommandPalette from './components/common/CommandPalette'
 import PwaInstallPrompt from './components/common/PwaInstallPrompt'
 import AmbientBackground from './components/common/AmbientBackground'
 import CursorSpiderEffect from './components/common/CursorSpiderEffect'
+import FloatingActions from './components/common/FloatingActions'
 import SectionErrorBoundary from './components/system/SectionErrorBoundary'
 import { useAppStore } from './store/useAppStore'
 import { useSmoothScroll } from './providers/SmoothScrollProvider'
@@ -112,6 +113,7 @@ function App() {
       <PwaInstallPrompt />
       <AmbientBackground />
       <CursorSpiderEffect />
+      <FloatingActions />
       <div className="relative z-10">
         <OpenToWorkBanner />
         <Navbar />
