@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Award, Download, ExternalLink, FileText, X } from 'lucide-react'
 import useCoarsePointer from '../../hooks/useCoarsePointer'
+import { useScrollLock } from '../../hooks/useScrollLock'
 
 export type CertificationItem = {
   title: string
@@ -27,6 +28,8 @@ const CertificationModal = ({
   const [mounted, setMounted] = useState(false)
   const isCoarsePointer = useCoarsePointer()
 
+  useScrollLock(open)
+
   useEffect(() => {
     setMounted(true)
   }, [])
@@ -38,15 +41,9 @@ const CertificationModal = ({
       if (event.key === 'Escape') onClose()
     }
 
-    const previousBodyOverflow = document.body.style.overflow
-    const previousHtmlOverflow = document.documentElement.style.overflow
-    document.body.style.overflow = 'hidden'
-    document.documentElement.style.overflow = 'hidden'
     window.addEventListener('keydown', onKeyDown)
 
     return () => {
-      document.body.style.overflow = previousBodyOverflow
-      document.documentElement.style.overflow = previousHtmlOverflow
       window.removeEventListener('keydown', onKeyDown)
     }
   }, [open, onClose])

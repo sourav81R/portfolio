@@ -10,8 +10,26 @@
   --accent-soft: rgba(14, 165, 233, 0.16);
 }
 
-html {
+/*
+ * Native smooth scrolling is the fallback for reduced-motion users.
+ * When Lenis is active it sets .lenis-smooth on <html>; the two must not
+ * both animate the scroll position or they fight and stutter.
+ */
+html:not(.lenis-smooth) {
   scroll-behavior: smooth;
+}
+
+/* Lenis base styles */
+html.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+html.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+html.lenis-stopped {
+  overflow: hidden;
 }
 
 html,

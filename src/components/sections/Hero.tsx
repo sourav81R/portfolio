@@ -23,6 +23,7 @@ import WordCycle from '../common/WordCycle'
 import { getSectionRevealProps } from '../../lib/motion'
 import { useCommandPalette } from '../../store/useCommandpalette'
 import { useAppStore } from '../../store/useAppStore'
+import { useSmoothScroll } from '../../providers/SmoothScrollProvider'
 
 const ResumePreviewModal = lazy(() => import('../common/ResumePreviewModal'))
 
@@ -229,6 +230,7 @@ const TypingBadge = () => {
 const Hero = () => {
   const { open } = useCommandPalette()
   const reduceMotion = useReducedMotion()
+  const { scrollTo } = useSmoothScroll()
   const sectionRevealProps = getSectionRevealProps(reduceMotion)
   const recordClick = useAppStore((state) => state.recordClick)
   const [showResumePreview, setShowResumePreview] = useState(false)
@@ -339,10 +341,7 @@ const Hero = () => {
           { prompt: '>> ~', text: `Opening ${matchedSection.label} section...` },
         ])
 
-        document.getElementById(matchedSection.id)?.scrollIntoView({
-          behavior: reduceMotion ? 'auto' : 'smooth',
-          block: 'start',
-        })
+        scrollTo(`#${matchedSection.id}`, { immediate: reduceMotion ?? false })
         return
       }
 
@@ -352,7 +351,7 @@ const Hero = () => {
         { prompt: '>> ~', text: `command not found: ${trimmedValue}` },
       ])
     },
-    [reduceMotion, startTerminalSequence]
+    [reduceMotion, scrollTo, startTerminalSequence]
   )
 
   const handleTerminalSubmit = useCallback(

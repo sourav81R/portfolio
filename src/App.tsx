@@ -18,6 +18,7 @@ import AmbientBackground from './components/common/AmbientBackground'
 import CursorSpiderEffect from './components/common/CursorSpiderEffect'
 import SectionErrorBoundary from './components/system/SectionErrorBoundary'
 import { useAppStore } from './store/useAppStore'
+import { useSmoothScroll } from './providers/SmoothScrollProvider'
 
 const About = lazy(() => import('./components/sections/About'))
 const Experience = lazy(() => import('./components/sections/Experience'))
@@ -68,6 +69,7 @@ function App() {
   const location = useLocation()
   const recordPageView = useAppStore((state) => state.recordPageView)
   const activeHash = location.hash.replace('#', '')
+  const { scrollTo } = useSmoothScroll()
 
   useEffect(() => {
     recordPageView(location.pathname || '/')
@@ -88,7 +90,10 @@ function App() {
       attempts += 1
 
       if (target) {
-        target.scrollIntoView({ behavior: 'auto', block: 'start' })
+        // `immediate` on every attempt: this realigns repeatedly while lazy
+        // sections mount and shift layout, so an animated scroll would be
+        // restarted 18 times and visibly stutter.
+        scrollTo(target, { immediate: true })
       }
 
       if (attempts < maxAttempts) {
@@ -99,7 +104,7 @@ function App() {
     timeoutId = window.setTimeout(alignToHash, 0)
 
     return () => window.clearTimeout(timeoutId)
-  }, [location.hash])
+  }, [location.hash, scrollTo])
 
   return (
     <div className="relative min-h-screen bg-transparent text-gray-900 dark:text-gray-300">

@@ -85,12 +85,6 @@ const AmbientBackground = () => {
         ))}
       </div>
 
-      <div className="absolute inset-x-0 top-0 h-[3px] w-screen bg-emerald-300/18 shadow-[0_0_24px_rgba(52,211,153,0.18)]" />
-      <motion.div
-        className="absolute inset-x-0 top-0 h-[5px] w-screen bg-[linear-gradient(90deg,rgba(16,185,129,0.55),rgba(56,189,248,0.92),rgba(16,185,129,0.82),rgba(56,189,248,0.55))] shadow-[0_0_28px_rgba(56,189,248,0.32)]"
-        animate={reduceMotion ? undefined : { x: ['-8%', '8%', '-8%'], opacity: [0.72, 1, 0.72] }}
-        transition={reduceMotion ? undefined : { duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-      />
     </div>
   )
 }

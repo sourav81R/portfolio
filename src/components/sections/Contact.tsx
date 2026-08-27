@@ -325,7 +325,7 @@ const Contact = () => {
             </motion.div>
           </div>
 
-          <p className="text-gray-600 dark:text-gray-500 text-sm mt-16">
+          <p className="text-gray-600 dark:text-gray-500 text-sm mt-16 text-center">
             Copyright {new Date().getFullYear()} Sourav Chowdhury. All rights reserved.
           </p>
         </div>

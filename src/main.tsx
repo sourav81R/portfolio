@@ -4,6 +4,7 @@ import { AnimatePresence } from 'framer-motion'
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { PageTransition } from './components/common/PageTransition'
 import ErrorBoundary from './components/system/ErrorBoundary'
+import { SmoothScrollProvider } from './providers/SmoothScrollProvider'
 import './index.css'
 
 const App = lazy(() => import('./App'))
@@ -56,7 +57,9 @@ if (!rootElement) {
 ReactDOM.createRoot(rootElement).render(
   <ErrorBoundary>
     <BrowserRouter basename={routerBasename}>
-      <AnimatedRoutes />
+      <SmoothScrollProvider>
+        <AnimatedRoutes />
+      </SmoothScrollProvider>
     </BrowserRouter>
   </ErrorBoundary>
 )

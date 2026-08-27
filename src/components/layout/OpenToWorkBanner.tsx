@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { X } from 'lucide-react'
+import { useSmoothScroll } from '../../providers/SmoothScrollProvider'
 
 const DISMISS_KEY = 'portfolio-open-to-work-dismissed'
 
 const OpenToWorkBanner = () => {
   const [visible, setVisible] = useState(false)
+  const { scrollTo } = useSmoothScroll()
 
   useEffect(() => {
     const dismissed = window.localStorage.getItem(DISMISS_KEY) === 'true'
@@ -29,10 +31,7 @@ const OpenToWorkBanner = () => {
   }
 
   const scrollToContact = () => {
-    document.getElementById('contact')?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    })
+    scrollTo('#contact')
   }
 
   return (

@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router-dom'
 import { getBestSearchScore } from '../../lib/fuzzySearch'
 import { useCommandPalette } from '../../store/useCommandpalette'
 import { useAppStore } from '../../store/useAppStore'
+import { useSmoothScroll } from '../../providers/SmoothScrollProvider'
 
 type Command = {
   label: string
@@ -35,6 +36,7 @@ const CommandPalette = () => {
   const navigate = useNavigate()
   const toggleRecruiterMode = useAppStore((state) => state.toggleRecruiterMode)
   const recordClick = useAppStore((state) => state.recordClick)
+  const { scrollTo } = useSmoothScroll()
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -238,7 +240,7 @@ const CommandPalette = () => {
   }, {})
 
   function go(id: string) {
-    document.querySelector(id)?.scrollIntoView({ behavior: 'smooth' })
+    scrollTo(id, { immediate: reduceMotion ?? false })
   }
 
   function runCommand(action: () => void) {
