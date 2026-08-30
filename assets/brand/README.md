@@ -6,9 +6,13 @@ every visitor even though no page references it.
 
 ## logo-source.png
 
-Full circular logo (1254x1254) drawn on a square white canvas. Every icon in
-`public/` is generated from it, so they are all the same artwork at different
-sizes.
+Full circular logo (1254x1254) drawn on a square white canvas.
+
+The app icons use the whole logo. The favicons use the "SC" glyph alone with the
+white ground knocked out: at 16-32px the full logo is mostly white with a thin
+pale ring, which disappears against a light browser tab strip. The knockout keys
+off **saturation**, not lightness — the ribbon carries bright highlights that a
+lightness threshold erases along with the background.
 
 The ring sits at centre (625, 626.5) with a minimum radius of 615, so icons are
 cropped to that square and masked to a circle. Without the mask the square white
@@ -18,15 +22,12 @@ Generated files:
 
 | File | Size | Shape |
 | --- | --- | --- |
-| `favicon.ico` | 16/32/48/64 | round, transparent |
-| `favicon-16/32/48/64.png` | 16–64 | round, transparent |
+| `favicon.ico` | 16/32/48/64 | SC glyph, transparent ground |
+| `favicon-16/32/48/64.png` | 16–64 | SC glyph, transparent ground |
 | `icon-192.png`, `icon-512.png` | 192, 512 | round, transparent |
 | `apple-touch-icon.png` | 180 | round on **opaque** white |
 | `icon-512-maskable.png` | 512 | opaque, 80% safe zone |
 
-Note the wordmark and tech icons in the logo are not legible below ~48px; the
-small sizes read as a coloured disc. Cropping to the "SC" monogram would be
-sharper at tab size, at the cost of the favicon no longer matching the app icon.
 
 Two files stay opaque on purpose:
 
