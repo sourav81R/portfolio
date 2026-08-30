@@ -122,9 +122,6 @@ const Contact = () => {
   const directContact = contactLinks.filter((link) =>
     ['Email', 'Phone', 'WhatsApp', 'Location'].includes(link.name)
   )
-  const socials = contactLinks.filter((link) =>
-    ['GitHub', 'LinkedIn'].includes(link.name)
-  )
 
   return (
     <motion.div
@@ -201,28 +198,6 @@ const Contact = () => {
                 ))}
               </div>
 
-              <div className="mt-8">
-                <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-4 uppercase tracking-wider">
-                  Social Profiles
-                </h4>
-                <div className="flex gap-4">
-                  {socials.map((social) => (
-                    <a
-                      key={social.name}
-                      href={social.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="
-                        p-3 rounded-full border border-gray-200 dark:border-gray-800
-                        bg-gray-50 dark:bg-gray-900 text-gray-600 dark:text-gray-400
-                        hover:border-green-500 hover:text-green-500
-                      "
-                    >
-                      <social.icon size={20} />
-                    </a>
-                  ))}
-                </div>
-              </div>
             </div>
 
             <motion.div
