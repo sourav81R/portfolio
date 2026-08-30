@@ -1,6 +1,24 @@
 import { useEffect, useRef } from 'react'
 import { useReducedMotion } from 'framer-motion'
 
+type RgbColor = readonly [number, number, number]
+
+/**
+ * Web colour cycles one step per click, in the order the palette is written.
+ * Light and dark variants are kept in step so the hue is recognisable on
+ * either background: the dark values are lightened, since a saturated blue or
+ * violet goes nearly invisible against a dark page.
+ */
+const WEB_COLORS: { light: RgbColor; dark: RgbColor }[] = [
+  { light: [220, 38, 38], dark: [248, 113, 113] }, // red
+  { light: [234, 88, 12], dark: [251, 146, 60] }, // orange
+  { light: [202, 138, 4], dark: [250, 204, 21] }, // yellow
+  { light: [22, 163, 74], dark: [74, 222, 128] }, // green
+  { light: [37, 99, 235], dark: [96, 165, 250] }, // blue
+  { light: [124, 58, 237], dark: [167, 139, 250] }, // violet
+  { light: [67, 56, 202], dark: [129, 140, 248] }, // indigo
+]
+
 type TrailSegment = {
   x1: number
   y1: number
@@ -24,6 +42,7 @@ type SpiderBurst = {
   growRadiusY: number
   warp: number
   strokeWidth: number
+  color: RgbColor
 }
 
 const CursorSpiderEffect = () => {
@@ -35,6 +54,7 @@ const CursorSpiderEffect = () => {
     y: 0,
     hasLast: false,
   })
+  const clickCountRef = useRef(0)
   const rafRef = useRef<number>(0)
   const lastTimeRef = useRef<number>(0)
   const reduceMotion = useReducedMotion()
@@ -83,7 +103,16 @@ const CursorSpiderEffect = () => {
     }
 
     const onPointerDown = (event: PointerEvent) => {
+      // Colour is resolved for the current theme at click time and frozen on
+      // the burst, so toggling the theme mid-animation cannot recolour a web
+      // that is already on screen.
+      const palette = WEB_COLORS[clickCountRef.current % WEB_COLORS.length]
+      clickCountRef.current += 1
+
       burstsRef.current.push({
+        color: document.documentElement.classList.contains('dark')
+          ? palette.dark
+          : palette.light,
         x: event.clientX,
         y: event.clientY,
         age: 0,
@@ -109,7 +138,6 @@ const CursorSpiderEffect = () => {
 
       const darkMode = document.documentElement.classList.contains('dark')
       const trailColor = darkMode ? [110, 231, 183] : [16, 185, 129]
-      const webColor = darkMode ? [125, 211, 252] : [37, 99, 235]
 
       const nextTrail = [] as TrailSegment[]
       for (const segment of trailRef.current) {
@@ -142,7 +170,7 @@ const CursorSpiderEffect = () => {
         const radiusX = burst.baseRadiusX + progress * burst.growRadiusX
         const radiusY = burst.baseRadiusY + progress * burst.growRadiusY
 
-        context.strokeStyle = `rgba(${webColor[0]}, ${webColor[1]}, ${webColor[2]}, ${alpha})`
+        context.strokeStyle = `rgba(${burst.color[0]}, ${burst.color[1]}, ${burst.color[2]}, ${alpha})`
         context.lineWidth = burst.strokeWidth
         context.lineCap = 'round'
 
