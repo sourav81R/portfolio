@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sourav-portfolio-v7'
+const CACHE_NAME = 'sourav-portfolio-v8'
 const APP_SHELL = [
   'manifest.webmanifest',
   'portfolio-icon.svg',
@@ -8,6 +8,7 @@ const APP_SHELL = [
   'apple-touch-icon.png',
   'icon-192.png',
   'icon-512.png',
+  'icon-512-maskable.png',
 ]
 const scopeUrl = new URL(self.registration.scope)
 const scopePath = scopeUrl.pathname.endsWith('/') ? scopeUrl.pathname : `${scopeUrl.pathname}/`
