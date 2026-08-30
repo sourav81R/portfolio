@@ -6,13 +6,9 @@ every visitor even though no page references it.
 
 ## logo-source.png
 
-Full circular logo (1254x1254) drawn on a square white canvas.
-
-The app icons use the whole logo. The favicons use the "SC" glyph alone with the
-white ground knocked out: at 16-32px the full logo is mostly white with a thin
-pale ring, which disappears against a light browser tab strip. The knockout keys
-off **saturation**, not lightness — the ribbon carries bright highlights that a
-lightness threshold erases along with the background.
+Full circular logo (1254x1254) drawn on a square white canvas. Every icon in
+`public/` is the same artwork at a different size, so the browser tab, home
+screen and install prompt all show one consistent mark.
 
 The ring sits at centre (625, 626.5) with a minimum radius of 615, so icons are
 cropped to that square and masked to a circle. Without the mask the square white
@@ -22,8 +18,8 @@ Generated files:
 
 | File | Size | Shape |
 | --- | --- | --- |
-| `favicon.ico` | 16/32/48/64 | SC glyph, transparent ground |
-| `favicon-16/32/48/64.png` | 16–64 | SC glyph, transparent ground |
+| `favicon.ico` | 16/32/48/64 | round, transparent |
+| `favicon-16/32/48/64.png` | 16–64 | round, transparent |
 | `icon-192.png`, `icon-512.png` | 192, 512 | round, transparent |
 | `apple-touch-icon.png` | 180 | round on **opaque** white |
 | `icon-512-maskable.png` | 512 | opaque, 80% safe zone |
