@@ -4,6 +4,7 @@ import { AlertCircle, ArrowLeft, Calendar, CheckCircle2, ExternalLink, Github, W
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { caseStudyBySlug } from '../data/caseStudies'
 import { useAppStore } from '../store/useAppStore'
+import { usePageMetadata } from '../hooks/usePageMetadata'
 
 const CaseStudyPage = () => {
   const { slug } = useParams<{ slug: string }>()
@@ -13,6 +14,19 @@ const CaseStudyPage = () => {
   useEffect(() => {
     if (slug) recordPageView(`/case-studies/${slug}`)
   }, [recordPageView, slug])
+
+  // Called before the early return so the hook order stays stable; the values
+  // are placeholders when the slug is unknown and the page redirects anyway.
+  usePageMetadata({
+    title: study
+      ? `${study.title} - Case Study by Sourav Chowdhury`
+      : 'Case Study - Sourav Chowdhury',
+    description: study
+      ? `${study.summary} Built with ${study.tech.slice(0, 4).join(', ')}.`
+      : 'Case study by Sourav Chowdhury, full stack developer.',
+    path: `/case-studies/${slug ?? ''}`,
+    noIndex: !study,
+  })
 
   if (!study) {
     return <Navigate to="/" replace />

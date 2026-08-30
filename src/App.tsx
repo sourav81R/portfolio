@@ -20,6 +20,7 @@ import FloatingActions from './components/common/FloatingActions'
 import SectionErrorBoundary from './components/system/SectionErrorBoundary'
 import { useAppStore } from './store/useAppStore'
 import { useSmoothScroll } from './providers/SmoothScrollProvider'
+import { usePageMetadata } from './hooks/usePageMetadata'
 
 const About = lazy(() => import('./components/sections/About'))
 const Experience = lazy(() => import('./components/sections/Experience'))
@@ -71,6 +72,15 @@ function App() {
   const recordPageView = useAppStore((state) => state.recordPageView)
   const activeHash = location.hash.replace('#', '')
   const { scrollTo } = useSmoothScroll()
+
+  // Restores the homepage title and canonical URL when returning from a
+  // case study, which sets its own.
+  usePageMetadata({
+    title: 'Sourav Chowdhury - Full Stack Developer (MERN, React)',
+    description:
+      'Sourav Chowdhury is a full stack developer in Kolkata, India, building fast, scalable web apps with React, TypeScript, Node.js and MongoDB. Open to full-time software engineering roles.',
+    path: '/',
+  })
 
   useEffect(() => {
     recordPageView(location.pathname || '/')

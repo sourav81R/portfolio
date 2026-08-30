@@ -16,6 +16,7 @@ import {
   type AnalyticsEvent,
   type AnalyticsEventKind,
 } from '../store/useAppStore'
+import { usePageMetadata } from '../hooks/usePageMetadata'
 
 type MetricIcon = typeof Eye
 type TimeRange = '24h' | '7d' | '30d' | 'all'
@@ -42,6 +43,15 @@ const chartPalette = ['#0ea5e9', '#6366f1', '#8b5cf6', '#14b8a6', '#f59e0b']
 const timeRanges: TimeRange[] = ['24h', '7d', '30d', 'all']
 
 const DashboardView = () => {
+  // noIndex mirrors the robots.txt disallow: this is a personal analytics view
+  // with no search value, and indexing it would only dilute the site's ranking.
+  usePageMetadata({
+    title: 'Dashboard - Sourav Chowdhury',
+    description: 'Personal analytics dashboard for the portfolio.',
+    path: '/dashboard',
+    noIndex: true,
+  })
+
   const analytics = useAppStore((state) => state.analytics)
   const resetAnalytics = useAppStore((state) => state.resetAnalytics)
   const [timeRange, setTimeRange] = useState<TimeRange>('7d')

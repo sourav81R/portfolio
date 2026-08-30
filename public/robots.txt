@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# The dashboard is a personal analytics view with no search value, and the
+# PDF/asset paths are not pages. Keeping them out of the index concentrates
+# crawl budget on the content that should rank.
+Disallow: /dashboard
+
+Sitemap: https://sourav.is-a.dev/sitemap.xml
