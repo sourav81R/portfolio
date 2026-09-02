@@ -60,10 +60,18 @@
 
     <!--
       ================= Structured data =================
-      Person + WebSite schema. This is what lets Google show a rich result for
-      the name query and understand which profiles belong to the same person;
-      sameAs is the signal that ties the GitHub and LinkedIn identities to this
-      site. The SearchAction declares the on-page command palette.
+      Person + WebSite + ProfilePage schema. This is what lets Google show a
+      rich result for the name query and, more importantly, tell this Sourav
+      Chowdhury apart from the others who share the name.
+
+      sameAs lists every profile owned by the same person; Google treats a
+      profile that links back here as confirmation, which is what merges them
+      into one entity instead of several.
+
+      The Person is written inline under ProfilePage.mainEntity rather than as
+      an @id reference: Google's ProfilePage validator does not resolve
+      cross-node references, and a reference there reports as an invalid item.
+      Both copies share one @id, so JSON-LD merges them into a single node.
     -->
     <script type="application/ld+json">
       {
@@ -150,7 +158,8 @@
             ],
             "sameAs": [
               "https://github.com/sourav81R",
-              "https://www.linkedin.com/in/souravchowdhury-2003r"
+              "https://www.linkedin.com/in/souravchowdhury-2003r",
+              "https://www.facebook.com/sourav.chowdhury.188173"
             ]
           },
           {
@@ -257,7 +266,8 @@
               ],
               "sameAs": [
                 "https://github.com/sourav81R",
-                "https://www.linkedin.com/in/souravchowdhury-2003r"
+                "https://www.linkedin.com/in/souravchowdhury-2003r",
+                "https://www.facebook.com/sourav.chowdhury.188173"
               ]
             }
           },
