@@ -10,7 +10,16 @@ type PageMetadata = {
   path: string
   /** Kept out of the index for pages with no search value. */
   noIndex?: boolean
+  /**
+   * Optional JSON-LD injected for this route, keyed by `#page-schema`.
+   * Case studies use it to declare Sourav Chowdhury as their author, which
+   * links every sub-page back to the same Person entity and concentrates the
+   * name's authority on one identity instead of spreading it thin.
+   */
+  structuredData?: Record<string, unknown>
 }
+
+const PAGE_SCHEMA_ID = 'page-schema'
 
 /** Creates the tag on first use, so index.html only needs the shared defaults. */
 const upsertMeta = (selector: string, attr: 'name' | 'property', key: string) => {
@@ -33,7 +42,13 @@ const upsertMeta = (selector: string, attr: 'name' | 'property', key: string) =>
  * case studies are duplicates of the homepage. Googlebot renders JavaScript,
  * so updating these on mount is enough for them to be indexed separately.
  */
-export const usePageMetadata = ({ title, description, path, noIndex }: PageMetadata) => {
+export const usePageMetadata = ({
+  title,
+  description,
+  path,
+  noIndex,
+  structuredData,
+}: PageMetadata) => {
   useEffect(() => {
     const canonicalUrl = `${SITE_URL}${path}`
     const previousTitle = document.title
@@ -61,10 +76,27 @@ export const usePageMetadata = ({ title, description, path, noIndex }: PageMetad
     }
     canonical.href = canonicalUrl
 
+    let schemaTag = document.getElementById(PAGE_SCHEMA_ID)
+
+    if (structuredData) {
+      if (!schemaTag) {
+        schemaTag = document.createElement('script')
+        schemaTag.id = PAGE_SCHEMA_ID
+        schemaTag.setAttribute('type', 'application/ld+json')
+        document.head.appendChild(schemaTag)
+      }
+      schemaTag.textContent = JSON.stringify(structuredData)
+    } else if (schemaTag) {
+      schemaTag.remove()
+    }
+
     return () => {
       document.title = previousTitle
+      // The homepage carries its own schema in index.html; leaving a case
+      // study's node behind would describe the wrong page after navigation.
+      document.getElementById(PAGE_SCHEMA_ID)?.remove()
     }
-  }, [title, description, path, noIndex])
+  }, [title, description, path, noIndex, structuredData])
 }
 
 export default usePageMetadata

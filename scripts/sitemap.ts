@@ -8,6 +8,8 @@ type SitemapEntry = {
   path: string
   changefreq: 'daily' | 'weekly' | 'monthly' | 'yearly'
   priority: string
+  /** Declared so the portrait is eligible for image results on the name query. */
+  image?: { loc: string; title: string; caption: string }
 }
 
 /**
@@ -34,7 +36,17 @@ const readCaseStudySlugs = (root: string): string[] => {
 const buildEntries = (root: string): SitemapEntry[] => [
   // The single-page site is the primary ranking target, so it carries top
   // priority. /dashboard is deliberately absent: robots.txt disallows it.
-  { path: '/', changefreq: 'weekly', priority: '1.0' },
+  {
+    path: '/',
+    changefreq: 'weekly',
+    priority: '1.0',
+    image: {
+      loc: `${SITE_URL}/profile.jpg`,
+      title: 'Sourav Chowdhury - Full Stack Developer',
+      caption:
+        'Portrait of Sourav Chowdhury, a full stack developer based in Kolkata, India.',
+    },
+  },
   ...readCaseStudySlugs(root).map(
     (slug): SitemapEntry => ({
       path: `/case-studies/${slug}`,
@@ -45,21 +57,49 @@ const buildEntries = (root: string): SitemapEntry[] => [
 ]
 
 export const renderSitemap = (root: string, lastmod: string): string => {
+  const escapeXml = (value: string) =>
+    value.replace(/[&<>"']/g, (char) => {
+      switch (char) {
+        case '&':
+          return '&amp;'
+        case '<':
+          return '&lt;'
+        case '>':
+          return '&gt;'
+        case '"':
+          return '&quot;'
+        default:
+          return '&apos;'
+      }
+    })
+
   const urls = buildEntries(root)
-    .map(({ path, changefreq, priority }) =>
+    .map(({ path, changefreq, priority, image }) =>
       [
         '  <url>',
         `    <loc>${SITE_URL}${path}</loc>`,
         `    <lastmod>${lastmod}</lastmod>`,
         `    <changefreq>${changefreq}</changefreq>`,
         `    <priority>${priority}</priority>`,
+        ...(image
+          ? [
+              '    <image:image>',
+              `      <image:loc>${escapeXml(image.loc)}</image:loc>`,
+              `      <image:title>${escapeXml(image.title)}</image:title>`,
+              `      <image:caption>${escapeXml(image.caption)}</image:caption>`,
+              '    </image:image>',
+            ]
+          : []),
         '  </url>',
       ].join('\n')
     )
     .join('\n')
 
   return `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+>
 ${urls}
 </urlset>
 `

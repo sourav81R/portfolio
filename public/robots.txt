@@ -1,9 +1,19 @@
 User-agent: *
 Allow: /
 
-# The dashboard is a personal analytics view with no search value, and the
-# PDF/asset paths are not pages. Keeping them out of the index concentrates
-# crawl budget on the content that should rank.
+# The dashboard is a personal analytics view with no search value. Keeping it
+# out of the index concentrates crawl budget on the content that should rank.
 Disallow: /dashboard
+
+# Explicitly welcome the crawlers that build the entity/knowledge panel for a
+# person query, and the AI crawlers that increasingly answer "who is X".
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
 
 Sitemap: https://sourav.is-a.dev/sitemap.xml

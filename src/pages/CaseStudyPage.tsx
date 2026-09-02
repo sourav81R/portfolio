@@ -1,10 +1,10 @@
-import { useEffect, type ReactNode } from 'react'
+import { useEffect, useMemo, type ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import { AlertCircle, ArrowLeft, Calendar, CheckCircle2, ExternalLink, Github, Wrench } from 'lucide-react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { caseStudyBySlug } from '../data/caseStudies'
 import { useAppStore } from '../store/useAppStore'
-import { usePageMetadata } from '../hooks/usePageMetadata'
+import { usePageMetadata, SITE_URL } from '../hooks/usePageMetadata'
 
 const CaseStudyPage = () => {
   const { slug } = useParams<{ slug: string }>()
@@ -14,6 +14,42 @@ const CaseStudyPage = () => {
   useEffect(() => {
     if (slug) recordPageView(`/case-studies/${slug}`)
   }, [recordPageView, slug])
+
+  /*
+   * Memoised so the object identity is stable across renders - the metadata
+   * effect depends on it, and a fresh object each render would re-run it in a
+   * loop. Every case study names Sourav Chowdhury as author and points back at
+   * the homepage Person node, so these pages reinforce that one entity.
+   */
+  const structuredData = useMemo(() => {
+    if (!study) return undefined
+
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: `${study.title} - Case Study`,
+      description: study.summary,
+      // study.image is either a root-relative public path or a bundled asset
+      // URL; resolve both against the site origin so the schema always carries
+      // an absolute URL, which is what Google requires here.
+      image: new URL(study.image, SITE_URL).toString(),
+      author: {
+        '@type': 'Person',
+        '@id': `${SITE_URL}/#person`,
+        name: 'Sourav Chowdhury',
+        url: `${SITE_URL}/`,
+      },
+      creator: { '@id': `${SITE_URL}/#person` },
+      publisher: { '@id': `${SITE_URL}/#person` },
+      mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': `${SITE_URL}/case-studies/${study.slug}`,
+      },
+      about: study.tech,
+      inLanguage: 'en',
+      isPartOf: { '@id': `${SITE_URL}/#website` },
+    }
+  }, [study])
 
   // Called before the early return so the hook order stays stable; the values
   // are placeholders when the slug is unknown and the page redirects anyway.
@@ -26,6 +62,7 @@ const CaseStudyPage = () => {
       : 'Case study by Sourav Chowdhury, full stack developer.',
     path: `/case-studies/${slug ?? ''}`,
     noIndex: !study,
+    structuredData,
   })
 
   if (!study) {
@@ -81,6 +118,7 @@ const CaseStudyPage = () => {
             <img
               src={study.image}
               alt={study.title}
+              decoding="async"
               className="w-full h-full object-cover"
             />
           </div>

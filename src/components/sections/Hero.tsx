@@ -168,7 +168,7 @@ const socialLinks = [
   },
   {
     label: 'LinkedIn',
-    href: 'https://linkedin.com/in/souravchowdhury-2003r',
+    href: 'https://www.linkedin.com/in/souravchowdhury-2003r',
     icon: Linkedin,
   },
   {
@@ -511,10 +511,13 @@ const Hero = () => {
                     key={link.label}
                     href={link.href}
                     target={link.href.startsWith('http') ? '_blank' : undefined}
+                    // rel="me" identifies these as the site owner's own
+                    // profiles, tying the GitHub/LinkedIn identities to this
+                    // person for entity disambiguation.
                     rel={
                       link.href.startsWith('http')
-                        ? 'noopener noreferrer'
-                        : undefined
+                        ? 'me noopener noreferrer'
+                        : 'me'
                     }
                     whileHover={reduceMotion ? undefined : { y: -3, scale: 1.02 }}
                     whileTap={reduceMotion ? undefined : { scale: 0.98 }}
@@ -582,6 +585,9 @@ const Hero = () => {
                       src="/profile.jpg"
                       alt="Portrait of Sourav Chowdhury"
                       loading="eager"
+                      fetchPriority="high"
+                      width={1202}
+                      height={1600}
                       className="absolute inset-0 h-full w-full object-cover object-top"
                     />
                     <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#020617]/85 via-[#020617]/25 to-transparent" />

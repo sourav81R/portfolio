@@ -26,7 +26,7 @@ const contactLinks = [
   {
     name: 'LinkedIn',
     value: 'linkedin.com/in/souravchowdhury-2003r',
-    href: 'https://linkedin.com/in/souravchowdhury-2003r',
+    href: 'https://www.linkedin.com/in/souravchowdhury-2003r',
     icon: Linkedin,
     color: 'text-blue-600',
     bg: 'bg-blue-600/10',

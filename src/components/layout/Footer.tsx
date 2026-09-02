@@ -47,7 +47,7 @@ const socialLinks = [
   { label: 'GitHub', href: 'https://github.com/sourav81R', icon: Github },
   {
     label: 'LinkedIn',
-    href: 'https://linkedin.com/in/souravchowdhury-2003r',
+    href: 'https://www.linkedin.com/in/souravchowdhury-2003r',
     icon: Linkedin,
   },
   { label: 'Email', href: `mailto:${EMAIL}`, icon: Mail },
@@ -142,7 +142,18 @@ const Footer = () => {
                   key={social.label}
                   href={social.href}
                   target={social.href.startsWith('http') ? '_blank' : undefined}
-                  rel="noopener noreferrer"
+                  /*
+                   * rel="me" marks these as profiles belonging to the site's
+                   * owner. It is the signal Google uses to tie the GitHub and
+                   * LinkedIn identities to this person, which is what
+                   * separates this Sourav Chowdhury from others sharing the
+                   * name on a bare-name query.
+                   */
+                  rel={
+                    social.href.startsWith('http')
+                      ? 'me noopener noreferrer'
+                      : 'me'
+                  }
                   aria-label={social.label}
                   title={social.label}
                   onClick={() =>

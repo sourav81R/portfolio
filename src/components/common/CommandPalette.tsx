@@ -99,7 +99,7 @@ const CommandPalette = () => {
     {
       label: 'Open LinkedIn',
       group: 'Links',
-      action: () => window.open('https://linkedin.com/in/souravchowdhury-2003r', '_blank'),
+      action: () => window.open('https://www.linkedin.com/in/souravchowdhury-2003r', '_blank'),
       icon: Linkedin,
     },
     {

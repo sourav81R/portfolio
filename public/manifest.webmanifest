@@ -1,7 +1,7 @@
 {
-  "name": "Sourav Portfolio",
-  "short_name": "Sourav",
-  "description": "Frontend portfolio with dashboards, recruiter mode, and interactive project intelligence.",
+  "name": "Sourav Chowdhury - Full Stack Developer",
+  "short_name": "Sourav C.",
+  "description": "Official portfolio of Sourav Chowdhury, a full stack developer in Kolkata, India working with React, TypeScript, Node.js and MongoDB.",
   "theme_color": "#020617",
   "background_color": "#020617",
   "display": "standalone",
