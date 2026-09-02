@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useReducedMotion } from 'framer-motion'
+import useCoarsePointer from '../../hooks/useCoarsePointer'
 
 type RgbColor = readonly [number, number, number]
 
@@ -58,9 +59,13 @@ const CursorSpiderEffect = () => {
   const rafRef = useRef<number>(0)
   const lastTimeRef = useRef<number>(0)
   const reduceMotion = useReducedMotion()
+  // Touch devices emit no mouse/pen pointer events, so the canvas could only
+  // ever stay blank - skip the element and its listeners there entirely.
+  const isCoarsePointer = useCoarsePointer()
+  const isDisabled = reduceMotion || isCoarsePointer
 
   useEffect(() => {
-    if (reduceMotion) return
+    if (isDisabled) return
     const canvas = canvasRef.current
     if (!canvas) return
 
@@ -96,6 +101,7 @@ const CursorSpiderEffect = () => {
       pointer.x = x
       pointer.y = y
       pointer.hasLast = true
+      ensureRunning()
     }
 
     const onPointerLeave = () => {
@@ -127,6 +133,20 @@ const CursorSpiderEffect = () => {
         warp: 0.1 + Math.random() * 0.18,
         strokeWidth: 1.8 + Math.random() * 1.4,
       })
+
+      ensureRunning()
+    }
+
+    /*
+     * The loop is demand-driven: it is only scheduled while there is
+     * something to animate, and stops itself once the trail and bursts have
+     * drained. Previously it ran at 60fps for the lifetime of the page,
+     * clearing an empty canvas and burning CPU/battery even on an idle tab.
+     */
+    const ensureRunning = () => {
+      if (rafRef.current) return
+      lastTimeRef.current = 0
+      rafRef.current = window.requestAnimationFrame(draw)
     }
 
     const draw = (now: number) => {
@@ -220,6 +240,12 @@ const CursorSpiderEffect = () => {
       }
       burstsRef.current = nextBursts.slice(-12)
 
+      if (trailRef.current.length === 0 && burstsRef.current.length === 0) {
+        rafRef.current = 0
+        lastTimeRef.current = 0
+        return
+      }
+
       rafRef.current = window.requestAnimationFrame(draw)
     }
 
@@ -229,8 +255,6 @@ const CursorSpiderEffect = () => {
     window.addEventListener('pointerleave', onPointerLeave)
     window.addEventListener('pointerdown', onPointerDown, { passive: true })
 
-    rafRef.current = window.requestAnimationFrame(draw)
-
     return () => {
       window.removeEventListener('resize', resize)
       window.removeEventListener('pointermove', onPointerMove)
@@ -238,15 +262,16 @@ const CursorSpiderEffect = () => {
       window.removeEventListener('pointerdown', onPointerDown)
       if (rafRef.current) {
         window.cancelAnimationFrame(rafRef.current)
+        rafRef.current = 0
       }
       trailRef.current = []
       burstsRef.current = []
       pointerRef.current.hasLast = false
       lastTimeRef.current = 0
     }
-  }, [reduceMotion])
+  }, [isDisabled])
 
-  if (reduceMotion) {
+  if (isDisabled) {
     return null
   }
 

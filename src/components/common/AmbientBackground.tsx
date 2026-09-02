@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion'
+import useCoarsePointer from '../../hooks/useCoarsePointer'
 
 type FloatingShape = {
   id: string
@@ -30,6 +31,15 @@ const shapeClass: Record<FloatingShape['type'], string> = {
 
 const AmbientBackground = () => {
   const reduceMotion = useReducedMotion()
+  /*
+   * Phones pay the most for this layer and see it the least. The three large
+   * blurred orbs are cheap enough to keep (they are static-positioned and the
+   * blur is rasterised once), but the seven shapes each carry their own
+   * backdrop-filter and an independent infinite transform, which is what
+   * actually costs frames on a mobile GPU - so they are dropped there.
+   */
+  const isCoarsePointer = useCoarsePointer()
+  const staticShapes = reduceMotion || isCoarsePointer
 
   return (
     <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
@@ -50,7 +60,7 @@ const AmbientBackground = () => {
       />
 
       <div className="absolute inset-0">
-        {floatingShapes.map((shape) => (
+        {(isCoarsePointer ? [] : floatingShapes).map((shape) => (
           <motion.div
             key={shape.id}
             className={`absolute ${shapeClass[shape.type]} border border-white/10 backdrop-blur-[1px]`}
@@ -62,7 +72,7 @@ const AmbientBackground = () => {
               backgroundColor: shape.color,
             }}
             animate={
-              reduceMotion
+              staticShapes
                 ? undefined
                 : {
                     y: [0, -16, 9, 0],
@@ -72,7 +82,7 @@ const AmbientBackground = () => {
                   }
             }
             transition={
-              reduceMotion
+              staticShapes
                 ? undefined
                 : {
                     duration: shape.duration,

@@ -465,6 +465,8 @@ const ProjectModal = ({
           <img
             src={project.bgImage}
             alt={project.title}
+            loading="lazy"
+            decoding="async"
             onError={(event) => {
               event.currentTarget.onerror = null
               event.currentTarget.src = projectFallbackImage

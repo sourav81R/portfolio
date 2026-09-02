@@ -1,4 +1,5 @@
 import resumeIqImage from '../assets/projects/resumeiq.jpeg'
+import { resolvePublicAsset } from '../lib/publicAsset'
 
 export type ProjectCategory = 'Web' | 'AI' | 'Mobile' | 'Realtime'
 
@@ -22,12 +23,6 @@ export type ProjectRecord = {
   impact: string
   previewVideo?: string
 }
-
-const resolvePublicAsset = (path: string) => {
-  const baseUrl = import.meta.env.BASE_URL || '/';
-  const normalizedBase = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
-  return `${normalizedBase}${path.replace(/^\//, '')}`;
-};
 
 export const projects: ProjectRecord[] = [
   {

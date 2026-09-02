@@ -14,9 +14,7 @@ import CertificationModal, {
   type CertificationItem,
 } from '../common/CertificationModal'
 import { getSectionRevealProps } from '../../lib/motion'
-
-const resolvePublicAsset = (path: string) =>
-  `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`
+import { resolvePublicAsset } from '../../lib/publicAsset'
 
 const certifications: CertificationItem[] = [
   {

@@ -7,9 +7,7 @@ import ExperienceModal, {
   type ExperienceEntry,
 } from '../common/ExperienceModal'
 import { getSectionRevealProps, MOTION_TOKENS } from '../../lib/motion'
-
-const resolvePublicAsset = (path: string) =>
-  `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`
+import { resolvePublicAsset } from '../../lib/publicAsset'
 
 const experienceData: ExperienceEntry[] = [
   {
