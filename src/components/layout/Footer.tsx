@@ -128,9 +128,9 @@ const Footer = () => {
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-5 lg:gap-8">
           {/* ---------- Brand ---------- */}
           <div className="sm:col-span-2 lg:col-span-1">
-            <p className="text-2xl font-extrabold italic tracking-tight text-emerald-600 dark:text-emerald-400">
-              Sourav
-            </p>
+            <h2 className="text-2xl font-extrabold italic tracking-tight text-emerald-600 dark:text-emerald-400">
+              Sourav Chowdhury
+            </h2>
 
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-gray-600 dark:text-gray-400">
               Building fast, accessible web apps - one commit at a time.
