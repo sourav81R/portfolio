@@ -4,52 +4,52 @@
 <meta charset="utf-8" />
 <title>Sourav Chowdhury - Resume</title>
 <style>
-  @page { size: A4; margin: 11mm 12mm 9mm 12mm; }
+  @page { size: A4; margin: 9mm 11mm 8mm 11mm; }
   * { box-sizing: border-box; }
   body {
     margin: 0;
     font-family: "Segoe UI", Calibri, Arial, sans-serif;
-    font-size: 9.4pt;
-    line-height: 1.32;
+    font-size: 9pt;
+    line-height: 1.22;
     color: #1a1a1a;
   }
   a { color: #1a1a1a; text-decoration: underline; }
 
   .head { display: flex; gap: 12px; align-items: flex-start; }
   .photo {
-    width: 76px; height: 90px; flex: 0 0 76px;
+    width: 70px; height: 83px; flex: 0 0 70px;
     border: 1px solid #bbb; border-radius: 2px; object-fit: cover;
   }
   .who h1 {
-    margin: 0; font-size: 20.5pt; font-weight: 700;
+    margin: 0; font-size: 19pt; font-weight: 700;
     letter-spacing: .4px; line-height: 1.1;
   }
-  .role { font-size: 10.2pt; color: #444; margin: 1px 0 4px; }
-  .contact { font-size: 8.7pt; line-height: 1.45; color: #222; }
+  .role { font-size: 9.6pt; color: #444; margin: 1px 0 3px; }
+  .contact { font-size: 8.3pt; line-height: 1.38; color: #222; }
 
   h2 {
-    font-size: 11pt; font-weight: 700; margin: 8px 0 3px;
+    font-size: 10.3pt; font-weight: 700; margin: 5px 0 2px;
     padding-bottom: 1.5px; border-bottom: 1.4px solid #1a1a1a;
     text-transform: uppercase; letter-spacing: .3px;
   }
   p.summary { margin: 0; text-align: justify; }
 
-  .job { margin-top: 5px; }
+  .job { margin-top: 3.5px; }
   .job:first-of-type { margin-top: 2px; }
-  .jobline { font-weight: 700; font-size: 9.7pt; }
+  .jobline { font-weight: 700; font-size: 9.3pt; }
   .meta { font-weight: 400; color: #333; }
 
-  ul { margin: 2px 0 0; padding-left: 15px; }
-  li { margin: 0 0 1.2px; }
+  ul { margin: 1.5px 0 0; padding-left: 14px; }
+  li { margin: 0 0 0.6px; }
 
-  .skills li { margin-bottom: 1.6px; }
-  .proj { margin-top: 5px; }
+  .skills li { margin-bottom: 0.8px; }
+  .proj { margin-top: 3.5px; }
   .proj:first-of-type { margin-top: 2px; }
-  .ptitle { font-weight: 700; font-size: 9.7pt; }
-  .stack { font-size: 8.9pt; color: #333; margin: 1px 0 0; }
+  .ptitle { font-weight: 700; font-size: 9.3pt; }
+  .stack { font-size: 8.5pt; color: #333; margin: 0.5px 0 0; }
 
-  .edu { margin-top: 3px; }
-  .edu b { font-size: 9.5pt; }
+  .edu { margin-top: 2px; }
+  .edu b { font-size: 9.1pt; }
   .edu div { color: #333; }
   .nb { break-inside: avoid; page-break-inside: avoid; }
 </style>
@@ -73,13 +73,11 @@
 <h2>About Me</h2>
 <p class="summary">
   Full Stack Developer at Oneisok Digital Solution and a Computer Science &amp; Engineering
-  graduate (2026), building web applications from backend to frontend. I work with APIs,
-  databases, third-party integrations, and deployment to turn ideas into reliable products.
-  Currently engineering Voteniti, an election management platform that models the Indian election
-  hierarchy from state level down to individual booths, with area-scoped RBAC and an on-demand
-  data layer that keeps hundreds of thousands of records queryable on a small database tier.
-  Focused on data modelling, permission boundaries, and query cost &mdash; the parts that decide
-  whether a product holds up in real use.
+  graduate (2026), building web applications from backend to frontend across APIs, databases,
+  third-party integrations, and deployment. Currently engineering Voteniti, an election management
+  platform modelling the Indian election hierarchy down to individual booths, with area-scoped RBAC
+  and an on-demand data layer that keeps hundreds of thousands of records queryable on a small
+  database tier.
 </p>
 
 <h2>Experience</h2>
@@ -87,13 +85,10 @@
 <div class="job nb">
   <div class="jobline">Full Stack Developer <span class="meta">| Oneisok Digital Solution, Kolkata (Onsite) | May 2026 &ndash; Present</span></div>
   <ul>
-    <li>Engineer <b>Voteniti</b>, a full-stack Election Management System covering MP, MLA, Municipal, and Panchayat election hierarchies across India</li>
-    <li>Modelled the national election hierarchy &mdash; 543 Lok Sabha constituencies down to individual booths &mdash; as an authoritative Area Master seeded from ECI and LGD government datasets</li>
-    <li>Designed an on-demand data layer serving ~255k Gram Panchayats and ~97k urban Wards from bundled NDJSON files, materializing rows into PostgreSQL only on first use to stay within a 500 MB database tier</li>
-    <li>Built enterprise RBAC with area- and election-scoped role assignments, recursive server-side subtree guards, and smart-delete approval workflows with full audit logging</li>
-    <li>Cut MP hierarchy load time from minutes to seconds by replacing thousands of serial per-row queries with bulk subtree materialization</li>
-    <li>Authored and shipped 85+ raw SQL migrations against a Supabase-hosted PostgreSQL database</li>
-    <li>Rebuilt <b>oneisok.co</b> on Next.js 14 with a role-based admin panel, self-service influencer portal, and MongoDB Atlas persistence, so staff publish content without a deploy</li>
+    <li>Engineer <b>Voteniti</b>, a full-stack Election Management System running MP, MLA, Municipal, and Panchayat election operations across India, modelling 543 Lok Sabha constituencies down to individual booths from ECI and LGD government datasets</li>
+    <li>Designed an on-demand data layer serving ~255k Gram Panchayats and ~97k urban Wards from bundled NDJSON, materializing rows into PostgreSQL only on first use to stay within a 500 MB tier</li>
+    <li>Built enterprise RBAC with area- and election-scoped roles, recursive server-side subtree guards, and smart-delete approval workflows; cut hierarchy load from minutes to seconds with bulk materialization, across 85+ SQL migrations</li>
+    <li>Rebuilt <b>oneisok.co</b> on Next.js 14 with a role-based admin panel and MongoDB Atlas persistence, so staff publish content without a deploy</li>
   </ul>
 </div>
 
@@ -147,26 +142,6 @@
     <li>Rebuilt the company website with a built-in role-based admin panel for Super Admin, HR, and office staff</li>
     <li>Added a self-service influencer portal and migrated production data from Firestore to MongoDB Atlas</li>
     <li>Live: <a href="https://www.oneisok.co">https://www.oneisok.co</a></li>
-  </ul>
-</div>
-
-<div class="proj nb">
-  <div class="ptitle">ResumeIQ &ndash; AI Resume Analyzer &amp; ATS Optimizer <span class="meta">| Full Stack Developer</span></div>
-  <div class="stack">Next.js 14, TypeScript, Tailwind CSS, Firebase, OpenAI API, Zod, PDF/DOCX parsing, Vercel</div>
-  <ul>
-    <li>Production-ready SaaS app with Google Auth, protected routes, secure session cookies, and Firestore data modeling</li>
-    <li>AI-powered resume analysis with a weighted ATS scoring algorithm, keyword match %, skill gap detection, and PDF report export</li>
-    <li>Live: <a href="https://resume-iq-coral.vercel.app">https://resume-iq-coral.vercel.app</a></li>
-  </ul>
-</div>
-
-<div class="proj nb">
-  <div class="ptitle">Foodooza &ndash; Real-Time Food Delivery App <span class="meta">| Full Stack Developer</span></div>
-  <div class="stack">React.js, Node.js, Express.js, MongoDB, Socket.IO, JWT Authentication, Tailwind CSS, Render</div>
-  <ul>
-    <li>Real-time ordering journey from catalog through checkout and order tracking</li>
-    <li>Implemented authentication, session handling, and transactional database consistency</li>
-    <li>Live: <a href="https://food-app-frontend-lh2k.onrender.com/">https://food-app-frontend-lh2k.onrender.com/</a></li>
   </ul>
 </div>
 
