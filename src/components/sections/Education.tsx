@@ -12,7 +12,7 @@ const educationData = [
     school: 'Greater Kolkata College of Engineering & Management',
     year: '2022 - 2026',
     grade: 'CGPA: 7.75',
-    status: 'Current Degree',
+    status: 'Completed',
   },
   {
     degree: 'Higher Secondary (Class XII)',

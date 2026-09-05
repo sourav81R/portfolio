@@ -52,7 +52,7 @@ const OpenToWorkBanner = () => {
                   <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400" />
                 </span>
                 <p className="truncate text-white/90">
-                  Open to full-time roles - Available from June 2026
+                  Full Stack Developer at Oneisok Digital Solution - building Voteniti
                 </p>
               </div>
 

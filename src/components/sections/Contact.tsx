@@ -140,9 +140,10 @@ const Contact = () => {
                 Let's Connect
               </h3>
               <p className="text-gray-700 dark:text-gray-400 mb-8 text-base sm:text-lg leading-relaxed">
-                I'm currently looking for entry-level software developer opportunities. Whether
-                you have a question, a project idea, or just want to say hi, I'll try my best to
-                get back to you.
+                I'm a Full Stack Developer at Oneisok Digital Solution, and I'm always happy to
+                talk about interesting engineering problems, collaborations, or freelance work.
+                Whether you have a question, a project idea, or just want to say hi, I'll try my
+                best to get back to you.
               </p>
 
               <div className="space-y-4">

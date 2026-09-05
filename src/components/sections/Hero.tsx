@@ -41,9 +41,9 @@ type SectionCommand = {
 const terminalLines: Line[] = [
   { prompt: '>> ~', text: 'npx intro --profile sourav' },
   { prompt: '>> ~', text: 'Loading product-minded developer profile...' },
-  { prompt: '>> ~', text: 'Role: Frontend + Full Stack Developer' },
-  { prompt: '>> ~', text: 'Focus: React, TypeScript, APIs, and clean UX' },
-  { prompt: '>> ~', text: 'Status: Open to interviews and collaborations' },
+  { prompt: '>> ~', text: 'Role: Full Stack Developer @ Oneisok Digital Solution' },
+  { prompt: '>> ~', text: 'Focus: Next.js, TypeScript, Node.js, PostgreSQL' },
+  { prompt: '>> ~', text: 'Shipping: Voteniti - election ops across India' },
 ]
 
 const terminalSequence: Line[] = [
@@ -152,10 +152,10 @@ const sectionCommands: SectionCommand[] = [
 ]
 
 const headlineWords = [
-  'frontend systems',
-  'dashboard experiences',
+  'production systems',
+  'election platforms',
   'API-led products',
-  'case-study interfaces',
+  'dashboard experiences',
 ]
 
 const quickCommands = ['about', 'projects', 'contact'] as const
@@ -179,9 +179,9 @@ const socialLinks = [
 ] as const
 
 const BADGE_WORDS = [
-  'COMPUTER SCIENCE ENGINEER',
   'FULL STACK DEVELOPER',
-  'MERN STACK DEVELOPER',
+  'NEXT.JS + NODE.JS',
+  'COMPUTER SCIENCE ENGINEER',
 ]
 
 const TypingBadge = () => {
@@ -427,7 +427,7 @@ const Hero = () => {
                   />
                   <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
                 </span>
-                Open to work
+                Currently @ Oneisok
               </span>
               <span className="inline-flex min-w-0 max-w-full items-center gap-2 rounded-full border border-white/18 bg-transparent px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-gray-700 dark:text-gray-100 sm:max-w-none sm:text-[13px] sm:tracking-[0.24em]">
                 <Sparkles size={14} />

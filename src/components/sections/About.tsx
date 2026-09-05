@@ -1,6 +1,6 @@
 import {
   Brain,
-  Calendar,
+  Briefcase,
   Code,
   Database,
   Rocket,
@@ -12,7 +12,7 @@ import CountUp from '../common/CountUp'
 import { getSectionRevealProps } from '../../lib/motion'
 
 type StatItem = {
-  icon: typeof Calendar
+  icon: typeof Briefcase
   value: string
   countTo?: number
   suffix?: string
@@ -23,26 +23,25 @@ type StatItem = {
 
 const stats: StatItem[] = [
   {
-    icon: Calendar,
-    value: '2026',
-    countTo: 2026,
-    label: 'Graduation Year',
+    icon: Briefcase,
+    value: 'Oneisok',
+    label: 'Full Stack Developer',
     color: 'text-sky-500 dark:text-sky-300',
     bg: 'bg-sky-500/12',
   },
   {
     icon: Code,
-    value: '3+',
-    countTo: 3,
+    value: '10+',
+    countTo: 10,
     suffix: '+',
-    label: 'Major Projects',
+    label: 'Projects Shipped',
     color: 'text-emerald-500 dark:text-emerald-300',
     bg: 'bg-emerald-500/12',
   },
   {
     icon: Database,
-    value: 'MERN',
-    label: 'Full Stack Exposure',
+    value: 'B.Tech',
+    label: 'CSE Graduate, 2026',
     color: 'text-cyan-500 dark:text-cyan-300',
     bg: 'bg-cyan-500/12',
   },
@@ -83,17 +82,17 @@ const qualities = [
 ] as const
 
 const tags = [
-  'Frontend Enthusiast',
-  'API Integrator',
-  'React Native Explorer',
-  'Product-Focused Learner',
+  'Full Stack Developer',
+  'Production Systems',
+  'Data Modelling',
+  'Performance & Scale',
 ] as const
 
 const focusAreas = [
-  'Next.js 14',
+  'Next.js 16',
+  'PostgreSQL at Scale',
+  'RBAC & Authorization',
   'System Design',
-  'Cloud Architecture',
-  'Performance Thinking',
 ] as const
 
 const About = () => {
@@ -143,20 +142,41 @@ const About = () => {
             </div>
 
             <p className="text-base leading-8 text-gray-700 dark:text-gray-100 sm:text-[1.08rem] sm:leading-9">
-              I am a final-year B.Tech Computer Science and Engineering student
-              with hands-on experience building web and mobile applications
-              using{' '}
               <span className="font-semibold text-gray-900 dark:text-white">
-                React, TypeScript, React Native, and REST APIs
+                Full Stack Developer at Oneisok Digital Solution
               </span>
-              . I enjoy turning ideas into clean, practical interfaces,
-              debugging edge cases, and improving how a product feels in actual
-              use. I am now looking for an{' '}
+              , building web applications from backend to frontend. I work with
+              APIs, databases, third-party integrations, and deployment to turn
+              ideas into reliable products. I built{' '}
               <span className="font-semibold text-gray-900 dark:text-white">
-                entry-level software developer role
-              </span>{' '}
-              where I can keep learning fast while contributing dependable work
-              to real teams.
+                Voteniti
+              </span>
+              , an election management platform designed to model
+              India&rsquo;s election hierarchy&mdash;from higher administrative
+              levels down to individual booths&mdash;making complex election
+              data easier to manage and organize. I also rebuilt{' '}
+              <span className="font-semibold text-gray-900 dark:text-white">
+                oneisok.co
+              </span>
+              , the company website for Oneisok Digital Solution, along with a
+              role-based admin panel that gives the team control over managing
+              and updating the platform. I have also worked on projects like{' '}
+              <span className="font-semibold text-gray-900 dark:text-white">
+                ResumeIQ
+              </span>
+              ,{' '}
+              <span className="font-semibold text-gray-900 dark:text-white">
+                Foodooza
+              </span>
+              , and{' '}
+              <span className="font-semibold text-gray-900 dark:text-white">
+                EstatePerks
+              </span>
+              . I finished my B.Tech in CSE this July and enjoy working across
+              the full product&mdash;from how the backend and data are
+              structured to how the final interface feels for users. Based in
+              Kolkata, India, focused on building practical and scalable
+              products that solve real problems.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
