@@ -15,7 +15,8 @@ export type ProjectRecord = {
   tech: string[]
   category: ProjectCategory
   featured?: boolean
-  github: string
+  /** Omitted for closed-source professional work, which links to the live product instead. */
+  github?: string
   liveUrl?: string
   bgImage: string
   caseStudySlug?: string
@@ -25,6 +26,86 @@ export type ProjectRecord = {
 }
 
 export const projects: ProjectRecord[] = [
+  {
+    slug: 'voteniti',
+    title: 'Voteniti',
+    role: 'Full Stack Developer at Oneisok Digital Solution',
+    description:
+      'Production Election Management System running MP, MLA, Municipal, and Panchayat election operations across India.',
+    problem:
+      'Election teams manage a deep geography - state, district, constituency, block, panchayat, ward, booth - with thousands of workers per seat. Spreadsheets and ad hoc tools cannot enforce who may act at which level, and loading the whole national administrative dataset would blow past a small database tier.',
+    solution:
+      'Built a hierarchy-driven platform where the org chart itself is the team: real Area Master records drive every election type, area- and election-scoped RBAC gates every write, and large datasets are served on demand instead of being stored.',
+    points: [
+      'Modeled the full India hierarchy (543 Lok Sabha seats down to individual booths) as an authoritative Area Master seeded from ECI and LGD government datasets',
+      'Designed an on-demand data layer serving ~255k Gram Panchayats and ~97k urban Wards from bundled NDJSON, materializing single rows into Postgres only on first use to stay inside a 500 MB tier',
+      'Implemented enterprise RBAC with area- and election-scoped assignments, server-side subtree guards, and smart-delete requests routed to Super Admin approval',
+      'Cut MP hierarchy load from minutes to seconds by replacing thousands of serial per-row queries with bulk subtree materialization',
+      'Shipped the public Voteniti marketing site with an admin CMS for blogs, team, testimonials, per-page SEO, and a message inbox',
+    ],
+    learnings: [
+      'Designing schemas against messy real-world government data and its known quirks',
+      'Trading storage for compute with on-demand materialization under a hard database ceiling',
+      'Building recursive permission guards that hold up against direct API calls, not just hidden UI',
+    ],
+    tech: [
+      'Next.js 16',
+      'React 19',
+      'TypeScript',
+      'Node.js',
+      'Express',
+      'PostgreSQL',
+      'TanStack Query',
+      'Zod',
+      'JWT',
+      'Tailwind CSS',
+    ],
+    category: 'Web',
+    featured: true,
+    liveUrl: 'https://voteniti.in',
+    bgImage: resolvePublicAsset('/images/voteniti.webp'),
+    recruiterPriority: 12,
+    impact:
+      'Nationwide election operations platform: 543 constituencies modeled, 85+ migrations, minutes-to-seconds hierarchy loads.',
+  },
+  {
+    slug: 'oneisok-website',
+    title: 'Oneisok Website & Admin Panel',
+    role: 'Full Stack Developer at Oneisok Digital Solution',
+    description:
+      'Company website rebuilt on Next.js 14 with a role-based admin panel and a self-service influencer portal.',
+    problem:
+      'The existing site needed a developer and a deploy for every content change, and staff had no safe way to manage services, testimonials, or influencer submissions themselves.',
+    solution:
+      'Rebuilt the site on the App Router with MongoDB Atlas persistence and a built-in admin panel, so HR and office staff manage content directly while the app still runs locally on bundled sample data.',
+    points: [
+      'Built a role-based admin panel (Super Admin, HR, Office staff) for managing site content without a deploy',
+      'Added a self-service influencer portal with profile submission and review workflows',
+      'Kept the app runnable with zero database credentials by falling back to bundled sample data for local development',
+      'Migrated existing data off Firestore onto MongoDB Atlas and scripted seeding, staff creation, and content sync',
+    ],
+    learnings: [
+      'Structuring App Router projects so public pages and admin surfaces share logic without leaking access',
+      'Making a database-backed app pleasant to develop against with no credentials',
+      'Planning and executing a one-off production data migration safely',
+    ],
+    tech: [
+      'Next.js 14',
+      'TypeScript',
+      'Tailwind CSS',
+      'MongoDB Atlas',
+      'Firebase Auth',
+      'App Router',
+    ],
+    category: 'Web',
+    featured: true,
+    // Canonical host: oneisok.co 307-redirects to www, so link www directly.
+    liveUrl: 'https://www.oneisok.co',
+    bgImage: resolvePublicAsset('/images/oneisok.webp'),
+    recruiterPriority: 11,
+    impact:
+      'Content ships without a deploy; staff self-serve through a role-based panel backed by MongoDB Atlas.',
+  },
   {
     slug: 'resumeiq',
     title: 'ResumeIQ',

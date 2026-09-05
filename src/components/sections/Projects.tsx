@@ -1,4 +1,9 @@
-import { useEffect, useState, type MouseEvent } from 'react'
+import {
+  useEffect,
+  useState,
+  type MouseEvent,
+  type SyntheticEvent,
+} from 'react'
 import {
   AnimatePresence,
   motion,
@@ -27,6 +32,25 @@ type Category = 'All' | ProjectCategory
 
 const categories: Category[] = ['All', 'Web', 'AI', 'Mobile', 'Realtime']
 const projectFallbackImage = `${import.meta.env.BASE_URL}og-preview.png`
+
+/**
+ * Covers ship as WebP with a JPEG twin beside them. The handful of browsers
+ * without WebP support get the JPEG first, and only then the generic preview,
+ * so a cover never degrades straight to the site-wide OG image.
+ */
+const handleCoverError = (
+  event: SyntheticEvent<HTMLImageElement, Event>
+) => {
+  const image = event.currentTarget
+
+  if (image.src.endsWith('.webp')) {
+    image.src = image.src.replace(/.webp$/, '.jpg')
+    return
+  }
+
+  image.onerror = null
+  image.src = projectFallbackImage
+}
 const INITIAL_VISIBLE_PROJECTS = 6
 const mobileSpinKeyframes = [0, 90, 180, 270, 360]
 const mobileSpinTransition: Transition = {
@@ -290,10 +314,7 @@ const Projects = () => {
                           alt={project.title}
                           loading="lazy"
                           decoding="async"
-                          onError={(event) => {
-                            event.currentTarget.onerror = null
-                            event.currentTarget.src = projectFallbackImage
-                          }}
+                          onError={handleCoverError}
                           className="h-full w-full object-cover"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
@@ -467,10 +488,7 @@ const ProjectModal = ({
             alt={project.title}
             loading="lazy"
             decoding="async"
-            onError={(event) => {
-              event.currentTarget.onerror = null
-              event.currentTarget.src = projectFallbackImage
-            }}
+            onError={handleCoverError}
             className="h-60 w-full object-cover sm:h-72"
           />
         </div>
@@ -527,15 +545,17 @@ const ProjectModal = ({
               <div className="rounded-2xl border border-gray-200 bg-white/80 p-5 dark:border-gray-800 dark:bg-gray-900/50">
                 <p className="text-sm font-semibold text-gray-900 dark:text-white">Actions</p>
                 <div className="mt-4 grid gap-3">
-                  <a
-                    href={project.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 dark:border-gray-700 dark:text-gray-300"
-                  >
-                    <Github size={15} />
-                    GitHub
-                  </a>
+                  {project.github && (
+                    <a
+                      href={project.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 dark:border-gray-700 dark:text-gray-300"
+                    >
+                      <Github size={15} />
+                      GitHub
+                    </a>
+                  )}
                   {project.liveUrl && (
                     <a
                       href={project.liveUrl}
