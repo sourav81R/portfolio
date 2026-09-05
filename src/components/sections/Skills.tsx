@@ -3,6 +3,7 @@ import {
   useCallback,
   useEffect,
   useRef,
+  type CSSProperties,
   type MouseEvent,
   type PointerEvent,
 } from 'react'
@@ -27,6 +28,24 @@ import {
   FileJson,
   Layers,
   Box,
+  Cloud,
+  CloudCog,
+  HardDrive,
+  Boxes,
+  Orbit,
+  ShieldCheck,
+  Workflow,
+  Triangle,
+  Rocket,
+  Zap,
+  Bot,
+  Sparkles,
+  Brain,
+  Users,
+  MessagesSquare,
+  Lightbulb,
+  Palette,
+  Binary,
   Volume2,
   VolumeX,
   type LucideIcon,
@@ -44,18 +63,29 @@ import { getSectionRevealProps } from '../../lib/motion'
 
 const skillCategories = [
   {
-    title: 'Programming & Frontend',
-    icon: Code,
+    title: 'Languages & Core',
+    icon: Binary,
     skills: [
+      { name: 'TypeScript', icon: FileCode, color: '#3178C6' },
+      { name: 'JavaScript (ES6+)', icon: FileJson, color: '#F7DF1E' },
       { name: 'Java', icon: Coffee, color: '#f89820' },
       { name: 'C', icon: FileCode, color: '#00599C' },
-      { name: 'JavaScript (ES6+)', icon: FileJson, color: '#F7DF1E' },
-      { name: 'TypeScript (Basic)', icon: FileCode, color: '#3178C6' },
+      { name: 'SQL', icon: Database, color: '#336791' },
+    ],
+  },
+  {
+    title: 'Frontend & UI',
+    icon: Palette,
+    skills: [
       { name: 'React.js', icon: Atom, color: '#61DAFB' },
-      { name: 'Next.js 14', icon: Globe, color: '#111111' },
+      { name: 'Next.js', icon: Globe, color: '#111111', darkColor: '#FFFFFF' },
+      { name: 'Three.js', icon: Orbit, color: '#049EF4' },
       { name: 'React Native', icon: Smartphone, color: '#61DAFB' },
+      { name: 'Tailwind CSS', icon: Layers, color: '#38BDF8' },
+      { name: 'TanStack Query', icon: Workflow, color: '#FF4154' },
       { name: 'HTML5', icon: Layout, color: '#E34F26' },
       { name: 'CSS3', icon: Layers, color: '#1572B6' },
+      { name: 'SEO', icon: Globe, color: '#22C55E' },
     ],
   },
   {
@@ -63,8 +93,12 @@ const skillCategories = [
     icon: Server,
     skills: [
       { name: 'Node.js', icon: Server, color: '#339933' },
-      { name: 'REST API', icon: Globe, color: '#009688' },
-      { name: 'Auth Workflows', icon: Wrench, color: '#FF6C37' },
+      { name: 'Express.js', icon: Server, color: '#444444' },
+      { name: 'Nest.js', icon: Boxes, color: '#E0234E' },
+      { name: 'REST APIs', icon: Globe, color: '#009688' },
+      { name: 'RBAC & Auth', icon: ShieldCheck, color: '#FF6C37' },
+      { name: 'JWT', icon: ShieldCheck, color: '#D63AFF' },
+      { name: 'Zod Validation', icon: FileCode, color: '#3E67B1' },
       { name: 'API Debugging', icon: Terminal, color: '#10b981' },
     ],
   },
@@ -72,21 +106,59 @@ const skillCategories = [
     title: 'Databases',
     icon: Database,
     skills: [
+      { name: 'PostgreSQL', icon: Database, color: '#4479A1' },
+      { name: 'Supabase', icon: Database, color: '#3ECF8E' },
       { name: 'MongoDB', icon: Database, color: '#47A248' },
-      { name: 'SQL', icon: Database, color: '#4479A1' },
+      { name: 'Firestore', icon: Database, color: '#FFCA28' },
+      { name: 'SQL Migrations', icon: Database, color: '#336791' },
+      { name: 'Schema Design', icon: Workflow, color: '#0ea5e9' },
+      { name: 'Query Optimization', icon: Terminal, color: '#8b5cf6' },
     ],
   },
   {
-    title: 'Tools & Platforms',
+    title: 'Cloud & Infrastructure',
+    icon: Cloud,
+    skills: [
+      { name: 'AWS', icon: CloudCog, color: '#FF9900' },
+      { name: 'Cloudflare R2', icon: HardDrive, color: '#F38020' },
+      { name: 'Vercel', icon: Triangle, color: '#0070f3' },
+      { name: 'Render', icon: Cloud, color: '#46E3B7' },
+      { name: 'Firebase', icon: Cloud, color: '#FFCA28' },
+      { name: 'Object Storage', icon: HardDrive, color: '#38bdf8' },
+      { name: 'Deployment & Hosting', icon: Rocket, color: '#22c55e' },
+    ],
+  },
+  {
+    title: 'Tools & Workflow',
     icon: Wrench,
     skills: [
       { name: 'Git', icon: GitBranch, color: '#F05032' },
       { name: 'GitHub', icon: Github, color: '#6e5494' },
       { name: 'Postman', icon: Globe, color: '#FF6C37' },
       { name: 'VS Code', icon: Code, color: '#007ACC' },
-      { name: 'Firebase', icon: Database, color: '#FFCA28' },
-      { name: 'Vercel', icon: Server, color: '#0070f3' },
       { name: 'Expo', icon: Smartphone, color: '#4630EB' },
+      { name: 'Vite', icon: Zap, color: '#646CFF' },
+    ],
+  },
+  {
+    title: 'AI Tools',
+    icon: Sparkles,
+    skills: [
+      { name: 'Claude', icon: Sparkles, color: '#D97757' },
+      { name: 'ChatGPT', icon: Bot, color: '#10A37F' },
+      { name: 'Gemini', icon: Sparkles, color: '#4285F4' },
+      { name: 'GitHub Copilot', icon: Bot, color: '#6e5494' },
+      { name: 'OpenAI API', icon: Brain, color: '#412991' },
+    ],
+  },
+  {
+    title: 'Soft Skills',
+    icon: Users,
+    skills: [
+      { name: 'Problem Solving', icon: Lightbulb, color: '#FACC15' },
+      { name: 'Teamwork', icon: Users, color: '#38BDF8' },
+      { name: 'Communication', icon: MessagesSquare, color: '#34D399' },
+      { name: 'Fast Learning', icon: Rocket, color: '#A78BFA' },
     ],
   },
 ] as const
@@ -466,8 +538,16 @@ const Skills = () => {
                               transition={{ duration: 0.5 }}
                             >
                               <IconComponent
-                                className="h-7 w-7 transition-colors sm:h-8 sm:w-8"
-                                style={{ color: skill.color }}
+                                className="skill-icon h-7 w-7 transition-colors sm:h-8 sm:w-8"
+                                style={
+                                  {
+                                    '--skill-color': skill.color,
+                                    '--skill-color-dark':
+                                      'darkColor' in skill
+                                        ? skill.darkColor
+                                        : skill.color,
+                                  } as CSSProperties
+                                }
                               />
                             </motion.div>
                             <span className="text-[10px] font-bold leading-tight text-gray-700 dark:text-gray-300 sm:text-xs">

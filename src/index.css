@@ -313,3 +313,19 @@ section {
     opacity: 0;
   }
 }
+
+/*
+ * Skill icons carry brand colours, and a few of them (Next.js black, Express
+ * grey, OpenAI indigo) fall below readable contrast on the dark card
+ * background. Each icon exposes its palette as custom properties and this rule
+ * swaps to the lighter twin in dark mode, so the component never needs to know
+ * which theme is active. Skills without a dark twin resolve both properties to
+ * the same value.
+ */
+.skill-icon {
+  color: var(--skill-color);
+}
+
+.dark .skill-icon {
+  color: var(--skill-color-dark, var(--skill-color));
+}
