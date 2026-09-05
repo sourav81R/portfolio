@@ -39,7 +39,7 @@ export type ExperienceEntry = {
   metrics: string[]
   tech: string[]
   badge: string
-  credential: ExperienceCredential
+  credential?: ExperienceCredential
 }
 
 type ExperienceModalView = 'details' | 'certificate'
@@ -83,8 +83,12 @@ const ExperienceModal = ({
   if (!mounted || !experience) return null
 
   const { credential } = experience
-  const previewSrc = credential.previewImageSrc ?? credential.fileSrc
-  const isPdfCertificate = credential.fileSrc.toLowerCase().endsWith('.pdf')
+  const previewSrc = credential
+    ? credential.previewImageSrc ?? credential.fileSrc
+    : ''
+  const isPdfCertificate = Boolean(
+    credential?.fileSrc.toLowerCase().endsWith('.pdf')
+  )
   const shouldUseFallbackPreview = isCoarsePointer && isPdfCertificate
 
   return createPortal(
@@ -211,6 +215,7 @@ const ExperienceModal = ({
                       </div>
                     </div>
 
+                    {credential && (
                     <div className="rounded-[20px] border border-emerald-500/20 bg-emerald-500/10 p-4">
                       <p className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-emerald-200">
                         <ShieldCheck size={14} />
@@ -241,9 +246,10 @@ const ExperienceModal = ({
                         </a>
                       </div>
                     </div>
+                    )}
                   </div>
                 </div>
-              ) : (
+              ) : credential ? (
                 <div className="grid gap-4 lg:grid-cols-[minmax(0,0.92fr)_minmax(300px,1.08fr)]">
                   <div className="space-y-4">
                     <div className="rounded-[20px] border border-emerald-500/20 bg-emerald-500/10 p-4">
@@ -372,7 +378,7 @@ const ExperienceModal = ({
                     )}
                   </div>
                 </div>
-              )}
+              ) : null}
             </div>
 
             <div className="flex items-center justify-between gap-3 border-t border-white/10 bg-[#040816]/95 px-4 py-3 backdrop-blur-sm sm:px-5">

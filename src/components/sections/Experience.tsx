@@ -11,11 +11,45 @@ import { resolvePublicAsset } from '../../lib/publicAsset'
 
 const experienceData: ExperienceEntry[] = [
   {
+    role: 'Full Stack Developer',
+    company: 'Oneisok Digital Solution',
+    period: 'May 2026 - Present',
+    location: 'Kolkata, India (Onsite)',
+    badge: 'Current Role',
+    summary:
+      'Building and shipping production systems end to end - a nationwide election operations platform and the company website with its own admin CMS.',
+    description: [
+      'Engineer Voteniti, a full-stack Election Management System covering MP, MLA, Municipal, and Panchayat election hierarchies across India.',
+      'Designed an on-demand area-data layer that serves ~255k Gram Panchayats and ~97k urban Wards from bundled NDJSON files, materializing rows into Postgres only on use so the database stays inside a 500 MB tier.',
+      'Built enterprise RBAC with area- and election-scoped role assignments, smart-delete approval workflows, and audit logging across every hierarchy level.',
+      'Replaced thousands of serial per-row queries with bulk subtree materialization, cutting MP hierarchy load from minutes to seconds on a remote database.',
+      'Rebuilt oneisok.co on Next.js 14 with a role-based admin panel, self-service influencer portal, and MongoDB Atlas persistence so staff ship content without a deploy.',
+    ],
+    metrics: [
+      '543 Lok Sabha constituencies modeled as Area Master records',
+      '85+ SQL migrations authored and shipped',
+      'MP hierarchy load cut from minutes to seconds',
+    ],
+    tech: [
+      'Next.js 16',
+      'React 19',
+      'TypeScript',
+      'Node.js',
+      'Express',
+      'PostgreSQL',
+      'MongoDB',
+      'Tailwind CSS',
+      'TanStack Query',
+      'Zod',
+      'JWT',
+    ],
+  },
+  {
     role: 'Full Stack Developer Intern',
     company: 'Euphoria GenX',
     period: 'Aug 2025 - Feb 2026',
     location: 'Remote',
-    badge: 'Latest Internship',
+    badge: 'Previous Internship',
     summary:
       'Built and shipped a real-time food delivery application during a structured full-stack internship focused on practical product delivery.',
     description: [
@@ -208,7 +242,12 @@ const Experience = () => {
                               ))}
                             </div>
 
-                            <div className="mt-5 grid gap-2.5 sm:grid-cols-2">
+                            <div
+                              className={clsx(
+                                'mt-5 grid gap-2.5',
+                                experience.credential && 'sm:grid-cols-2'
+                              )}
+                            >
                               <button
                                 type="button"
                                 onClick={() =>
@@ -226,6 +265,7 @@ const Experience = () => {
                                   className="shrink-0 text-white/90 transition group-hover:translate-x-1"
                                 />
                               </button>
+                              {experience.credential && (
                               <button
                                 type="button"
                                 onClick={() =>
@@ -243,6 +283,7 @@ const Experience = () => {
                                   className="shrink-0 text-white/90 transition group-hover:translate-x-1"
                                 />
                               </button>
+                              )}
                             </div>
                           </div>
                         </div>
