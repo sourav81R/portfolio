@@ -71,6 +71,7 @@ The homepage is composed in [`src/App.tsx`](./src/App.tsx).
 - [`src/providers/SmoothScrollProvider.tsx`](./src/providers/SmoothScrollProvider.tsx) wraps Lenis and exposes `scrollTo`.
 - [`src/store/useAppStore.ts`](./src/store/useAppStore.ts) stores recruiter mode, analytics events, and project ordering.
 - [`scripts/sitemap.ts`](./scripts/sitemap.ts) is a Vite plugin that emits `sitemap.xml` at build time.
+- [`scripts/optimize-project-images.js`](./scripts/optimize-project-images.js) regenerates project covers from the sources in `assets/projects/`.
 
 ## Project Structure
 
@@ -171,6 +172,39 @@ npm run test
 Icons are generated from `assets/brand/logo-source.png`. See
 [`assets/brand/README.md`](./assets/brand/README.md) for the crop geometry, why
 two files stay opaque, and how to regenerate them.
+
+## Content Notes
+
+Professional work at Oneisok Digital Solution (Voteniti and the oneisok.co
+rebuild) is listed in `src/data/projects.ts` and `Experience.tsx` but has no
+case-study route, since the source is not public.
+
+Two type fields are optional so closed-source work renders honestly rather than
+linking somewhere dead:
+
+- `ProjectRecord.github` - omitted for Voteniti and Oneisok, whose cards show
+  only "Open Live Demo". The GitHub action is skipped when there is no repo.
+- `ExperienceEntry.credential` - the current role has no completion
+  certificate, so its card renders a single "View Details" action.
+
+`liveUrl` points at each product's canonical host: `voteniti.in` serves 200
+directly, while `oneisok.co` 307-redirects to `www.oneisok.co`, so the `www`
+form is linked to save visitors a redirect.
+
+### Project cover images
+
+Covers are optimized derivatives, not the originals. Full-resolution sources
+live in [`assets/projects/`](./assets/projects/) (out of the bundle); the site
+serves 1200x675 WebP with a JPEG twin from `public/images/`. This turns roughly
+3.4 MB of PNG into about 190 KB. `handleCoverError` in `Projects.tsx` falls
+back WebP -> JPEG -> generic preview.
+
+Regenerate after replacing a source:
+
+```bash
+npm install --no-save sharp
+node scripts/optimize-project-images.js
+```
 
 ## Case Study Slugs
 
