@@ -76,7 +76,7 @@ function App() {
   // Restores the homepage title and canonical URL when returning from a
   // case study, which sets its own.
   usePageMetadata({
-    title: 'Sourav Chowdhury - Full Stack Developer (Next.js, React, Node.js)',
+    title: 'Sourav Chowdhury | Full Stack Developer (MERN, Next.js)',
     description:
       'Sourav Chowdhury is a Full Stack Developer at Oneisok Digital Solution in Kolkata, India, building production systems with Next.js, React, TypeScript, Node.js and PostgreSQL - including Voteniti, an election management platform used across India.',
     path: '/',
