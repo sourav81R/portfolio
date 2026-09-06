@@ -96,7 +96,10 @@ const CertificationModal = ({
               </button>
             </div>
 
-            <div className="document-modal-scroll min-h-0 flex-1 overflow-y-scroll overscroll-contain px-4 py-4 sm:px-5 sm:py-5">
+            <div
+              data-lenis-prevent
+              className="document-modal-scroll min-h-0 flex-1 overflow-y-scroll overscroll-contain px-4 py-4 sm:px-5 sm:py-5"
+            >
               <div className="grid gap-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(320px,1.1fr)]">
                 <div className="space-y-4">
                   <div className="rounded-[20px] border border-emerald-500/20 bg-emerald-500/10 p-4">

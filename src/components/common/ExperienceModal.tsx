@@ -132,7 +132,10 @@ const ExperienceModal = ({
               </button>
             </div>
 
-            <div className="experience-modal-scroll min-h-0 flex-1 overflow-y-scroll overscroll-contain px-4 py-4 sm:px-5 sm:py-5">
+            <div
+              data-lenis-prevent
+              className="experience-modal-scroll min-h-0 flex-1 overflow-y-scroll overscroll-contain px-4 py-4 sm:px-5 sm:py-5"
+            >
               {view === 'details' ? (
                 <div className="grid gap-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(260px,0.9fr)]">
                   <div className="space-y-4">

@@ -27,8 +27,15 @@ html.lenis-smooth [data-lenis-prevent] {
   overscroll-behavior: contain;
 }
 
+/*
+ * Lenis adds .lenis-stopped whenever the instance is stopped, which is exactly
+ * when an overlay is open. Hiding overflow on the root made it the only scroll
+ * owner on the page, so an overlay's own scroll container never received wheel
+ * events and modal content could not be scrolled. useScrollLock locks <body>
+ * instead, which holds the background still without trapping the overlay.
+ */
 html.lenis-stopped {
-  overflow: hidden;
+  overflow: clip;
 }
 
 html,

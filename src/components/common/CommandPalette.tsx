@@ -297,7 +297,7 @@ const CommandPalette = () => {
           </div>
         </div>
 
-        <div className="max-h-[65vh] overflow-y-auto px-2 py-2">
+        <div data-lenis-prevent className="max-h-[65vh] overflow-y-auto px-2 py-2">
           {Object.entries(grouped).map(([group, groupCommands]) => (
             <div key={group} className="py-2">
               <p className="px-3 pb-2 text-[11px] uppercase tracking-[0.24em] text-white/35">

@@ -477,6 +477,7 @@ const ProjectModal = ({
       onClick={onClose}
     >
       <motion.div
+        data-lenis-prevent
         className="relative max-h-[90vh] w-full max-w-5xl overflow-y-auto rounded-2xl bg-gray-50 p-4 dark:bg-gray-950 sm:p-6 md:p-8"
         initial={{ scale: 0.95, y: 24 }}
         animate={{ scale: 1, y: 0 }}
