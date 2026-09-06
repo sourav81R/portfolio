@@ -84,18 +84,36 @@ const Navbar = () => {
       // Probe line sits just below the navbar. Measured from the real element
       // instead of a hardcoded 140px, which was desktop-only and mismatched
       // the shorter mobile bar.
-      const navHeight = navRef.current?.getBoundingClientRect().bottom ?? 0
-      const probe = navHeight + 24
+      const bar = navRef.current?.firstElementChild
+      const navBottom =
+        bar?.getBoundingClientRect().bottom ??
+        navRef.current?.getBoundingClientRect().bottom ??
+        0
+      const probe = navBottom + 24
 
       // getBoundingClientRect is viewport-relative, so it stays correct inside
       // the transformed/positioned wrappers (PageTransition, AnimatedBorder)
       // where offsetTop would have reported the wrong origin.
+      // Score by how much of the viewport each section actually occupies,
+      // rather than probing a single line. A line has to be positioned
+      // perfectly for both cases at once: an anchor click leaves a section
+      // starting ~200px down (nav offset plus its own padding), while free
+      // scrolling puts the reader mid-section. Any fixed line satisfied one
+      // and broke the other. Visible area is true in both.
+      const viewportTop = probe
+      const viewportBottom = window.innerHeight
+
       let matchedSection: HTMLElement | undefined
+      let bestVisible = 0
+
       for (const section of sectionElements) {
         const { top, bottom } = section.getBoundingClientRect()
-        if (top <= probe && bottom > probe) {
+        const visible =
+          Math.min(bottom, viewportBottom) - Math.max(top, viewportTop)
+
+        if (visible > bestVisible) {
+          bestVisible = visible
           matchedSection = section
-          break
         }
       }
 
