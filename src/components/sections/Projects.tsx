@@ -182,7 +182,10 @@ const Projects = () => {
 
             <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-gray-200 pt-4 dark:border-gray-800">
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Showing {filteredProjects.length} of {totalProjects} projects
+                Showing {visibleProjects.length} of {filteredProjects.length}
+                {filteredProjects.length === totalProjects
+                  ? ' projects'
+                  : ` matching projects (${totalProjects} total)`}
                 {query.trim() ? ` for "${query.trim()}"` : ''}
               </p>
               {inferredGoals.length > 0 && (
@@ -397,7 +400,13 @@ const Projects = () => {
           {canToggleProjectVisibility && (
             <div className="mt-10 flex flex-col items-center gap-3">
               <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                Showing {visibleProjects.length} of {filteredProjects.length} matching projects
+                {hasMoreProjects
+                  ? `${filteredProjects.length - visibleProjects.length} more ${
+                      filteredProjects.length - visibleProjects.length === 1
+                        ? 'project'
+                        : 'projects'
+                    } available`
+                  : `All ${filteredProjects.length} projects shown`}
               </p>
               <motion.button
                 type="button"
