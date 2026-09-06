@@ -4,8 +4,8 @@
 serves from the hero, footer, and command palette. Editing the PDF directly is
 not possible, so change the HTML and re-render.
 
-The photo is read from `public/profile.jpg` at render time, so run the command
-from the repo root.
+The photo is read from `public/profile.jpg` at render time (generated from
+`assets/profile/profile-source.png`), so run the command from the repo root.
 
 ## Regenerating
 
