@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useReducedMotion, useScroll, useSpring } from 'framer-motion'
-import { LayoutDashboard, Menu, Moon, Sun, X } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Menu, Moon, Search, Sun, X } from 'lucide-react'
+import { useCommandPalette } from '../../store/useCommandpalette'
+import { resolvePublicAsset } from '../../lib/publicAsset'
 import { sectionGradientBackgrounds, sectionTextColors } from '../../constants/sectionColor'
-import { useAppStore } from '../../store/useAppStore'
 
 const sections = [
   'home',
@@ -36,7 +36,15 @@ const Navbar = () => {
     const saved = localStorage.getItem('theme') as 'dark' | 'light' | null
     return saved ?? 'dark'
   })
-  const recordClick = useAppStore((state) => state.recordClick)
+  const setPaletteOpen = useCommandPalette((state) => state.setOpen)
+  // Apple keyboards use Cmd; everything else uses Ctrl. Read once on mount so
+  // the hint matches the shortcut the palette actually listens for.
+  const [isAppleDevice, setIsAppleDevice] = useState(false)
+
+  useEffect(() => {
+    setIsAppleDevice(/Mac|iPhone|iPad|iPod/.test(navigator.platform))
+  }, [])
+
   const navRef = useRef<HTMLElement>(null)
   const reduceMotion = useReducedMotion()
   // Tracks progress through the whole document. framer-motion re-measures on
@@ -191,25 +199,31 @@ const Navbar = () => {
         style={{ top: 'calc(var(--banner-offset, 0px) + 0.75rem)' }}
       >
       <div
-        className={`relative overflow-hidden border border-emerald-200/80 bg-gradient-to-r from-white/95 via-emerald-50/95 to-cyan-50/95 shadow-[0_24px_60px_-32px_rgba(15,23,42,0.6)] backdrop-blur-md dark:border-emerald-500/25 dark:bg-gradient-to-r dark:from-gray-900/95 dark:via-gray-950/95 dark:to-slate-900/95 ${
+        className={`relative mx-auto w-full max-w-5xl overflow-hidden border border-emerald-200/80 bg-gradient-to-r from-white/95 via-emerald-50/95 to-cyan-50/95 shadow-[0_24px_60px_-32px_rgba(15,23,42,0.6)] backdrop-blur-md dark:border-emerald-500/25 dark:bg-gradient-to-r dark:from-gray-900/95 dark:via-gray-950/95 dark:to-slate-900/95 ${
           isOpen ? 'rounded-2xl' : 'rounded-2xl sm:rounded-full'
         }`}
       >
-        <div className="flex items-center justify-between px-3 py-2.5 font-mono sm:px-5 sm:py-3">
+        <div className="relative flex items-center justify-between px-3 py-2 font-mono sm:px-4 sm:py-2.5">
           <a
             href="#home"
-            className="inline-flex items-center gap-2 rounded-full bg-gray-900 px-3 py-1.5 text-xs font-bold text-white shadow-sm dark:bg-white dark:text-black sm:text-sm"
+            aria-label="Back to top"
+            className="relative z-10 inline-flex shrink-0 items-center rounded-full transition hover:opacity-80"
           >
-            <span className="h-2 w-2 rounded-full bg-emerald-400" />
-            sourav.is-a.dev
+            <img
+              src={resolvePublicAsset('/icon-192.png')}
+              alt=""
+              width={32}
+              height={32}
+              className="h-8 w-8 rounded-full"
+            />
           </a>
 
-          <ul className="hidden items-center gap-5 text-sm lg:flex">
+          <ul className="hidden min-w-0 flex-1 items-center justify-center gap-3 text-sm lg:flex xl:gap-4">
             {sections.map((item) => (
               <li key={item}>
                 <a
                   href={`#${item}`}
-                    className={`relative text-[15px] transition ${
+                    className={`relative whitespace-nowrap text-[13.5px] transition ${
                       active === item
                       ? sectionTextColors[item]
                       : 'text-gray-600 dark:text-gray-400 hover:text-green-500'
@@ -228,15 +242,21 @@ const Navbar = () => {
                 </a>
               </li>
             ))}
+          </ul>
 
-            <Link
-              to="/dashboard"
-              className="inline-flex items-center gap-2 rounded-full border border-gray-300 px-3 py-2 text-xs font-semibold text-gray-700 transition hover:border-sky-500 hover:text-sky-600 dark:border-gray-700 dark:text-gray-300 dark:hover:text-sky-400"
-              onClick={() => recordClick('dashboard-route')}
+          <div className="relative z-10 hidden shrink-0 items-center gap-2 lg:flex">
+            <button
+              type="button"
+              aria-label="Open command palette"
+              onClick={() => setPaletteOpen(true)}
+              className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white/70 py-1.5 pl-3 pr-1.5 text-xs text-gray-600 transition hover:border-emerald-400 hover:text-emerald-600 dark:border-gray-700 dark:bg-gray-900/60 dark:text-gray-400 dark:hover:text-emerald-400 sm:text-sm"
             >
-              <LayoutDashboard size={14} />
-              Dashboard
-            </Link>
+              <Search size={14} className="shrink-0" />
+              <span className="hidden xl:inline">Search</span>
+              <kbd className="rounded-md border border-gray-300 bg-gray-100 px-1.5 py-0.5 text-[10px] font-semibold text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                {isAppleDevice ? '⌘' : 'Ctrl'} K
+              </kbd>
+            </button>
 
             <button
               aria-label="Toggle theme"
@@ -245,9 +265,18 @@ const Navbar = () => {
             >
               {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
             </button>
-          </ul>
+          </div>
 
-          <div className="flex items-center gap-1.5 lg:hidden sm:gap-2">
+          <div className="relative z-10 ml-auto flex shrink-0 items-center gap-1.5 lg:hidden sm:gap-2">
+            <button
+              type="button"
+              aria-label="Open command palette"
+              onClick={() => setPaletteOpen(true)}
+              className="rounded-full p-2 text-gray-600 dark:text-gray-400"
+            >
+              <Search size={18} />
+            </button>
+
             <button
               aria-label="Toggle theme"
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
@@ -284,18 +313,6 @@ const Navbar = () => {
                   </a>
                 </li>
               ))}
-              <li>
-                <Link
-                  to="/dashboard"
-                  onClick={() => {
-                    setIsOpen(false)
-                    recordClick('dashboard-route')
-                  }}
-                  className="block rounded-lg px-3 py-2 text-sm transition sm:text-base text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900"
-                >
-                  Dashboard
-                </Link>
-              </li>
             </ul>
           </div>
         )}
