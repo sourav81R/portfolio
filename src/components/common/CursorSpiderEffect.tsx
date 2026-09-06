@@ -59,10 +59,11 @@ const CursorSpiderEffect = () => {
   const rafRef = useRef<number>(0)
   const lastTimeRef = useRef<number>(0)
   const reduceMotion = useReducedMotion()
-  // Touch devices emit no mouse/pen pointer events, so the canvas could only
-  // ever stay blank - skip the element and its listeners there entirely.
+  // Touch devices have no hovering cursor, so the trail has nothing to follow
+  // and stays desktop-only. The tap burst still fires on a phone, which is
+  // where most of this effect is actually seen.
   const isCoarsePointer = useCoarsePointer()
-  const isDisabled = reduceMotion || isCoarsePointer
+  const isDisabled = reduceMotion
 
   useEffect(() => {
     if (isDisabled) return
@@ -82,6 +83,7 @@ const CursorSpiderEffect = () => {
     }
 
     const onPointerMove = (event: PointerEvent) => {
+      if (isCoarsePointer) return
       if (event.pointerType !== 'mouse' && event.pointerType !== 'pen') return
       const pointer = pointerRef.current
       const x = event.clientX
@@ -108,7 +110,7 @@ const CursorSpiderEffect = () => {
       pointerRef.current.hasLast = false
     }
 
-    const onPointerDown = (event: PointerEvent) => {
+    const spawnBurst = (x: number, y: number) => {
       // Colour is resolved for the current theme at click time and frozen on
       // the burst, so toggling the theme mid-animation cannot recolour a web
       // that is already on screen.
@@ -119,8 +121,8 @@ const CursorSpiderEffect = () => {
         color: document.documentElement.classList.contains('dark')
           ? palette.dark
           : palette.light,
-        x: event.clientX,
-        y: event.clientY,
+        x,
+        y,
         age: 0,
         maxAge: 520 + Math.random() * 360,
         spokes: 7 + Math.floor(Math.random() * 5),
@@ -135,6 +137,44 @@ const CursorSpiderEffect = () => {
       })
 
       ensureRunning()
+    }
+
+    /*
+     * A touch pointerdown also starts every scroll, so firing there would
+     * spray webs down the page as soon as someone swipes. Touch waits for
+     * pointerup and only counts it when the finger stayed put and lifted
+     * quickly - a real tap. Mouse and pen keep the immediate press feedback.
+     */
+    const TAP_MOVE_TOLERANCE = 12
+    const TAP_MAX_DURATION = 400
+    let pendingTap: { x: number; y: number; at: number } | null = null
+
+    const onPointerDown = (event: PointerEvent) => {
+      if (event.pointerType === 'mouse' || event.pointerType === 'pen') {
+        spawnBurst(event.clientX, event.clientY)
+        return
+      }
+
+      pendingTap = { x: event.clientX, y: event.clientY, at: performance.now() }
+    }
+
+    const onPointerUp = (event: PointerEvent) => {
+      if (!pendingTap) return
+
+      const movedFar =
+        Math.abs(event.clientX - pendingTap.x) > TAP_MOVE_TOLERANCE ||
+        Math.abs(event.clientY - pendingTap.y) > TAP_MOVE_TOLERANCE
+      const heldLong = performance.now() - pendingTap.at > TAP_MAX_DURATION
+
+      if (!movedFar && !heldLong) {
+        spawnBurst(event.clientX, event.clientY)
+      }
+
+      pendingTap = null
+    }
+
+    const onPointerCancel = () => {
+      pendingTap = null
     }
 
     /*
@@ -254,12 +294,16 @@ const CursorSpiderEffect = () => {
     window.addEventListener('pointermove', onPointerMove, { passive: true })
     window.addEventListener('pointerleave', onPointerLeave)
     window.addEventListener('pointerdown', onPointerDown, { passive: true })
+    window.addEventListener('pointerup', onPointerUp, { passive: true })
+    window.addEventListener('pointercancel', onPointerCancel, { passive: true })
 
     return () => {
       window.removeEventListener('resize', resize)
       window.removeEventListener('pointermove', onPointerMove)
       window.removeEventListener('pointerleave', onPointerLeave)
       window.removeEventListener('pointerdown', onPointerDown)
+      window.removeEventListener('pointerup', onPointerUp)
+      window.removeEventListener('pointercancel', onPointerCancel)
       if (rafRef.current) {
         window.cancelAnimationFrame(rafRef.current)
         rafRef.current = 0
@@ -269,7 +313,7 @@ const CursorSpiderEffect = () => {
       pointerRef.current.hasLast = false
       lastTimeRef.current = 0
     }
-  }, [isDisabled])
+  }, [isDisabled, isCoarsePointer])
 
   if (isDisabled) {
     return null
