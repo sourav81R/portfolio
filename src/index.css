@@ -336,3 +336,69 @@ section {
 .dark .skill-icon {
   color: var(--skill-color-dark, var(--skill-color));
 }
+
+/*
+ * Page scrollbar.
+ *
+ * Reuses the sky -> emerald gradient the modal scrollbars already use, with a
+ * fuchsia stop in the middle so the thumb reads as part of the site's accent
+ * identity rather than a stray decoration. Firefox only supports a flat
+ * `scrollbar-color`, so it gets the sky tone; WebKit gets the gradient.
+ *
+ * The rules are anchored to html/body rather than left bare: the CSS
+ * minifier drops unattached ::-webkit-scrollbar selectors from the bundle.
+ */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #38bdf8 rgba(15, 23, 42, 0.06);
+}
+
+.dark html,
+html.dark {
+  scrollbar-color: #38bdf8 rgba(255, 255, 255, 0.06);
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.06);
+}
+
+html.dark::-webkit-scrollbar-track,
+.dark body::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
+  background-image: linear-gradient(
+    180deg,
+    #38bdf8 0%,
+    #818cf8 34%,
+    #e879f9 62%,
+    #34d399 100%
+  );
+  border-radius: 999px;
+}
+
+html::-webkit-scrollbar-thumb:hover,
+body::-webkit-scrollbar-thumb:hover {
+  background-image: linear-gradient(
+    180deg,
+    #7dd3fc 0%,
+    #a5b4fc 34%,
+    #f0abfc 62%,
+    #6ee7b7 100%
+  );
+}
+
+html::-webkit-scrollbar-corner,
+body::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
