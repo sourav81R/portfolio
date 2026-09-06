@@ -11,6 +11,7 @@ import {
   Search,
   Sparkles,
   Users,
+  X,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
@@ -255,10 +256,10 @@ const CommandPalette = () => {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 px-3 sm:px-4">
-      <div className="w-full max-w-2xl overflow-hidden rounded-[1.75rem] border border-white/10 bg-slate-950/92 font-mono shadow-[0_30px_120px_-40px_rgba(15,23,42,0.95)] backdrop-blur-2xl">
+      <div className="w-full max-w-xl overflow-hidden rounded-[1.75rem] border border-white/10 bg-slate-950/92 font-mono shadow-[0_30px_120px_-40px_rgba(15,23,42,0.95)] backdrop-blur-2xl">
         <div className="border-b border-white/10 px-4 py-4 sm:px-5">
-          <div className="flex items-center gap-3">
-            <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-white/5 text-cyan-300">
+          <div className="flex items-start gap-3">
+            <span className="mt-0.5 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/5 text-cyan-300">
               <Search size={18} />
             </span>
             <div className="relative flex-1">
@@ -294,6 +295,18 @@ const CommandPalette = () => {
                 {filtered.length} quick actions
               </p>
             </div>
+
+            <button
+              type="button"
+              aria-label="Close command palette"
+              onClick={() => {
+                setOpen(false)
+                setQuery('')
+              }}
+              className="-mr-1 mt-0.5 shrink-0 rounded-full p-2 text-white/50 transition hover:bg-white/10 hover:text-white"
+            >
+              <X size={18} />
+            </button>
           </div>
         </div>
 
