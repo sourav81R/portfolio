@@ -402,3 +402,15 @@ body::-webkit-scrollbar-corner {
   background: transparent;
 }
 
+/*
+ * Scroll anchoring keeps the reading position pinned when content above the
+ * viewport changes size - exactly what happens when a lazy section swaps its
+ * placeholder for the real thing. It is the browser default, but it is worth
+ * stating explicitly here: without it, a section growing above the fold drags
+ * the page backwards, which on a phone looks like the site scrolling itself
+ * up to the top.
+ */
+html,
+body {
+  overflow-anchor: auto;
+}

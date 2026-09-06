@@ -42,11 +42,39 @@ const sectionOrder = [
   'contact',
 ] as const
 
-const SectionFallback = () => {
+/**
+ * Approximate rendered height of each lazy section, in px.
+ *
+ * The placeholder has to stand in for the real thing closely enough that
+ * mounting does not move the content below it. A flat 96px card meant a
+ * section could grow by more than 1600px the moment it mounted, shoving
+ * everything after it down the page; on a phone that reads as the page
+ * scrolling itself back towards the top.
+ *
+ * These are measured at a 412px-wide viewport, which is the worst case - the
+ * same content is shorter on a desktop layout, and a placeholder that is
+ * slightly too tall collapses harmlessly below the fold instead of displacing
+ * what you are reading.
+ */
+const SECTION_MIN_HEIGHTS: Record<string, number> = {
+  about: 1600,
+  experience: 1900,
+  skills: 3300,
+  projects: 3600,
+  github: 1150,
+  education: 1350,
+  certifications: 1950,
+  contact: 1500,
+}
+
+const SectionFallback = ({ minHeight }: { minHeight?: number }) => {
   const reduceMotion = useReducedMotion()
 
   return (
-    <div className="px-4 py-20 sm:px-6 sm:py-24 lg:py-28">
+    <div
+      className="px-4 py-20 sm:px-6 sm:py-24 lg:py-28"
+      style={minHeight ? { minHeight } : undefined}
+    >
       <motion.div
         className="mx-auto h-24 max-w-6xl rounded-2xl border border-gray-200/70 bg-gray-100/60 dark:border-gray-800/70 dark:bg-gray-900/40"
         animate={reduceMotion ? undefined : { opacity: [0.55, 0.95, 0.55] }}
@@ -178,8 +206,11 @@ function LazySection({
         observer.disconnect()
       },
       {
-        rootMargin: '420px 0px',
-        threshold: 0.01,
+        // Mount well before the section is reached. Combined with the
+        // reserved placeholder height, the swap happens off-screen and never
+        // displaces what is currently being read.
+        rootMargin: '1200px 0px',
+        threshold: 0,
       }
     )
 
@@ -187,14 +218,18 @@ function LazySection({
     return () => observer.disconnect()
   }, [shouldRender])
 
+  const reservedHeight = SECTION_MIN_HEIGHTS[id]
+
   return (
     <section id={id} ref={sectionRef} className="relative">
       {shouldRender ? (
         <SectionErrorBoundary title={title}>
-          <Suspense fallback={<SectionFallback />}>{children}</Suspense>
+          <Suspense fallback={<SectionFallback minHeight={reservedHeight} />}>
+            {children}
+          </Suspense>
         </SectionErrorBoundary>
       ) : (
-        <SectionFallback />
+        <SectionFallback minHeight={reservedHeight} />
       )}
       <SectionDivider />
     </section>
