@@ -21,15 +21,16 @@ import SectionErrorBoundary from './components/system/SectionErrorBoundary'
 import { useAppStore } from './store/useAppStore'
 import { useSmoothScroll } from './providers/SmoothScrollProvider'
 import { usePageMetadata } from './hooks/usePageMetadata'
+import { prefetchSection, sectionLoaders } from './lib/sectionLoaders'
 
-const About = lazy(() => import('./components/sections/About'))
-const Experience = lazy(() => import('./components/sections/Experience'))
-const Skills = lazy(() => import('./components/sections/Skills'))
-const Projects = lazy(() => import('./components/sections/Projects'))
-const GitHubActivity = lazy(() => import('./components/sections/GitHubActivity'))
-const Education = lazy(() => import('./components/sections/Education'))
-const Certifications = lazy(() => import('./components/sections/Certifications'))
-const Contact = lazy(() => import('./components/sections/Contact'))
+const About = lazy(sectionLoaders.about)
+const Experience = lazy(sectionLoaders.experience)
+const Skills = lazy(sectionLoaders.skills)
+const Projects = lazy(sectionLoaders.projects)
+const GitHubActivity = lazy(sectionLoaders.github)
+const Education = lazy(sectionLoaders.education)
+const Certifications = lazy(sectionLoaders.certifications)
+const Contact = lazy(sectionLoaders.contact)
 
 const sectionOrder = [
   'about',
@@ -113,6 +114,52 @@ function App() {
   useEffect(() => {
     recordPageView(location.pathname || '/')
   }, [location.pathname, recordPageView])
+
+  /*
+   * Warm every section's chunk once the browser is idle.
+   *
+   * Mounting still happens on intersection, so this changes nothing about
+   * when a section renders - it only means the code is already in memory
+   * when that moment arrives, instead of a network round-trip starting then.
+   * Scrolling quickly, or jumping straight to Contact, no longer waits on
+   * eight separate fetches.
+   *
+   * Sequential rather than parallel: firing eight imports at once would
+   * contend with images and fonts still loading, which is the opposite of
+   * the goal. requestIdleCallback yields between each, so this only ever
+   * uses time the browser has spare.
+   */
+  useEffect(() => {
+    const idle =
+      window.requestIdleCallback?.bind(window) ??
+      ((cb: IdleRequestCallback) =>
+        window.setTimeout(
+          () => cb({ didTimeout: false, timeRemaining: () => 0 } as IdleDeadline),
+          300
+        ))
+    const cancelIdle =
+      window.cancelIdleCallback?.bind(window) ??
+      ((id: number) => window.clearTimeout(id))
+
+    const queue = [...sectionOrder]
+    let handle = 0
+    let cancelled = false
+
+    const pump = () => {
+      if (cancelled) return
+      const next = queue.shift()
+      if (!next) return
+      prefetchSection(next)
+      handle = idle(pump, { timeout: 2000 }) as number
+    }
+
+    handle = idle(pump, { timeout: 2000 }) as number
+
+    return () => {
+      cancelled = true
+      cancelIdle(handle)
+    }
+  }, [])
 
   useEffect(() => {
     if (!location.hash) return

@@ -8,6 +8,7 @@ import {
   type Variants,
 } from 'framer-motion'
 import { Menu, Moon, Search, Sun, X } from 'lucide-react'
+import { prefetchSection } from '../../lib/sectionLoaders'
 import { useCommandPalette } from '../../store/useCommandpalette'
 import { useSmoothScroll } from '../../providers/SmoothScrollProvider'
 import { resolvePublicAsset } from '../../lib/publicAsset'
@@ -128,6 +129,10 @@ const Navbar = () => {
       const immediate = reduceMotion ?? false
       // Reduced motion has no exit animation to wait for.
       const delay = reduceMotion || !isOpen ? 0 : 220
+
+      // Start the chunk download now rather than when the section mounts, so
+      // the code is usually resolved before the scroll finishes.
+      prefetchSection(item)
 
       window.setTimeout(() => {
         scrollTo(target, { immediate })
@@ -375,6 +380,8 @@ const Navbar = () => {
                 <a
                   href={`#${item}`}
                   onClick={(event) => handleNavClick(event, item)}
+                  onPointerEnter={() => prefetchSection(item)}
+                  onFocus={() => prefetchSection(item)}
                   aria-current={active === item ? 'true' : undefined}
                     className={`relative whitespace-nowrap text-[13.5px] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${
                       active === item
@@ -488,6 +495,7 @@ const Navbar = () => {
                       <a
                         href={`#${item}`}
                         onClick={(event) => handleNavClick(event, item)}
+                        onPointerDown={() => prefetchSection(item)}
                         aria-current={active === item ? 'true' : undefined}
                         className={`block rounded-lg px-3 py-2 text-base transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 sm:text-lg ${
                           active === item
