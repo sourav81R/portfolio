@@ -1,8 +1,17 @@
-import { useEffect, useRef, useState } from 'react'
-import { motion, useReducedMotion, useScroll, useSpring } from 'framer-motion'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import {
+  AnimatePresence,
+  motion,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  type Variants,
+} from 'framer-motion'
 import { Menu, Moon, Search, Sun, X } from 'lucide-react'
 import { useCommandPalette } from '../../store/useCommandpalette'
+import { useSmoothScroll } from '../../providers/SmoothScrollProvider'
 import { resolvePublicAsset } from '../../lib/publicAsset'
+import { MOTION_TOKENS } from '../../lib/motion'
 import { sectionGradientBackgrounds, sectionTextColors } from '../../constants/sectionColor'
 
 const sections = [
@@ -29,6 +38,53 @@ const sectionLabels: Record<string, string> = {
   contact: 'Contact',
 }
 
+/**
+ * Tailwind's `lg` breakpoint, where the desktop link row replaces the
+ * hamburger. Kept in sync with the `lg:` classes below so the resize handler
+ * closes the mobile menu at exactly the width it stops being reachable.
+ */
+const DESKTOP_BREAKPOINT = 1024
+
+/**
+ * Menu motion. Deliberately short: this is navigation, not decoration, and a
+ * long ease makes every tap feel laggy. Closing runs faster than opening
+ * because the user has already committed and is waiting on the scroll.
+ *
+ * The container animates `height: auto` so the nav pill grows with the list
+ * rather than the menu overlapping the page, which keeps the rounded card
+ * intact at every breakpoint.
+ */
+const menuVariants: Variants = {
+  hidden: { opacity: 0, height: 0 },
+  visible: {
+    opacity: 1,
+    height: 'auto',
+    transition: {
+      height: { duration: 0.28, ease: MOTION_TOKENS.easing },
+      opacity: { duration: 0.18, ease: 'linear' },
+      staggerChildren: 0.04,
+      delayChildren: 0.06,
+    },
+  },
+  exit: {
+    opacity: 0,
+    height: 0,
+    transition: {
+      height: { duration: 0.22, ease: MOTION_TOKENS.easing },
+      opacity: { duration: 0.14, ease: 'linear' },
+      staggerChildren: 0,
+    },
+  },
+}
+
+const menuItemVariants: Variants = {
+  hidden: { opacity: 0, y: -6 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.22, ease: MOTION_TOKENS.easing } },
+  // Items fade with the container on exit instead of staggering out; a
+  // reverse stagger on close delays the scroll the user is waiting for.
+  exit: { opacity: 0, transition: { duration: 0.1 } },
+}
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [active, setActive] = useState('home')
@@ -46,7 +102,89 @@ const Navbar = () => {
   }, [])
 
   const navRef = useRef<HTMLElement>(null)
+  const menuButtonRef = useRef<HTMLButtonElement>(null)
   const reduceMotion = useReducedMotion()
+  const { scrollTo } = useSmoothScroll()
+
+  /**
+   * Closes the menu, then scrolls once the exit animation has run.
+   *
+   * The delay matters. Scrolling while the menu is still collapsing means
+   * Lenis measures a target position that the collapsing menu is about to
+   * change, so it lands short and the page visibly settles afterwards.
+   * Waiting for the exit keeps the measurement and the scroll consistent.
+   * This mirrors the deferred `runCommand` in CommandPalette.
+   *
+   * Scroll is driven through the shared provider rather than the anchor's
+   * native jump, so the nav offset and the reduced-motion fallback both come
+   * from one place. `preventDefault` stops the browser jumping first.
+   */
+  const handleNavClick = useCallback(
+    (event: React.MouseEvent<HTMLAnchorElement>, item: string) => {
+      event.preventDefault()
+      setIsOpen(false)
+
+      const target = `#${item}`
+      const immediate = reduceMotion ?? false
+      // Reduced motion has no exit animation to wait for.
+      const delay = reduceMotion || !isOpen ? 0 : 220
+
+      window.setTimeout(() => {
+        scrollTo(target, { immediate })
+        // Keep the URL hash in step with the section, matching the plain
+        // anchors this replaces, without letting the browser scroll.
+        if (window.location.hash !== target) {
+          window.history.replaceState(null, '', target)
+        }
+      }, delay)
+    },
+    [isOpen, reduceMotion, scrollTo]
+  )
+
+  // Escape closes the menu and returns focus to the control that opened it,
+  // so keyboard users are not dropped at the top of the document.
+  useEffect(() => {
+    if (!isOpen) return
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return
+      setIsOpen(false)
+      menuButtonRef.current?.focus()
+    }
+
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [isOpen])
+
+  // A tap outside the nav pill closes the menu. Bound on `pointerdown` so it
+  // beats the click that may land on page content underneath.
+  useEffect(() => {
+    if (!isOpen) return
+
+    const onPointerDown = (event: PointerEvent) => {
+      if (!navRef.current) return
+      if (navRef.current.contains(event.target as Node)) return
+      setIsOpen(false)
+    }
+
+    document.addEventListener('pointerdown', onPointerDown)
+    return () => document.removeEventListener('pointerdown', onPointerDown)
+  }, [isOpen])
+
+  // Rotating to landscape or resizing past `lg` hides the hamburger while the
+  // menu is still open, which would otherwise strand it with no way to close.
+  useEffect(() => {
+    if (!isOpen) return
+
+    const media = window.matchMedia(`(min-width: ${DESKTOP_BREAKPOINT}px)`)
+    const onChange = () => {
+      if (media.matches) setIsOpen(false)
+    }
+
+    onChange()
+    media.addEventListener('change', onChange)
+    return () => media.removeEventListener('change', onChange)
+  }, [isOpen])
   // Tracks progress through the whole document. framer-motion re-measures on
   // resize + ResizeObserver, so lazy sections and the mobile URL-bar collapse
   // are both accounted for.
@@ -113,11 +251,18 @@ const Navbar = () => {
 
       let matchedSection: HTMLElement | undefined
       let bestVisible = 0
+      // Tracked during the single measuring pass below so the bottom-of-page
+      // fallback does not need a second one.
+      let lastStartedSection: HTMLElement | undefined
 
       for (const section of sectionElements) {
         const { top, bottom } = section.getBoundingClientRect()
         const visible =
           Math.min(bottom, viewportBottom) - Math.max(top, viewportTop)
+
+        if (top <= probe) {
+          lastStartedSection = section
+        }
 
         if (visible > bestVisible) {
           bestVisible = visible
@@ -125,17 +270,22 @@ const Navbar = () => {
         }
       }
 
-      // Past the probe line at the very bottom of the page (short last
-      // section), fall back to the last section that has started.
-      if (!matchedSection) {
+      /*
+       * Past the probe line at the very bottom of the page (short last
+       * section), fall back to the last section that has started.
+       *
+       * `scrollHeight` is only read in this branch, which is reached at most
+       * once per scroll session rather than every frame. Reading it after the
+       * rect loop also means the layout is already flushed, so it does not
+       * force a second reflow.
+       */
+      if (!matchedSection && lastStartedSection) {
         const atPageBottom =
           window.innerHeight + window.scrollY >=
           document.documentElement.scrollHeight - 2
 
         if (atPageBottom) {
-          matchedSection = sectionElements
-            .filter((section) => section.getBoundingClientRect().top <= probe)
-            .pop()
+          matchedSection = lastStartedSection
         }
       }
 
@@ -207,7 +357,8 @@ const Navbar = () => {
           <a
             href="#home"
             aria-label="Back to top"
-            className="relative z-10 inline-flex shrink-0 items-center rounded-full transition hover:opacity-80"
+            onClick={(event) => handleNavClick(event, 'home')}
+            className="relative z-10 inline-flex shrink-0 items-center rounded-full transition hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
           >
             <img
               src={resolvePublicAsset('/icon-192.png')}
@@ -223,7 +374,9 @@ const Navbar = () => {
               <li key={item}>
                 <a
                   href={`#${item}`}
-                    className={`relative whitespace-nowrap text-[13.5px] transition ${
+                  onClick={(event) => handleNavClick(event, item)}
+                  aria-current={active === item ? 'true' : undefined}
+                    className={`relative whitespace-nowrap text-[13.5px] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${
                       active === item
                       ? sectionTextColors[item]
                       : 'text-gray-600 dark:text-gray-400 hover:text-green-500'
@@ -286,36 +439,71 @@ const Navbar = () => {
             </button>
 
             <button
+              ref={menuButtonRef}
+              type="button"
               aria-label={isOpen ? 'Close menu' : 'Open menu'}
-              onClick={() => setIsOpen(!isOpen)}
-              className="rounded-full p-2 text-gray-700 dark:text-gray-300"
+              aria-expanded={isOpen}
+              aria-controls="mobile-nav-menu"
+              // Functional update; rapid taps would otherwise read a stale
+              // `isOpen` from the closure and drop a toggle.
+              onClick={() => setIsOpen((open) => !open)}
+              className="rounded-full p-2 text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 dark:text-gray-300"
             >
               {isOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
         </div>
 
-        {isOpen && (
-          <div className="max-h-[min(70vh,28rem)] overflow-y-auto border-t border-emerald-200/80 bg-emerald-50/95 dark:border-emerald-500/30 dark:bg-gray-900/95 lg:hidden">
-            <ul className="flex flex-col items-stretch gap-1 px-3 py-3 font-mono">
-              {sections.map((item) => (
-                <li key={item}>
-                  <a
-                    href={`#${item}`}
-                    onClick={() => setIsOpen(false)}
-                    className={`block rounded-lg px-3 py-2 text-base transition sm:text-lg ${
-                      active === item
-                        ? sectionTextColors[item]
-                        : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'
-                    }`}
-                  >
-                    {sectionLabels[item]}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+        {/*
+         * `initial={false}` keeps the menu from animating open on mount if a
+         * re-render ever arrives with it already true. Height animation is
+         * skipped entirely under reduced motion - the menu just appears.
+         */}
+        <AnimatePresence initial={false}>
+          {isOpen && (
+            <motion.div
+              key="mobile-menu"
+              id="mobile-nav-menu"
+              variants={reduceMotion ? undefined : menuVariants}
+              initial={reduceMotion ? undefined : 'hidden'}
+              animate={reduceMotion ? undefined : 'visible'}
+              exit={reduceMotion ? undefined : 'exit'}
+              // `overflow-hidden` is what makes the height animation read as a
+              // reveal rather than the list being squashed. The inner wrapper
+              // owns scrolling so a long list still reaches the last item.
+              className="overflow-hidden border-t border-emerald-200/80 bg-emerald-50/95 dark:border-emerald-500/30 dark:bg-gray-900/95 lg:hidden"
+            >
+              <div
+                className="max-h-[min(70vh,28rem)] overflow-y-auto overscroll-contain"
+                // Lenis would otherwise swallow wheel/touch events aimed at
+                // this list and scroll the page behind the open menu instead.
+                data-lenis-prevent
+              >
+                <ul
+                  className="flex flex-col items-stretch gap-1 px-3 py-3 font-mono"
+                  aria-label="Site sections"
+                >
+                  {sections.map((item) => (
+                    <motion.li key={item} variants={reduceMotion ? undefined : menuItemVariants}>
+                      <a
+                        href={`#${item}`}
+                        onClick={(event) => handleNavClick(event, item)}
+                        aria-current={active === item ? 'true' : undefined}
+                        className={`block rounded-lg px-3 py-2 text-base transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 sm:text-lg ${
+                          active === item
+                            ? sectionTextColors[item]
+                            : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'
+                        }`}
+                      >
+                        {sectionLabels[item]}
+                      </a>
+                    </motion.li>
+                  ))}
+                </ul>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
         </div>
       </nav>
     </>
