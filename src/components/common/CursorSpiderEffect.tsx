@@ -63,7 +63,13 @@ const CursorSpiderEffect = () => {
   // and stays desktop-only. The tap burst still fires on a phone, which is
   // where most of this effect is actually seen.
   const isCoarsePointer = useCoarsePointer()
-  const isDisabled = reduceMotion
+  /*
+   * Touch devices get nothing here. The trail needs a hovering cursor they do
+   * not have, and the tap burst is not worth a full-viewport canvas plus its
+   * rAF loop and six pointer listeners on a phone - that work showed up as
+   * main-thread time and long tasks in mobile Lighthouse runs.
+   */
+  const isDisabled = reduceMotion || isCoarsePointer
 
   useEffect(() => {
     if (isDisabled) return

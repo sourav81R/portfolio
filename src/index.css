@@ -80,24 +80,12 @@ section {
   scroll-margin-top: 120px;
 }
 
-.animated-border,
-.animate-border {
-  background-size: 220% 220%;
-  animation: borderMove 7s linear infinite;
-}
-
-.animated-border {
-  background: linear-gradient(120deg, var(--accent), #3b82f6, #22c55e);
-}
-
-@keyframes borderMove {
-  0% {
-    background-position: 0% 50%;
-  }
-  100% {
-    background-position: 200% 50%;
-  }
-}
+/*
+ * `.animated-border` / `.animate-border` and their borderMove keyframes were
+ * removed: no component referenced either class, and animating
+ * background-position cannot be composited, so it repainted every frame for
+ * nothing.
+ */
 
 .grain-overlay {
   pointer-events: none;

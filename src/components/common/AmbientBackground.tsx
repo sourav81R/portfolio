@@ -40,36 +40,67 @@ const AmbientBackground = () => {
    */
   const isCoarsePointer = useCoarsePointer()
   const staticShapes = reduceMotion || isCoarsePointer
+  /*
+   * The three large orbs carry a 120-150px blur. Animating x/y/opacity on a
+   * blurred element cannot be composited, so each frame re-rasterises a
+   * ~500px blurred surface on the main thread - this was the bulk of the
+   * "non-composited animations" and main-thread time on mobile. The orbs stay
+   * (they are the background's identity) but sit still on phones, where the
+   * blur is rasterised once and then simply reused.
+   */
+  const staticOrbs = reduceMotion || isCoarsePointer
 
   return (
     <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+      {/*
+       * `will-change: transform, opacity` promotes each orb to its own
+       * compositor layer, so the 120-150px blur is rasterised once and the
+       * animation becomes a GPU transform/opacity change instead of a
+       * per-frame repaint of a ~500px blurred surface. That repaint was what
+       * Lighthouse flagged as "non-composited animations".
+       *
+       * The orbs animate x/y/opacity only - all compositable properties. The
+       * blur itself never animates, which is what makes the promotion pay off.
+       */}
       <motion.div
         className="absolute -top-28 left-[-8%] h-[420px] w-[420px] rounded-full bg-blue-500/18 blur-[120px]"
-        animate={reduceMotion ? undefined : { x: [0, 26, -8, 0], y: [0, -12, 8, 0], opacity: [0.45, 0.62, 0.45] }}
-        transition={reduceMotion ? undefined : { duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+        style={staticOrbs ? undefined : { willChange: 'transform, opacity' }}
+        animate={staticOrbs ? undefined : { x: [0, 26, -8, 0], y: [0, -12, 8, 0], opacity: [0.45, 0.62, 0.45] }}
+        transition={staticOrbs ? undefined : { duration: 18, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.div
         className="absolute right-[-6%] top-[18%] h-[520px] w-[520px] rounded-full bg-blue-400/14 blur-[150px]"
-        animate={reduceMotion ? undefined : { x: [0, -20, 10, 0], y: [0, 16, -8, 0], opacity: [0.4, 0.58, 0.4] }}
-        transition={reduceMotion ? undefined : { duration: 20, repeat: Infinity, ease: 'easeInOut' }}
+        style={staticOrbs ? undefined : { willChange: 'transform, opacity' }}
+        animate={staticOrbs ? undefined : { x: [0, -20, 10, 0], y: [0, 16, -8, 0], opacity: [0.4, 0.58, 0.4] }}
+        transition={staticOrbs ? undefined : { duration: 20, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.div
         className="absolute bottom-[-12%] left-[32%] h-[420px] w-[420px] rounded-full bg-red-500/12 blur-[130px]"
-        animate={reduceMotion ? undefined : { x: [0, -18, 12, 0], y: [0, -10, 6, 0], opacity: [0.34, 0.5, 0.34] }}
-        transition={reduceMotion ? undefined : { duration: 22, repeat: Infinity, ease: 'easeInOut' }}
+        style={staticOrbs ? undefined : { willChange: 'transform, opacity' }}
+        animate={staticOrbs ? undefined : { x: [0, -18, 12, 0], y: [0, -10, 6, 0], opacity: [0.34, 0.5, 0.34] }}
+        transition={staticOrbs ? undefined : { duration: 22, repeat: Infinity, ease: 'easeInOut' }}
       />
 
       <div className="absolute inset-0">
         {(isCoarsePointer ? [] : floatingShapes).map((shape) => (
           <motion.div
             key={shape.id}
-            className={`absolute ${shapeClass[shape.type]} border border-white/10 backdrop-blur-[1px]`}
+            /*
+             * The `backdrop-blur-[1px]` these carried was dropped. A
+             * backdrop-filter re-samples everything painted beneath the
+             * element on every frame, and these move continuously - so seven
+             * of them meant seven full-size backdrop re-samples per frame for
+             * a 1px blur that is not perceptible over an already-blurred
+             * gradient background.
+             */
+            className={`absolute ${shapeClass[shape.type]} border border-white/10`}
             style={{
               width: shape.size,
               height: shape.type === 'triangle' ? shape.size * 0.84 : shape.size,
               left: shape.left,
               top: shape.top,
               backgroundColor: shape.color,
+              willChange: staticShapes ? undefined : 'transform, opacity',
             }}
             animate={
               staticShapes

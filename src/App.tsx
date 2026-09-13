@@ -206,10 +206,19 @@ function LazySection({
         observer.disconnect()
       },
       {
-        // Mount well before the section is reached. Combined with the
-        // reserved placeholder height, the swap happens off-screen and never
-        // displaces what is currently being read.
-        rootMargin: '1200px 0px',
+        /*
+         * Mount well before the section is reached. Combined with the
+         * reserved placeholder height, the swap happens off-screen and never
+         * displaces what is currently being read.
+         *
+         * Scaled to the viewport rather than a flat 1200px. On a 667px phone
+         * that constant reached nearly two screens ahead, so several sections
+         * mounted and hydrated at once during the first scroll - which is
+         * where the long tasks and main-thread time came from. 1.2 viewports
+         * keeps the same "always ready before you arrive" behaviour on every
+         * screen size while mounting far fewer sections at once on a phone.
+         */
+        rootMargin: `${Math.round(window.innerHeight * 1.2)}px 0px`,
         threshold: 0,
       }
     )
