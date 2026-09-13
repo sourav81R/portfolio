@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sourav-portfolio-v16'
+const CACHE_NAME = 'sourav-portfolio-v17'
 const APP_SHELL = [
   'manifest.webmanifest',
   'portfolio-icon.svg',

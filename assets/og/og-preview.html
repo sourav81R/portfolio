@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Sourav Chowdhury - OG preview</title>
+<style>
+  /*
+   * Source for public/og-preview.png, the card shown when the site is shared
+   * on WhatsApp, LinkedIn, Slack or X.
+   *
+   * The viewport is fixed at exactly 1200x630 - the size those platforms
+   * expect, and the size declared in index.html's og:image:width/height. Do
+   * not change it without changing those meta tags too.
+   *
+   * Deliberately self-contained: no webfonts, no external images. A screenshot
+   * has to render identically on any machine, and a font that fails to load
+   * would silently change the layout.
+   */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 1200px;
+    height: 630px;
+    overflow: hidden;
+  }
+
+  body {
+    font-family: "Segoe UI", -apple-system, Arial, sans-serif;
+    background: #0b1220;
+    color: #fff;
+    position: relative;
+  }
+
+  /*
+   * Soft colour wash, matching the site's own ambient background. Kept as
+   * radial gradients rather than blurred elements so it rasterises crisply
+   * in a screenshot.
+   */
+  .wash {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(620px 420px at 78% 22%, rgba(16, 185, 129, 0.18), transparent 62%),
+      radial-gradient(560px 400px at 18% 78%, rgba(14, 165, 233, 0.16), transparent 60%),
+      radial-gradient(900px 600px at 50% 50%, rgba(30, 64, 175, 0.10), transparent 70%);
+  }
+
+  .frame {
+    position: absolute;
+    inset: 34px;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 10px;
+  }
+
+  .content {
+    position: relative;
+    height: 100%;
+    padding: 74px 78px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .rule {
+    width: 132px;
+    height: 6px;
+    border-radius: 3px;
+    background: #22c55e;
+  }
+
+  /*
+   * The status line. Previously "Open to full-time roles", which read as
+   * job-hunting once the Oneisok role started - the single most misleading
+   * thing on the old card.
+   */
+  .status {
+    margin-top: 26px;
+    font-size: 25px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    color: #e2e8f0;
+  }
+
+  .status .at {
+    color: #34d399;
+  }
+
+  h1 {
+    margin-top: 12px;
+    font-size: 76px;
+    font-weight: 800;
+    letter-spacing: -1.6px;
+    line-height: 1.02;
+  }
+
+  .role {
+    margin-top: 10px;
+    font-size: 30px;
+    font-weight: 700;
+    color: #94a3b8;
+  }
+
+  /*
+   * The strongest credential goes here. The old card described the site
+   * ("recruiter-friendly, performant web products"); naming the actual
+   * product and its scale is far more concrete to a recruiter.
+   */
+  .line {
+    margin-top: 26px;
+    font-size: 25px;
+    line-height: 1.42;
+    color: #cbd5e1;
+    max-width: 760px;
+  }
+
+  .line strong {
+    color: #e2e8f0;
+    font-weight: 700;
+  }
+
+  .badges {
+    margin-top: auto;
+    display: flex;
+    gap: 13px;
+  }
+
+  .badge {
+    padding: 13px 25px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.055);
+    border: 1px solid rgba(255, 255, 255, 0.11);
+    font-size: 22px;
+    font-weight: 700;
+    color: #e2e8f0;
+    white-space: nowrap;
+  }
+
+  .domain {
+    margin-top: 30px;
+    font-size: 23px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    color: #f1f5f9;
+  }
+
+  /* Availability dot, top right. */
+  .avail {
+    position: absolute;
+    top: 96px;
+    right: 96px;
+    width: 190px;
+    height: 190px;
+    border-radius: 50%;
+    background: #22c55e;
+    color: #052e16;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 22px 60px -22px rgba(34, 197, 94, 0.7);
+  }
+
+  .avail .y { font-size: 46px; font-weight: 800; letter-spacing: -0.5px; }
+  .avail .l { margin-top: 2px; font-size: 19px; font-weight: 700; }
+</style>
+</head>
+<body>
+  <div class="wash"></div>
+  <div class="frame"></div>
+
+  <div class="avail">
+    <div class="y">2026</div>
+    <div class="l">availability</div>
+  </div>
+
+  <div class="content">
+    <div class="rule"></div>
+
+    <div class="status">Full Stack Developer <span class="at">@ Oneisok</span></div>
+
+    <h1>Sourav Chowdhury</h1>
+    <div class="role">Kolkata, India</div>
+
+    <div class="line">
+      Building <strong>Voteniti</strong> - election operations across India, on
+      Next.js, TypeScript, Node.js and PostgreSQL.
+    </div>
+
+    <div class="badges">
+      <div class="badge">Next.js</div>
+      <div class="badge">React</div>
+      <div class="badge">TypeScript</div>
+      <div class="badge">Node.js</div>
+      <div class="badge">PostgreSQL</div>
+    </div>
+
+    <div class="domain">sourav.is-a.dev</div>
+  </div>
+</body>
+</html>
