@@ -9,9 +9,6 @@ in a single Vite app.
 
 ## Preview
 
-![Desktop preview](./site-home.png)
-![Mobile preview](./site-mobile.png)
-
 ## What This App Includes
 
 - Single-page portfolio with lazy-mounted sections for faster first load
