@@ -581,15 +581,40 @@ const Hero = () => {
                 <div className="overflow-hidden rounded-[20px] border border-white/14 bg-gradient-to-br from-sky-100 via-white to-emerald-50 dark:from-[#0d1724] dark:via-[#0a121b] dark:to-[#0f171f]">
                   <div className="relative aspect-[0.92]">
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(14,165,233,0.18),transparent_58%)] dark:bg-[radial-gradient(circle_at_center,rgba(14,165,233,0.22),transparent_58%)]" />
-                    <img
-                      src="/profile.jpg"
-                      alt="Portrait of Sourav Chowdhury"
-                      loading="eager"
-                      fetchPriority="high"
-                      width={1202}
-                      height={1600}
-                      className="absolute inset-0 h-full w-full object-cover object-top"
-                    />
+                    {/*
+                      The WebP twin is ~45 KB against ~73 KB for the JPEG and
+                      already shipped; serving it first cuts the LCP transfer
+                      by roughly a third. The <img> keeps the JPEG as its src
+                      so browsers without WebP support are unaffected.
+                    */}
+                    {/*
+                      `sizes` tells the browser the portrait never renders
+                      wider than ~304px (the 19rem container), so it decodes
+                      to that box instead of the source's full 800px.
+
+                      The filename carries a year suffix on purpose. Google
+                      caches image results by URL, so replacing the photo's
+                      bytes while keeping `profile.jpg` left the old portrait
+                      showing in search results indefinitely. A new path is
+                      the only reliable way to invalidate that.
+                    */}
+                    <picture>
+                      <source
+                        srcSet="/profile-2026.webp"
+                        type="image/webp"
+                        sizes="(min-width: 1024px) 304px, (min-width: 640px) 288px, 80vw"
+                      />
+                      <img
+                        src="/profile-2026.jpg"
+                        alt="Sourav Chowdhury, Full Stack Developer at Oneisok Digital Solution, Kolkata"
+                        loading="eager"
+                        fetchPriority="high"
+                        sizes="(min-width: 1024px) 304px, (min-width: 640px) 288px, 80vw"
+                        width={800}
+                        height={965}
+                        className="absolute inset-0 h-full w-full object-cover object-top"
+                      />
+                    </picture>
                     <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#020617]/85 via-[#020617]/25 to-transparent" />
                   </div>
                 </div>

@@ -41,7 +41,9 @@ const buildEntries = (root: string): SitemapEntry[] => [
     changefreq: 'weekly',
     priority: '1.0',
     image: {
-      loc: `${SITE_URL}/profile.jpg`,
+      // Versioned filename: Google caches image results by URL, so the photo
+      // must change path to be re-crawled rather than served from its cache.
+      loc: `${SITE_URL}/profile-2026.jpg`,
       title: 'Sourav Chowdhury - Full Stack Developer',
       caption:
         'Portrait of Sourav Chowdhury, a full stack developer based in Kolkata, India.',

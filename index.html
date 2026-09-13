@@ -80,10 +80,10 @@
           {
             "@type": "ImageObject",
             "@id": "https://sourav.is-a.dev/#primaryimage",
-            "url": "https://sourav.is-a.dev/profile.jpg",
-            "contentUrl": "https://sourav.is-a.dev/profile.jpg",
-            "width": 1202,
-            "height": 1600,
+            "url": "https://sourav.is-a.dev/profile-2026.jpg",
+            "contentUrl": "https://sourav.is-a.dev/profile-2026.jpg",
+            "width": 800,
+            "height": 965,
             "caption": "Sourav Chowdhury - Full Stack Developer"
           },
           {
@@ -213,7 +213,7 @@
               "@id": "https://sourav.is-a.dev/#primaryimage"
             },
             "dateCreated": "2025-06-04T00:00:00+05:30",
-            "dateModified": "2026-09-05T00:00:00+05:30",
+            "dateModified": "2026-09-13T00:00:00+05:30",
             "mainEntity": {
               "@type": "Person",
               "@id": "https://sourav.is-a.dev/#person",
@@ -358,10 +358,43 @@
     </noscript>
 
     <!-- The hero portrait is the LCP element; start it with the HTML rather than after React boots. -->
-    <link rel="preload" as="image" href="/profile.jpg" fetchpriority="high" />
+    <!--
+      Preload must agree with what the hero's <picture> actually selects, or
+      the browser fetches the JPEG here and the WebP again for the element.
+      `type` lets a non-WebP browser skip this hint and fall back cleanly.
+    -->
+    <link rel="preload" as="image" href="/profile-2026.webp" type="image/webp" fetchpriority="high" />
   </head>
 
   <body class="bg-white dark:bg-black">
+    <!--
+      Crawler-visible copy of the page's core facts.
+
+      The app is client-rendered, so the served HTML is otherwise an empty
+      #root: a crawler that does not execute JavaScript sees no name, no role
+      and no links. Googlebot does render, but rendering is queued and
+      second-pass, which is a real disadvantage on a competitive name query
+      against server-rendered profiles on LinkedIn and GitHub.
+
+      This block is removed by the app the moment React mounts, so a normal
+      visitor never sees it and it cannot diverge visually from the real hero.
+      The text intentionally mirrors the <h1>, the role line and the JSON-LD
+      so the three agree.
+    -->
+    <div id="seo-fallback">
+      <h1>Sourav Chowdhury</h1>
+      <p>
+        Full Stack Developer at Oneisok Digital Solution in Kolkata, India.
+        Sourav Chowdhury builds production systems with Next.js, React,
+        TypeScript, Node.js and PostgreSQL, including Voteniti, an election
+        management platform used across India.
+      </p>
+      <ul>
+        <li><a href="https://github.com/sourav81R">GitHub - sourav81R</a></li>
+        <li><a href="https://www.linkedin.com/in/souravchowdhury-2003r">LinkedIn - Sourav Chowdhury</a></li>
+      </ul>
+    </div>
+
     <!-- React mounts here -->
     <div id="root"></div>
 

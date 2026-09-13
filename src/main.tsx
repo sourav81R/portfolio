@@ -54,6 +54,13 @@ if (!rootElement) {
   throw new Error('Root element not found')
 }
 
+/*
+ * Drop the crawler-visible fallback in index.html once the real app is about
+ * to render. Leaving it would put a second <h1> in the document and duplicate
+ * the hero copy for anyone running JavaScript.
+ */
+document.getElementById('seo-fallback')?.remove()
+
 ReactDOM.createRoot(rootElement).render(
   <ErrorBoundary>
     <BrowserRouter basename={routerBasename}>
