@@ -206,10 +206,18 @@ const Footer = () => {
                   aria-label={
                     copied ? 'Email address copied' : `Copy email address ${EMAIL}`
                   }
-                  className="group flex max-w-full items-center gap-3 text-left text-gray-600 transition-colors hover:text-emerald-600 dark:text-gray-400 dark:hover:text-emerald-400"
+                  className="group flex max-w-full items-start gap-3 text-left text-gray-600 transition-colors hover:text-emerald-600 dark:text-gray-400 dark:hover:text-emerald-400"
                 >
-                  <Mail size={17} className="shrink-0 text-emerald-500" />
-                  <span className="truncate">{EMAIL}</span>
+                  <Mail size={17} className="mt-0.5 shrink-0 text-emerald-500" />
+                  {/*
+                   * `break-all`, not `truncate`. The address is 29 characters
+                   * and does not fit this column at any supported width, so
+                   * truncating hid the domain behind an ellipsis and left the
+                   * visible text useless to anyone reading rather than
+                   * clicking. Wrapping shows all of it; `break-all` is needed
+                   * because an email has no spaces to wrap at.
+                   */}
+                  <span className="min-w-0 break-all">{EMAIL}</span>
                   {copied ? (
                     <Check size={14} className="shrink-0 text-emerald-500" />
                   ) : (
