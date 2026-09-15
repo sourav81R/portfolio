@@ -64,12 +64,13 @@ const CursorSpiderEffect = () => {
   // where most of this effect is actually seen.
   const isCoarsePointer = useCoarsePointer()
   /*
-   * Touch devices get nothing here. The trail needs a hovering cursor they do
-   * not have, and the tap burst is not worth a full-viewport canvas plus its
-   * rAF loop and six pointer listeners on a phone - that work showed up as
-   * main-thread time and long tasks in mobile Lighthouse runs.
+   * Only reduced-motion turns the effect off entirely. A coarse pointer keeps
+   * the canvas mounted for the tap burst but skips the trail, so the idle cost
+   * on a phone stays near zero: the rAF loop is demand-driven and only runs
+   * while a burst is on screen, which is the main-thread time the earlier
+   * blanket disable was actually protecting.
    */
-  const isDisabled = reduceMotion || isCoarsePointer
+  const isDisabled = reduceMotion
 
   useEffect(() => {
     if (isDisabled) return
@@ -297,8 +298,13 @@ const CursorSpiderEffect = () => {
 
     resize()
     window.addEventListener('resize', resize)
-    window.addEventListener('pointermove', onPointerMove, { passive: true })
-    window.addEventListener('pointerleave', onPointerLeave)
+    // The trail is mouse/pen only, so a touch device never registers the
+    // move listener at all rather than paying for one that returns early on
+    // every event of a scroll.
+    if (!isCoarsePointer) {
+      window.addEventListener('pointermove', onPointerMove, { passive: true })
+      window.addEventListener('pointerleave', onPointerLeave)
+    }
     window.addEventListener('pointerdown', onPointerDown, { passive: true })
     window.addEventListener('pointerup', onPointerUp, { passive: true })
     window.addEventListener('pointercancel', onPointerCancel, { passive: true })
