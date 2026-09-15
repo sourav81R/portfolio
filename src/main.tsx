@@ -86,12 +86,19 @@ function AnimatedRoutes() {
   )
 }
 
+/*
+ * Deliberately blank.
+ *
+ * Every route is lazy, so this renders in the gap between React mounting and
+ * the route chunk arriving - on the homepage that is the first thing a
+ * visitor from a search result saw, a "Loading route..." card that then
+ * vanished. A labelled placeholder only reads as a glitch at this duration,
+ * and the page background is already painted underneath it.
+ *
+ * It keeps min-h-screen so the footer cannot flash up the page while the
+ * chunk is in flight, and stays transparent so the real background shows
+ * through in either theme.
+ */
 function RouteFallback() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-white text-gray-900 dark:bg-black dark:text-white">
-      <div className="rounded-2xl border border-gray-200 bg-gray-50/80 px-6 py-4 text-sm font-medium dark:border-gray-800 dark:bg-gray-900/50">
-        Loading route...
-      </div>
-    </div>
-  )
+  return <div className="min-h-screen" aria-hidden="true" />
 }

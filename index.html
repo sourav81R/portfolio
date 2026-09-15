@@ -357,6 +357,39 @@
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap" />
     </noscript>
 
+    <!--
+      ================= First-paint flash =================
+      #seo-fallback below is plain unstyled HTML, so it painted in the
+      browser's default serif the instant the document arrived and stayed up
+      until main.tsx executed and removed it - a visible slab of text before
+      the real page, which is what a visitor arriving from a search result
+      saw first.
+
+      This rule is inline in the head rather than in index.css on purpose:
+      the stylesheet is a separate request that only lands after the HTML has
+      already painted, so a rule living there cannot suppress the very first
+      frame. Inline CSS is parsed before that frame exists.
+
+      Clipped out of the viewport rather than display:none or
+      visibility:hidden - Google discounts content hidden by those, which
+      would forfeit the crawler benefit the block exists for. A non-rendering
+      crawler reads the markup exactly as before; a browser never shows it.
+    -->
+    <style>
+      #seo-fallback {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        padding: 0;
+        border: 0;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        clip-path: inset(50%);
+        white-space: nowrap;
+      }
+    </style>
+
     <!-- The hero portrait is the LCP element; start it with the HTML rather than after React boots. -->
     <!--
       Preload must agree with what the hero's <picture> actually selects, or
