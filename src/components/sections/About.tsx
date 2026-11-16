@@ -31,8 +31,8 @@ const stats: StatItem[] = [
   },
   {
     icon: Code,
-    value: '10+',
-    countTo: 10,
+    value: '15+',
+    countTo: 15,
     suffix: '+',
     label: 'Projects Shipped',
     color: 'text-emerald-500 dark:text-emerald-300',
@@ -160,7 +160,16 @@ const About = () => {
               </span>
               , the company website for Oneisok Digital Solution, along with a
               role-based admin panel that gives the team control over managing
-              and updating the platform. I have also worked on projects like{' '}
+              and updating the platform. I have shipped client products too,
+              including{' '}
+              <span className="font-semibold text-gray-900 dark:text-white">
+                TejViral
+              </span>
+              , a local-business discovery and commerce platform, and{' '}
+              <span className="font-semibold text-gray-900 dark:text-white">
+                Sonam&rsquo;s Clothing
+              </span>
+              , an all-India e-commerce store. Earlier projects include{' '}
               <span className="font-semibold text-gray-900 dark:text-white">
                 ResumeIQ
               </span>

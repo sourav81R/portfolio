@@ -1,16 +1,24 @@
 import { useMemo } from 'react'
-import type { ProjectCategory, ProjectRecord } from '../data/projects'
+import {
+  projectTypeLabels,
+  projectTypes,
+  type ProjectCategory,
+  type ProjectRecord,
+  type ProjectType,
+} from '../data/projects'
 import { getBestSearchScore } from '../lib/fuzzySearch'
 import {
   getRecommendedProjects,
   inferRecommendationGoals,
 } from '../lib/recommendations'
 
-type CategoryFilter = 'All' | ProjectCategory
+export type CategoryFilter = 'All' | ProjectCategory
+export type TypeFilter = 'All' | ProjectType
 
 type UseProjectDiscoveryOptions = {
   allProjects: ProjectRecord[]
   query: string
+  selectedType?: TypeFilter
   selectedCategory: CategoryFilter
   featuredOnly: boolean
   recruiterMode: boolean
@@ -20,6 +28,7 @@ type UseProjectDiscoveryOptions = {
 export const useProjectDiscovery = ({
   allProjects,
   query,
+  selectedType = 'All',
   selectedCategory,
   featuredOnly,
   recruiterMode,
@@ -35,7 +44,12 @@ export const useProjectDiscovery = ({
 
   const inferredGoals = useMemo(() => inferRecommendationGoals(query), [query])
 
-  const filteredProjects = useMemo(() => {
+  /**
+   * Everything except the type filter. Kept separate so the type chips can
+   * show how many projects each would reveal under the current domain,
+   * featured, and search filters - the counts always match the click result.
+   */
+  const rankedProjects = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase()
 
     return orderedProjects
@@ -50,6 +64,8 @@ export const useProjectDiscovery = ({
               project.description,
               project.role,
               project.impact,
+              projectTypeLabels[project.type],
+              project.category,
               ...project.tech,
             ])
           : 0
@@ -70,6 +86,26 @@ export const useProjectDiscovery = ({
       .map((entry) => entry.project)
   }, [featuredOnly, orderedProjects, query, recruiterMode, selectedCategory])
 
+  const typeCounts = useMemo(() => {
+    const counts = Object.fromEntries(
+      projectTypes.map((type) => [type, 0])
+    ) as Record<ProjectType, number>
+
+    rankedProjects.forEach((project) => {
+      counts[project.type] += 1
+    })
+
+    return { All: rankedProjects.length, ...counts } as Record<TypeFilter, number>
+  }, [rankedProjects])
+
+  const filteredProjects = useMemo(
+    () =>
+      selectedType === 'All'
+        ? rankedProjects
+        : rankedProjects.filter((project) => project.type === selectedType),
+    [rankedProjects, selectedType]
+  )
+
   const recommendedProjects = useMemo(() => {
     if (inferredGoals.length === 0) return []
 
@@ -78,6 +114,7 @@ export const useProjectDiscovery = ({
 
   return {
     filteredProjects,
+    typeCounts,
     inferredGoals,
     recommendedProjects,
     totalProjects: orderedProjects.length,

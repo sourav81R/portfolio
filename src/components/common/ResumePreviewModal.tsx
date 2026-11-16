@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Download, X } from 'lucide-react'
+import { RESUME_DOWNLOAD_NAME } from '../../constants/resume'
 
 type ResumePreviewModalProps = {
   open: boolean
@@ -36,7 +37,7 @@ const ResumePreviewModal = ({
   const downloadResume = () => {
     const link = document.createElement('a')
     link.href = pdfUrl
-    link.download = 'Sourav_Chowdhury_Resume.pdf'
+    link.download = RESUME_DOWNLOAD_NAME
     link.click()
   }
 

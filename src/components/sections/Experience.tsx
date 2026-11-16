@@ -17,13 +17,15 @@ const experienceData: ExperienceEntry[] = [
     location: 'Kolkata, India (Onsite)',
     badge: 'Current Role',
     summary:
-      'Building and shipping production systems end to end - a nationwide election operations platform and the company website with its own admin CMS.',
+      'Building and maintaining client and company platforms end to end - a nationwide election operations platform, the company website with its own admin CMS, and the OneisOk Legal consultancy site.',
     description: [
       'Engineer Voteniti, a full-stack Election Management System covering MP, MLA, Municipal, and Panchayat election hierarchies across India.',
       'Designed an on-demand area-data layer that serves ~255k Gram Panchayats and ~97k urban Wards from bundled NDJSON files, materializing rows into Postgres only on use so the database stays inside a 500 MB tier.',
       'Built enterprise RBAC with area- and election-scoped role assignments, smart-delete approval workflows, and audit logging across every hierarchy level.',
       'Replaced thousands of serial per-row queries with bulk subtree materialization, cutting MP hierarchy load from minutes to seconds on a remote database.',
-      'Rebuilt oneisok.co on Next.js 14 with a role-based admin panel, self-service influencer portal, and MongoDB Atlas persistence so staff ship content without a deploy.',
+      'Rebuilt oneisok.co on Next.js 14 with a centralised lead management system, role-based dashboards (Super Admin, HR, Office), and an influencer portal with KYC uploads and review workflows.',
+      'Built legal.oneisok.co, a zero-build static site with 35+ data-driven service pages that deploys unchanged to Vercel and cPanel.',
+      'Deliver CMS and multilingual UI features end to end, improve performance, technical SEO, and security, and own production deployment workflows.',
     ],
     metrics: [
       '543 Lok Sabha constituencies modeled as Area Master records',

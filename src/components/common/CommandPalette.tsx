@@ -19,6 +19,7 @@ import { getBestSearchScore } from '../../lib/fuzzySearch'
 import { useCommandPalette } from '../../store/useCommandpalette'
 import { useAppStore } from '../../store/useAppStore'
 import { useSmoothScroll } from '../../providers/SmoothScrollProvider'
+import { RESUME_DOWNLOAD_NAME, RESUME_URL } from '../../constants/resume'
 
 type Command = {
   label: string
@@ -106,7 +107,7 @@ const CommandPalette = () => {
     {
       label: 'Open Resume',
       group: 'Links',
-      action: () => window.open('/images/resume.pdf', '_blank'),
+      action: () => window.open(RESUME_URL, '_blank'),
       shortcut: ['R'],
       icon: Download,
     },
@@ -115,8 +116,8 @@ const CommandPalette = () => {
       group: 'Links',
       action: () => {
         const link = document.createElement('a')
-        link.href = '/images/resume.pdf'
-        link.download = 'Sourav_Chowdhury_Resume.pdf'
+        link.href = RESUME_URL
+        link.download = RESUME_DOWNLOAD_NAME
         link.click()
       },
       icon: Download,

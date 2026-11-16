@@ -1,5 +1,7 @@
 import {
   useEffect,
+  useId,
+  useRef,
   useState,
   type MouseEvent,
   type SyntheticEvent,
@@ -16,21 +18,26 @@ import {
   Github,
   GripVertical,
   LoaderCircle,
-  Search,
   Sparkles,
   Video,
   X,
 } from 'lucide-react'
 import AnimatedBorder from '../common/AnimatedBorder'
-import { projects as projectData, type ProjectCategory, type ProjectRecord } from '../../data/projects'
+import ProjectFilterPanel from '../common/ProjectFilterPanel'
+import {
+  projects as projectData,
+  projectTypeLabels,
+  type ProjectRecord,
+} from '../../data/projects'
 import useCoarsePointer from '../../hooks/useCoarsePointer'
 import { getSectionRevealProps } from '../../lib/motion'
 import { useAppStore } from '../../store/useAppStore'
-import { useProjectDiscovery } from '../../hooks/useProjectDiscovery'
+import {
+  useProjectDiscovery,
+  type CategoryFilter,
+  type TypeFilter,
+} from '../../hooks/useProjectDiscovery'
 
-type Category = 'All' | ProjectCategory
-
-const categories: Category[] = ['All', 'Web', 'AI', 'Mobile', 'Realtime']
 const projectFallbackImage = `${import.meta.env.BASE_URL}og-preview.png`
 
 /**
@@ -70,7 +77,8 @@ const Projects = () => {
   const recordProjectInteraction = useAppStore((state) => state.recordProjectInteraction)
 
   const [selectedProject, setSelectedProject] = useState<ProjectRecord | null>(null)
-  const [selectedCategory, setSelectedCategory] = useState<Category>('All')
+  const [selectedType, setSelectedType] = useState<TypeFilter>('All')
+  const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>('All')
   const [featuredOnly, setFeaturedOnly] = useState(false)
   const [query, setQuery] = useState('')
   const [draggingSlug, setDraggingSlug] = useState<string | null>(null)
@@ -82,19 +90,38 @@ const Projects = () => {
     initializeProjectOrder(projectData)
   }, [initializeProjectOrder])
 
-  const { filteredProjects, inferredGoals, recommendedProjects, totalProjects } =
-    useProjectDiscovery({
-      allProjects: projectData,
-      query,
-      selectedCategory,
-      featuredOnly,
-      recruiterMode,
-      projectOrder,
-    })
+  const {
+    filteredProjects,
+    typeCounts,
+    inferredGoals,
+    recommendedProjects,
+    totalProjects,
+  } = useProjectDiscovery({
+    allProjects: projectData,
+    query,
+    selectedType,
+    selectedCategory,
+    featuredOnly,
+    recruiterMode,
+    projectOrder,
+  })
 
   useEffect(() => {
     setVisibleProjectCount(INITIAL_VISIBLE_PROJECTS)
-  }, [selectedCategory, featuredOnly, query, recruiterMode])
+  }, [selectedType, selectedCategory, featuredOnly, query, recruiterMode])
+
+  const hasActiveFilters =
+    selectedType !== 'All' ||
+    selectedCategory !== 'All' ||
+    featuredOnly ||
+    query.trim().length > 0
+
+  const resetFilters = () => {
+    setSelectedType('All')
+    setSelectedCategory('All')
+    setFeaturedOnly(false)
+    setQuery('')
+  }
 
   const visibleProjects = filteredProjects.slice(0, visibleProjectCount)
   const hasMoreProjects = filteredProjects.length > visibleProjectCount
@@ -137,75 +164,22 @@ const Projects = () => {
             </p>
           </div>
 
-          <div className="mb-8 rounded-2xl border border-gray-200 bg-gray-50/70 p-4 dark:border-gray-800 dark:bg-gray-900/50 sm:p-5">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-              <div className="flex flex-wrap gap-2">
-                {categories.map((category) => (
-                  <button
-                    key={category}
-                    type="button"
-                    onClick={() => setSelectedCategory(category)}
-                    className={`rounded-full px-4 py-2 text-sm font-medium ${
-                      selectedCategory === category
-                        ? 'bg-sky-600 text-white'
-                        : 'border border-gray-300 text-gray-700 dark:border-gray-700 dark:text-gray-300'
-                    }`}
-                  >
-                    {category}
-                  </button>
-                ))}
-              </div>
-
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                <label className="flex items-center gap-2 rounded-full border border-gray-300 bg-white/80 px-4 py-2 dark:border-gray-700 dark:bg-gray-950/60">
-                  <Search size={16} className="text-gray-500" />
-                  <input
-                    value={query}
-                    onChange={(event) => setQuery(event.target.value)}
-                    placeholder="Smart search projects..."
-                    className="bg-transparent text-sm outline-none dark:text-white"
-                  />
-                </label>
-                <button
-                  type="button"
-                  onClick={() => setFeaturedOnly((prev) => !prev)}
-                  className={`rounded-full px-4 py-2 text-sm font-medium ${
-                    featuredOnly
-                      ? 'bg-indigo-600 text-white'
-                      : 'border border-gray-300 text-gray-700 dark:border-gray-700 dark:text-gray-300'
-                  }`}
-                >
-                  {featuredOnly ? 'Featured only' : 'Show featured'}
-                </button>
-              </div>
-            </div>
-
-            <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-gray-200 pt-4 dark:border-gray-800">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Showing {visibleProjects.length} of {filteredProjects.length}
-                {filteredProjects.length === totalProjects
-                  ? ' projects'
-                  : ` matching projects (${totalProjects} total)`}
-                {query.trim() ? ` for "${query.trim()}"` : ''}
-              </p>
-              {inferredGoals.length > 0 && (
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-fuchsia-600 dark:text-fuchsia-400">
-                    <Sparkles size={14} />
-                    AI matched goals
-                  </span>
-                  {inferredGoals.map((goal) => (
-                    <span
-                      key={goal}
-                      className="rounded-full border border-fuchsia-500/20 bg-fuchsia-500/10 px-3 py-1 text-xs font-medium text-fuchsia-700 dark:text-fuchsia-300"
-                    >
-                      {goal}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
+          <ProjectFilterPanel
+            selectedType={selectedType}
+            onTypeChange={setSelectedType}
+            typeCounts={typeCounts}
+            selectedCategory={selectedCategory}
+            onCategoryChange={setSelectedCategory}
+            featuredOnly={featuredOnly}
+            onFeaturedChange={setFeaturedOnly}
+            query={query}
+            onQueryChange={setQuery}
+            visibleCount={visibleProjects.length}
+            matchCount={filteredProjects.length}
+            totalCount={totalProjects}
+            inferredGoals={inferredGoals}
+            onReset={resetFilters}
+          />
 
           {recommendedProjects.length > 0 && (
             <div className="mb-8 grid gap-4 lg:grid-cols-3">
@@ -233,7 +207,7 @@ const Projects = () => {
                       Recommended
                     </span>
                     <span className="text-xs text-fuchsia-700/80 dark:text-fuchsia-300/80">
-                      {project.category}
+                      {projectTypeLabels[project.type]}
                     </span>
                   </div>
                   <h3 className="mt-3 text-lg font-semibold text-gray-900 dark:text-white">
@@ -322,10 +296,10 @@ const Projects = () => {
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
                         <div className="absolute left-4 right-4 top-4 flex items-center justify-between gap-3">
-                          <span className="rounded-full border border-white/20 bg-black/35 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-white/90">
-                            {project.category}
+                          <span className="rounded-full border border-white/20 bg-black/60 backdrop-blur-sm px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-white/90">
+                            {projectTypeLabels[project.type]}
                           </span>
-                          <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/35 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-white/90">
+                          <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/60 backdrop-blur-sm px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-white/90">
                             <GripVertical size={12} />
                             Drag
                           </span>
@@ -431,10 +405,19 @@ const Projects = () => {
 
           {filteredProjects.length === 0 && (
             <div className="mt-8 rounded-2xl border border-dashed border-gray-300 bg-white/70 px-6 py-10 text-center dark:border-gray-700 dark:bg-gray-950/40">
-              <p className="text-lg font-semibold text-gray-900 dark:text-white">No projects matched this query</p>
+              <p className="text-lg font-semibold text-gray-900 dark:text-white">No projects matched these filters</p>
               <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                Try a broader keyword like React, AI, mobile, API, or realtime.
+                Try a broader keyword like React, AI, mobile, API, or realtime, or switch project type.
               </p>
+              {hasActiveFilters && (
+                <button
+                  type="button"
+                  onClick={resetFilters}
+                  className="mt-4 rounded-full bg-sky-600 px-5 py-2 text-sm font-semibold text-white hover:bg-sky-500"
+                >
+                  Clear filters
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -460,6 +443,8 @@ const ProjectModal = ({
   onClose: () => void
 }) => {
   const navigate = useNavigate()
+  const titleId = useId()
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
   const [tab, setTab] = useState<'overview' | 'preview'>('overview')
   const [iframeLoaded, setIframeLoaded] = useState(false)
 
@@ -468,30 +453,61 @@ const ProjectModal = ({
     setIframeLoaded(false)
   }, [project.slug])
 
+  // The parent passes a new inline onClose each render; reading it through a
+  // ref keeps the effect below mount-only, so focus is not re-stolen.
+  const onCloseRef = useRef(onClose)
+  useEffect(() => {
+    onCloseRef.current = onClose
+  }, [onClose])
+
+  // Keyboard users land on the close button, and Escape closes the modal.
+  useEffect(() => {
+    closeButtonRef.current?.focus({ preventScroll: true })
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onCloseRef.current()
+    }
+
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [])
+
   return (
     <motion.div
-      className="fixed inset-0 z-[110] flex items-center justify-center bg-black/70 px-3 sm:px-6"
+      className="fixed inset-0 z-[110] flex items-center justify-center bg-black/70 px-4 sm:px-8"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={onClose}
     >
+      {/* The card is split in two so the close button can live outside the
+          scroll container: it never scrolls away and is not clipped when it
+          overhangs the corner. */}
       <motion.div
-        data-lenis-prevent
-        className="relative max-h-[90vh] w-full max-w-5xl overflow-y-auto rounded-2xl bg-gray-50 p-4 dark:bg-gray-950 sm:p-6 md:p-8"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        className="relative w-full max-w-5xl"
         initial={{ scale: 0.95, y: 24 }}
         animate={{ scale: 1, y: 0 }}
         exit={{ scale: 0.95, y: 24 }}
         onClick={(event) => event.stopPropagation()}
       >
         <button
+          ref={closeButtonRef}
           type="button"
           onClick={onClose}
-          className="absolute right-4 top-4 rounded-full p-2 text-gray-500 transition hover:text-red-500"
+          aria-label={`Close ${project.title} details`}
+          title="Close (Esc)"
+          className="absolute -right-3 -top-3 z-20 inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-900 text-white shadow-lg shadow-black/40 ring-2 ring-white transition hover:bg-red-500 focus:outline-none focus-visible:ring-4 focus-visible:ring-sky-400 motion-safe:hover:scale-110 dark:bg-gray-800 dark:ring-white/80 dark:hover:bg-red-500 sm:-right-4 sm:-top-4 sm:h-11 sm:w-11"
         >
-          <X size={18} />
+          <X size={20} strokeWidth={2.5} aria-hidden="true" />
         </button>
 
+        <div
+          data-lenis-prevent
+          className="max-h-[88vh] overflow-y-auto rounded-2xl bg-gray-50 p-4 dark:bg-gray-950 sm:p-6 md:p-8"
+        >
         <div className="overflow-hidden rounded-2xl">
           <img
             src={project.bgImage}
@@ -505,8 +521,10 @@ const ProjectModal = ({
 
         <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="text-xs uppercase tracking-[0.22em] text-sky-600 dark:text-sky-400">{project.category}</p>
-            <h2 className="mt-2 text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">{project.title}</h2>
+            <p className="text-xs uppercase tracking-[0.22em] text-sky-600 dark:text-sky-400">
+              {projectTypeLabels[project.type]} · {project.category}
+            </p>
+            <h2 id={titleId} className="mt-2 text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">{project.title}</h2>
             <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">{project.role}</p>
           </div>
 
@@ -630,6 +648,7 @@ const ProjectModal = ({
             )}
           </div>
         )}
+        </div>
       </motion.div>
     </motion.div>
   )

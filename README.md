@@ -102,6 +102,7 @@ which is the part most likely to surprise you when editing a section:
 - [`src/components/common/CursorSpiderEffect.tsx`](./src/components/common/CursorSpiderEffect.tsx) draws the cursor trail and the per-click colour-cycling web burst.
 - [`src/components/sections/Projects.tsx`](./src/components/sections/Projects.tsx) contains filtering, fuzzy search, modal previews, and drag-based project ordering.
 - [`src/components/sections/GitHubActivity.tsx`](./src/components/sections/GitHubActivity.tsx) fetches live stats from the public GitHub REST API. The calls are unauthenticated, so they are subject to the 60 requests/hour per-IP rate limit.
+- [`src/components/common/ProjectFilterPanel.tsx`](./src/components/common/ProjectFilterPanel.tsx) is the projects filter UI: a segmented type control with live counts, search with clear/Escape, domain chips, a featured switch, and removable active-filter tags. It is purely presentational; all state stays in `Projects.tsx`.
 - [`src/hooks/useProjectDiscovery.ts`](./src/hooks/useProjectDiscovery.ts) centralizes project filtering and recommendation logic.
 - [`src/hooks/usePageMetadata.ts`](./src/hooks/usePageMetadata.ts) applies per-route title, description, and canonical URL.
 - [`src/providers/SmoothScrollProvider.tsx`](./src/providers/SmoothScrollProvider.tsx) wraps Lenis and exposes `scrollTo`.
@@ -208,7 +209,7 @@ portfolio/
     brand/                 logo source + regeneration notes
     profile/               full-resolution portrait source
     projects/              full-resolution project cover sources
-    resume/                resume.html, the source for resume.pdf
+    resume/                resume.html (legacy; resume.pdf is now supplied directly)
   public/
     images/                project assets, certificates, and resume PDF
     manifest.webmanifest   PWA manifest
@@ -250,8 +251,26 @@ Project and case-study content is data, not markup. Adding work means editing
 [`src/data/projects.ts`](./src/data/projects.ts) and, if it warrants a long-form
 write-up, [`src/data/caseStudies.ts`](./src/data/caseStudies.ts).
 
-There are currently 12 projects across four categories (`Web`, `AI`, `Mobile`,
-`Realtime`) and 4 case studies.
+There are currently 17 projects and 4 case studies. Each project carries two
+classifications:
+
+- `type` - the primary filter in the projects section: `Frontend` (5),
+  `Full Stack` (5), or `Software` (7). Labels live in `projectTypeLabels` /
+  `projectTypeFilterLabels`, and the chip order is `projectTypes`, all in
+  `projects.ts`. The chip counts come from `useProjectDiscovery` and respect the
+  domain, featured, and search filters, so a count always matches what clicking
+  the chip shows.
+- `category` - the secondary "Domain" filter: `Web`, `AI`, `Mobile`, `Realtime`.
+
+### Project order
+
+The grid is sorted by `recruiterPriority` (highest first), not by array position
+or by the drag order saved in `localStorage`. Drag order only breaks ties between
+equal priorities. The current order is TejViral (20), Voteniti (19), the
+Oneisok website (18), Satyanarayan Travel (17), Avatar Ink (16), Sonam's
+Clothing (15), and OneisOk Legal (14), followed by earlier work at 10 and below.
+To promote a project, raise its `recruiterPriority`; keep the top values unique
+so ties do not fall back to per-visitor drag order.
 
 ### Case study slugs
 
@@ -266,21 +285,22 @@ separate URL list to update.
 
 ### Closed-source work
 
-Professional work at Oneisok Digital Solution (Voteniti and the oneisok.co
-rebuild) is listed in `projects.ts` and `Experience.tsx` but has no case-study
-route, since the source is not public.
+Professional and client work (Voteniti, the oneisok.co rebuild, OneisOk Legal,
+TejViral, Satyanarayan Travel, Avatar Ink, and Sonam's Clothing) is listed in
+`projects.ts` but has no case-study route, since the source is not public.
 
 Two type fields are optional so closed-source work renders honestly rather than
 linking somewhere dead:
 
-- `ProjectRecord.github` - omitted for Voteniti and Oneisok, whose cards show
+- `ProjectRecord.github` - omitted for all closed-source work, whose cards show
   only "Open Live Demo". The GitHub action is skipped when there is no repo.
 - `ExperienceEntry.credential` - the current role has no completion
   certificate, so its card renders a single "View Details" action.
 
 `liveUrl` points at each product's canonical host: `voteniti.in` serves 200
 directly, while `oneisok.co` 307-redirects to `www.oneisok.co`, so the `www`
-form is linked to save visitors a redirect.
+form is linked to save visitors a redirect. Sonam's Clothing lives at
+`sonamsclothing.com` (no hyphen); `sonams-clothing.com` does not resolve.
 
 ### Project cover images
 

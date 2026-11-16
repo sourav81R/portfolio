@@ -15,11 +15,11 @@ import {
 import { useAppStore } from '../../store/useAppStore'
 import { useSmoothScroll } from '../../providers/SmoothScrollProvider'
 import { getSectionRevealProps } from '../../lib/motion'
+import { RESUME_URL } from '../../constants/resume'
 
 const EMAIL = 'souravchowdhury0203@gmail.com'
 const PHONE_DISPLAY = '+91 62946 60381'
 const PHONE_HREF = 'tel:+916294660381'
-const RESUME_URL = '/images/resume.pdf'
 const LOCATION = 'Kolkata, India'
 
 /** Left nav column - the sections a visitor most often jumps to. */

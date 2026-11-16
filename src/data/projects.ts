@@ -1,7 +1,40 @@
 import resumeIqImage from '../assets/projects/resumeiq.jpeg'
 import { resolvePublicAsset } from '../lib/publicAsset'
 
+/** Technical domain - shown as a secondary filter and on the modal header. */
 export type ProjectCategory = 'Web' | 'AI' | 'Mobile' | 'Realtime'
+
+/**
+ * What kind of thing was built - the primary filter in the projects section.
+ * - `Frontend`: marketing / content sites and client-only apps, no backend of mine.
+ * - `Full Stack`: websites with their own API, database, auth, and admin surface.
+ * - `Software`: products and tools (SaaS, platforms, mobile apps) rather than websites.
+ */
+export type ProjectType = 'Frontend' | 'Full Stack' | 'Software'
+
+/** Order here is the order of the filter chips. */
+export const projectTypes: ProjectType[] = ['Frontend', 'Full Stack', 'Software']
+
+/** Singular label, used on cards and in the modal. */
+export const projectTypeLabels: Record<ProjectType, string> = {
+  Frontend: 'Frontend Website',
+  'Full Stack': 'Full Stack Website',
+  Software: 'Software',
+}
+
+/** One-line explanation shown under the type filter for the active type. */
+export const projectTypeDescriptions: Record<ProjectType, string> = {
+  Frontend: 'Marketing and content sites and client-side apps - design, motion, accessibility, and SEO.',
+  'Full Stack': 'Websites with their own API, database, authentication, and admin panel.',
+  Software: 'Products and platforms - SaaS, operations systems, mobile apps, and tools.',
+}
+
+/** Plural label, used on the filter chips. */
+export const projectTypeFilterLabels: Record<ProjectType, string> = {
+  Frontend: 'Frontend Websites',
+  'Full Stack': 'Full Stack Websites',
+  Software: 'Software',
+}
 
 export type ProjectRecord = {
   slug: string
@@ -14,6 +47,7 @@ export type ProjectRecord = {
   learnings: string[]
   tech: string[]
   category: ProjectCategory
+  type: ProjectType
   featured?: boolean
   /** Omitted for closed-source professional work, which links to the live product instead. */
   github?: string
@@ -25,7 +59,213 @@ export type ProjectRecord = {
   previewVideo?: string
 }
 
+/**
+ * Display order is driven by `recruiterPriority` (highest first), not by the
+ * position in this array - see `useProjectDiscovery`. The agreed order is:
+ *   TejViral (20) > Voteniti (19) > Oneisok website (18) > Satyanarayan
+ *   Travel (17) > Avatar Ink (16) > Sonam's Clothing (15) > OneisOk Legal (14)
+ * followed by earlier work at 10 and below. Keep gaps unique when reordering.
+ */
 export const projects: ProjectRecord[] = [
+  {
+    slug: 'tejviral',
+    title: 'TejViral',
+    role: 'Full Stack Developer',
+    description:
+      'Local-business discovery and commerce platform for India, with customer, vendor, partner, and admin workspaces, marketing automation, and an online shop.',
+    problem:
+      'Local businesses across India are hard to find online and lack affordable tools to sell, advertise, and reach customers over SMS, WhatsApp, and email, while an existing platform with live data, a mobile app, and paying vendors had to be modernised without breaking any of it.',
+    solution:
+      'Built a Next.js 16 and Express 5 platform on Supabase PostgreSQL with separate customer, vendor, partner, and admin workspaces, a campaign automation engine, hosted vCards and WhatsApp stores, and an online shop, deployed on AWS EC2 with GitHub Actions CI/CD.',
+    points: [
+      'Built a business directory with category, subcategory, PIN-code, and radius-based search, plus intent-aware Daily Needs search with suggestions and missed-search analytics',
+      'Developed SMS, email, and WhatsApp campaign automation (WhatsApp Cloud API and a QR-linked device service) with gateways, contacts, templates, workflows, and reports',
+      'Shipped Mb24h hosted vCards and WhatsApp stores with themes, NFC cards, referrals, and AI card tools, alongside an online shop with cart, coupons, shipping, and vendor commissions',
+      'Migrated a 97-table, 61,767-row legacy database to Supabase PostgreSQL 17, verified with 616,365 cell comparisons and zero mismatches, while keeping the mobile app API contract and existing password hashes working',
+      'Secured the site with HTTP-only cookies, Origin-based CSRF checks, role-based admin access, and Row Level Security on public tables',
+      'Run production on AWS EC2 with Nginx, PM2, and a GitHub Actions pipeline that deploys reviewed main-branch commits',
+    ],
+    learnings: [
+      'Modernising a live system incrementally without breaking its mobile clients or existing user accounts',
+      'Designing additive, idempotent migrations and verifying data integrity before cut-over',
+      'Running background messaging workers safely alongside production data',
+      'Owning self-managed cloud infrastructure end to end, from Nginx and PM2 to CI/CD',
+    ],
+    tech: [
+      'Next.js 16',
+      'React 19',
+      'TypeScript',
+      'Node.js 22',
+      'Express 5',
+      'PostgreSQL 17',
+      'Supabase',
+      'Kysely',
+      'Zod',
+      'Razorpay',
+      'Firebase',
+      'WhatsApp Cloud API',
+      'AWS EC2',
+      'Nginx',
+      'PM2',
+      'GitHub Actions',
+    ],
+    category: 'Web',
+    type: 'Software',
+    featured: true,
+    liveUrl: 'https://tejviral.com',
+    bgImage: resolvePublicAsset('/images/tejviral.webp'),
+    recruiterPriority: 20,
+    impact:
+      'Multi-workspace commerce platform: 97-table migration with zero mismatches, campaign automation, stores, and payments on AWS.',
+  },
+  {
+    slug: 'satyanarayan-travel',
+    title: 'Satyanarayan Travel',
+    role: 'Full Stack Developer',
+    description:
+      'Travel agency website with tour package discovery, customer enquiries, booking workflows, and an admin CMS.',
+    problem:
+      'The agency sold domestic and international tours over phone and WhatsApp, with no online catalogue, no structured enquiry pipeline, and no way for staff to update packages themselves.',
+    solution:
+      'Built a full-stack Next.js site where customers browse packages and destinations and send enquiries, while staff manage tours, bookings, and content from a secured admin CMS.',
+    points: [
+      'Built tour package and destination discovery, customer enquiries, and booking workflows',
+      'Delivered an admin CMS so staff manage packages, destinations, gallery, and blog content without a developer',
+      'Secured accounts with the Firebase Admin SDK, HTTP-only session cookies, and server-side role authorisation',
+      'Persisted catalogue, enquiry, and booking data in MongoDB through Mongoose models',
+    ],
+    learnings: [
+      'Server-side session handling with HTTP-only cookies instead of client-held tokens',
+      'Enforcing roles on the server so hidden admin UI is never the only line of defence',
+      'Modelling a content-heavy catalogue that non-technical staff can safely edit',
+    ],
+    tech: [
+      'Next.js 15',
+      'React 19',
+      'TypeScript',
+      'Tailwind CSS v4',
+      'Firebase Auth',
+      'MongoDB',
+      'Mongoose',
+    ],
+    category: 'Web',
+    type: 'Full Stack',
+    featured: true,
+    liveUrl: 'https://satyanarayan-travel.vercel.app',
+    bgImage: resolvePublicAsset('/images/satyanarayan-travel.webp'),
+    recruiterPriority: 17,
+    impact:
+      'Turned a phone-and-WhatsApp travel business into an online catalogue with enquiries, bookings, and a staff CMS.',
+  },
+  {
+    slug: 'avatar-ink-tattoo-studio',
+    title: 'Avatar Ink Tattoo Studio',
+    role: 'Frontend Developer',
+    description:
+      'Responsive, animated marketing site for a Darjeeling tattoo studio with artist, gallery, and contact pages.',
+    problem:
+      'The studio relied on social media alone, with no home for its portfolio, artists, and services, and no simple way for new clients to request a booking.',
+    solution:
+      'Designed and built a cinematic, motion-rich marketing site that showcases the work and routes booking enquiries straight to WhatsApp, while staying fully accessible.',
+    points: [
+      'Built home, about, artist, gallery, and contact pages with a dark, editorial visual identity',
+      'Added smooth scrolling and scroll-driven animation with Lenis and Framer Motion',
+      'Routed booking enquiries straight to WhatsApp, so no backend is needed to capture leads',
+      'Kept it accessible with full keyboard navigation and a reduced-motion mode that disables animation',
+    ],
+    learnings: [
+      'Making heavy motion feel premium without hurting performance or accessibility',
+      'Respecting prefers-reduced-motion as a first-class design state',
+      'Shipping a conversion-focused site for a small business with zero running cost',
+    ],
+    tech: [
+      'Next.js 16',
+      'React 19',
+      'TypeScript',
+      'Tailwind CSS v4',
+      'Framer Motion',
+      'Lenis',
+    ],
+    category: 'Web',
+    type: 'Frontend',
+    featured: true,
+    liveUrl: 'https://avatarinktattoostudio.in',
+    bgImage: resolvePublicAsset('/images/avatar-ink.webp'),
+    recruiterPriority: 16,
+    impact:
+      'Motion-rich studio site that converts visitors into WhatsApp bookings, with keyboard and reduced-motion support.',
+  },
+  {
+    slug: 'sonams-clothing',
+    title: "Sonam's Clothing",
+    role: 'Full Stack Developer',
+    description:
+      'E-commerce store for a Darjeeling clothing shop with catalogue, wishlist, cart, UPI checkout, and a full admin panel.',
+    problem:
+      'A family clothing store (est. 2001) wanted to sell across India without payment-gateway fees or paid hosting, while staying in control of catalogue, orders, and payment verification.',
+    solution:
+      'Built a Next.js storefront with a manual UPI / QR checkout the admin verifies, an admin panel for products, categories, orders, and settings, and image storage inside MongoDB so it runs entirely on free tiers.',
+    points: [
+      'Built shop, product, wishlist, cart, and checkout flows with category and subcategory filters',
+      'Designed a UPI / QR checkout where a unique transaction ID per order stops one payment being reused, and the admin verifies it',
+      'Re-priced every cart and order on the server, so prices, stock, shipping, and roles are never trusted from the browser',
+      'Stored admin image uploads in MongoDB with client-side resizing and file-signature checks, staying under Vercel limits with no paid storage',
+      'Verified Firebase ID tokens on the server with Node crypto and shared cached catalogue reads across serverless instances with tag-based revalidation',
+    ],
+    learnings: [
+      'Designing a trustworthy checkout when there is no payment gateway to lean on',
+      'Fitting a real store inside free-tier limits for hosting, database, and media',
+      'Cache invalidation that stays correct across serverless instances',
+    ],
+    tech: [
+      'Next.js 16',
+      'TypeScript',
+      'Tailwind CSS 4',
+      'MongoDB',
+      'Firebase Auth',
+      'Vercel',
+    ],
+    category: 'Web',
+    type: 'Full Stack',
+    featured: true,
+    liveUrl: 'https://sonamsclothing.com',
+    bgImage: resolvePublicAsset('/images/sonams-clothing.webp'),
+    recruiterPriority: 15,
+    impact:
+      'All-India e-commerce store with verified UPI checkout and an admin panel, running entirely on free tiers.',
+  },
+  {
+    slug: 'oneisok-legal',
+    title: 'OneisOk Legal Consultancy',
+    role: 'Frontend Developer at Oneisok Digital Solution',
+    description:
+      'Premium, fully static legal consultancy website with 35+ data-driven service pages, built with no framework and no build step.',
+    problem:
+      'The consultancy needed a fast, trustworthy site that deploys unchanged to both Vercel and cPanel shared hosting, with no backend or database to maintain.',
+    solution:
+      'Built a vanilla HTML, CSS, and JavaScript site where one JSON file drives every service card, detail page, and enquiry form, and the same files ship to either host.',
+    points: [
+      'Made services.json the single source of truth: one entry creates a card, a detail page, and a form option',
+      'Shipped matching vercel.json and .htaccess configs so both hosts serve the same clean URLs, caching, and security headers',
+      'Built accessible navigation with a keyboard-operable dropdown, a focus-trapped mobile drawer, and full reduced-motion support',
+      'Measured every key colour pair against WCAG AA and added JSON-LD for LegalService, FAQPage, Article, and per-service pages',
+      'Routed static forms to prefilled WhatsApp messages with a honeypot and a drop-in hosted-form fallback',
+    ],
+    learnings: [
+      'How far a framework-free site can go with good structure and a token-based design system',
+      'Writing deployment config that works identically on two different hosts',
+      'Treating accessibility and contrast as measured requirements, not assumptions',
+    ],
+    tech: ['HTML5', 'CSS3', 'JavaScript', 'Lenis', 'JSON-LD', 'Vercel', 'cPanel'],
+    category: 'Web',
+    type: 'Frontend',
+    featured: true,
+    liveUrl: 'https://legal.oneisok.co',
+    bgImage: resolvePublicAsset('/images/oneisok-legal.webp'),
+    recruiterPriority: 14,
+    impact:
+      'Zero-build, host-agnostic legal site with 35+ data-driven service pages and WCAG AA contrast throughout.',
+  },
   {
     slug: 'voteniti',
     title: 'Voteniti',
@@ -61,10 +301,11 @@ export const projects: ProjectRecord[] = [
       'Tailwind CSS',
     ],
     category: 'Web',
+    type: 'Software',
     featured: true,
     liveUrl: 'https://voteniti.in',
     bgImage: resolvePublicAsset('/images/voteniti.webp'),
-    recruiterPriority: 12,
+    recruiterPriority: 19,
     impact:
       'Nationwide election operations platform: 543 constituencies modeled, 85+ migrations, minutes-to-seconds hierarchy loads.',
   },
@@ -98,11 +339,12 @@ export const projects: ProjectRecord[] = [
       'App Router',
     ],
     category: 'Web',
+    type: 'Full Stack',
     featured: true,
     // Canonical host: oneisok.co 307-redirects to www, so link www directly.
     liveUrl: 'https://www.oneisok.co',
     bgImage: resolvePublicAsset('/images/oneisok.webp'),
-    recruiterPriority: 11,
+    recruiterPriority: 18,
     impact:
       'Content ships without a deploy; staff self-serve through a role-based panel backed by MongoDB Atlas.',
   },
@@ -125,6 +367,7 @@ export const projects: ProjectRecord[] = [
     ],
     tech: ['Next.js 14', 'TypeScript', 'Tailwind CSS', 'Firebase', 'OpenAI'],
     category: 'AI',
+    type: 'Software',
     featured: true,
     github: 'https://resume-iq-coral.vercel.app',
     liveUrl: 'https://resume-iq-coral.vercel.app',
@@ -148,6 +391,7 @@ export const projects: ProjectRecord[] = [
     learnings: ['Full-stack architecture tradeoffs', 'Auth systems', 'Backend debugging'],
     tech: ['React (Vite)', 'Node.js', 'Express.js', 'MongoDB', 'Socket.IO', 'Stripe'],
     category: 'Realtime',
+    type: 'Full Stack',
     featured: true,
     github: 'https://github.com/sourav81R/Food-App',
     liveUrl: 'https://food-app-frontend-lh2k.onrender.com/',
@@ -167,6 +411,7 @@ export const projects: ProjectRecord[] = [
     learnings: ['Mobile UX design', 'React Native architecture', 'State management patterns'],
     tech: ['React Native', 'Expo', 'TypeScript', 'React Navigation', 'Axios'],
     category: 'Mobile',
+    type: 'Software',
     featured: true,
     github: 'https://github.com/sourav81R/EstatePerks',
     liveUrl: 'https://estate-perks.vercel.app/auth/login',
@@ -190,6 +435,7 @@ export const projects: ProjectRecord[] = [
     learnings: ['WebSocket implementation', 'Authentication strategies', 'Realtime schema design'],
     tech: ['React', 'Node.js', 'MongoDB', 'Socket.IO', 'JWT'],
     category: 'Realtime',
+    type: 'Software',
     featured: true,
     github: 'https://github.com/sourav81R/realtime-poll-app',
     liveUrl: 'https://realtime-poll-app-one.vercel.app',
@@ -231,6 +477,7 @@ export const projects: ProjectRecord[] = [
       'nodemailer',
     ],
     category: 'Web',
+    type: 'Full Stack',
     github: 'https://github.com/sourav81R/Employee-Management',
     liveUrl: 'https://employee-management-ivory-mu.vercel.app/login',
     bgImage: resolvePublicAsset('/employee.jpeg'),
@@ -256,6 +503,7 @@ export const projects: ProjectRecord[] = [
     ],
     tech: ['React', 'JavaScript', 'CSS', 'Vercel'],
     category: 'Web',
+    type: 'Frontend',
     github: 'https://github.com/sourav81R/Quiz-App',
     liveUrl: 'https://quiz-app-ebon-five-26.vercel.app',
     bgImage: resolvePublicAsset('/quiz.png'),
@@ -281,6 +529,7 @@ export const projects: ProjectRecord[] = [
     ],
     tech: ['HTML', 'CSS', 'JavaScript', 'Exchange Rate API', 'GitHub Pages'],
     category: 'Web',
+    type: 'Frontend',
     github: 'https://github.com/sourav81R/Currency-Converter',
     liveUrl: 'https://sourav81r.github.io/Currency-Converter/',
     bgImage: resolvePublicAsset('/images/currency.png'),
@@ -306,6 +555,7 @@ export const projects: ProjectRecord[] = [
     ],
     tech: ['HTML', 'CSS', 'JavaScript', 'GitHub Pages'],
     category: 'Web',
+    type: 'Frontend',
     github: 'https://github.com/sourav81R/Rock-Paper-Scissor',
     liveUrl: 'https://sourav81r.github.io/Rock-Paper-Scissor/',
     bgImage: resolvePublicAsset('/images/game.jpeg'),
@@ -323,6 +573,7 @@ export const projects: ProjectRecord[] = [
     learnings: ['Scalable UI design', 'API performance optimization', 'Team collaboration'],
     tech: ['React', 'JavaScript', 'REST APIs'],
     category: 'AI',
+    type: 'Software',
     featured: true,
     github: 'https://github.com/sourav81R/VerifyAI',
     liveUrl: 'https://verifyai.is-a.software/',
@@ -345,6 +596,7 @@ export const projects: ProjectRecord[] = [
     learnings: ['Graceful degradation', 'Confidence-weighted forecast fusion', 'Model-aware fallback logic'],
     tech: ['Python', 'Flask', 'JavaScript', 'SQLite', 'TensorFlow/Keras', 'Leaflet'],
     category: 'AI',
+    type: 'Software',
     github: 'https://github.com/sourav81R/weather-forecasting-religion-language',
     liveUrl: 'https://weather-forecasting-religion-langua.vercel.app/',
     bgImage: resolvePublicAsset('/images/weather.jpeg'),

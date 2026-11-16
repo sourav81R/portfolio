@@ -24,6 +24,7 @@ import { getSectionRevealProps } from '../../lib/motion'
 import { useCommandPalette } from '../../store/useCommandpalette'
 import { useAppStore } from '../../store/useAppStore'
 import { useSmoothScroll } from '../../providers/SmoothScrollProvider'
+import { RESUME_URL } from '../../constants/resume'
 
 const ResumePreviewModal = lazy(() => import('../common/ResumePreviewModal'))
 
@@ -43,7 +44,7 @@ const terminalLines: Line[] = [
   { prompt: '>> ~', text: 'Loading product-minded developer profile...' },
   { prompt: '>> ~', text: 'Role: Full Stack Developer @ Oneisok Digital Solution' },
   { prompt: '>> ~', text: 'Focus: Next.js, TypeScript, Node.js, PostgreSQL' },
-  { prompt: '>> ~', text: 'Shipping: Voteniti - election ops across India' },
+  { prompt: '>> ~', text: 'Shipping: TejViral, Voteniti, Sonam\'s Clothing' },
 ]
 
 const terminalSequence: Line[] = [
@@ -725,7 +726,7 @@ const Hero = () => {
           <ResumePreviewModal
             open={showResumePreview}
             onClose={() => setShowResumePreview(false)}
-            pdfUrl="/images/resume.pdf"
+            pdfUrl={RESUME_URL}
           />
         </Suspense>
       ) : null}

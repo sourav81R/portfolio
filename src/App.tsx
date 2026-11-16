@@ -61,7 +61,8 @@ const SECTION_MIN_HEIGHTS: Record<string, number> = {
   about: 1600,
   experience: 1900,
   skills: 3300,
-  projects: 3600,
+  // Re-measured after adding the project-type and domain filter rows.
+  projects: 3850,
   github: 1150,
   education: 1350,
   certifications: 1950,
