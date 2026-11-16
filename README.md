@@ -1,4 +1,4 @@
-# Sourav Portfolio
+# Sourav Portfolio  
 
 A React 19 + TypeScript portfolio built as a product-style frontend experience
 rather than a static resume page. It combines animated sections, recruiter-focused
