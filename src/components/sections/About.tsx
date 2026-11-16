@@ -17,6 +17,8 @@ type StatItem = {
   countTo?: number
   suffix?: string
   label: string
+  /** Optional plain-language clarification shown under the label. */
+  note?: string
   color: string
   bg: string
 }
@@ -34,7 +36,11 @@ const stats: StatItem[] = [
     value: '15+',
     countTo: 15,
     suffix: '+',
-    label: 'Projects Shipped',
+    // "Built" counts every project in the Projects section (client and
+    // personal). The summary above says "Shipped 5 live products", which are
+    // only the live client products - the note ties the two numbers together.
+    label: 'Projects Built',
+    note: 'incl. 5 live client products',
     color: 'text-emerald-500 dark:text-emerald-300',
     bg: 'bg-emerald-500/12',
   },
@@ -142,50 +148,41 @@ const About = () => {
             </div>
 
             <p className="text-base leading-8 text-gray-700 dark:text-gray-100 sm:text-[1.08rem] sm:leading-9">
+              {/* Mirrors the Professional Summary on the resume
+                  (public/images/resume.pdf), including its bold phrases.
+                  Update both together. */}
+              Full Stack Developer with{' '}
               <span className="font-semibold text-gray-900 dark:text-white">
-                Full Stack Developer at Oneisok Digital Solution
+                1+ year of development experience
               </span>
-              , building web applications from backend to frontend. I work with
-              APIs, databases, third-party integrations, and deployment to turn
-              ideas into reliable products. I built{' '}
+              , including{' '}
               <span className="font-semibold text-gray-900 dark:text-white">
-                Voteniti
+                full-time at Oneisok Digital Solution
               </span>
-              , an election management platform designed to model
-              India&rsquo;s election hierarchy&mdash;from higher administrative
-              levels down to individual booths&mdash;making complex election
-              data easier to manage and organize. I also rebuilt{' '}
+              , building and deploying production web platforms, and earlier
+              internships at{' '}
               <span className="font-semibold text-gray-900 dark:text-white">
-                oneisok.co
-              </span>
-              , the company website for Oneisok Digital Solution, along with a
-              role-based admin panel that gives the team control over managing
-              and updating the platform. I have shipped client products too,
-              including{' '}
+                Euphoria GenX
+              </span>{' '}
+              and{' '}
               <span className="font-semibold text-gray-900 dark:text-white">
-                TejViral
+                Pinnacle Labs
               </span>
-              , a local-business discovery and commerce platform, and{' '}
+              . 2026 B.Tech (CSE) graduate skilled in{' '}
               <span className="font-semibold text-gray-900 dark:text-white">
-                Sonam&rsquo;s Clothing
-              </span>
-              , an all-India e-commerce store. Earlier projects include{' '}
+                Next.js, React, TypeScript, Node.js
+              </span>{' '}
+              and{' '}
               <span className="font-semibold text-gray-900 dark:text-white">
-                ResumeIQ
+                PostgreSQL/MongoDB
               </span>
-              ,{' '}
+              , working across REST APIs, authentication, role-based access
+              control, payment integration, marketing automation and{' '}
               <span className="font-semibold text-gray-900 dark:text-white">
-                Foodooza
-              </span>
-              , and{' '}
-              <span className="font-semibold text-gray-900 dark:text-white">
-                EstatePerks
-              </span>
-              . I finished my B.Tech in CSE this July and enjoy working across
-              the full product&mdash;from how the backend and data are
-              structured to how the final interface feels for users. Based in
-              Kolkata, India, focused on building practical and scalable
-              products that solve real problems.
+                AWS
+              </span>{' '}
+              deployment. Shipped 5 live products, including
+              business-discovery, election-management and admin platforms.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
@@ -224,6 +221,11 @@ const About = () => {
               <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.22em] text-gray-500 dark:text-gray-400">
                 {stat.label}
               </p>
+              {stat.note && (
+                <p className="mt-1.5 text-xs font-medium text-emerald-700 dark:text-emerald-300">
+                  {stat.note}
+                </p>
+              )}
             </motion.article>
           ))}
         </div>
