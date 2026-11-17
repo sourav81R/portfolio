@@ -1,6 +1,14 @@
 import { useRef, useState } from 'react'
 import clsx from 'clsx'
-import { Briefcase, Calendar, ChevronRight, FileBadge2, MapPin } from 'lucide-react'
+import {
+  Briefcase,
+  Calendar,
+  CheckCircle2,
+  ChevronRight,
+  FileBadge2,
+  MapPin,
+  Sparkles,
+} from 'lucide-react'
 import {
   motion,
   useReducedMotion,
@@ -23,27 +31,27 @@ const experienceData: ExperienceEntry[] = [
     badge: 'Current Role',
     summary:
       'Building and maintaining company platforms end to end - TejViral, a local-business discovery and commerce platform; Voteniti, a nationwide election operations platform; the company website with its own admin CMS; and the OneisOk Legal consultancy site.',
+    // Every point names its project, so TejViral and Voteniti work is never
+    // mixed up in the details modal or the highlights panel.
     description: [
-      'Built TejViral (tejviral.com), a local-business discovery and commerce platform with separate customer, vendor, partner, and admin workspaces on Next.js 16, Express 5, and Supabase PostgreSQL 17.',
-      'Delivered category, subcategory, PIN-code, and radius-based business search, plus intent-aware Daily Needs search with suggestions and missed-search analytics.',
-      'Developed SMS, email, and WhatsApp campaign automation (WhatsApp Cloud API and a QR-linked device service) with gateways, contacts, templates, workflows, and reports.',
-      'Shipped hosted vCards and WhatsApp stores, an online shop with cart, coupons, shipping, and vendor commissions, and Razorpay payments.',
-      'Migrated a 97-table, 61,767-row legacy database to Supabase PostgreSQL 17, verified with 616,365 cell comparisons and zero mismatches, while keeping the mobile app API and existing logins working.',
-      'Run TejViral in production on AWS EC2 with Nginx, PM2, and a GitHub Actions CI/CD pipeline; secured with HTTP-only cookies, CSRF checks, role-based access, and Row Level Security.',
-      'Engineer Voteniti, a full-stack Election Management System covering MP, MLA, Municipal, and Panchayat election hierarchies across India.',
-      'Designed an on-demand area-data layer that serves ~255k Gram Panchayats and ~97k urban Wards from bundled NDJSON files, materializing rows into Postgres only on use so the database stays inside a 500 MB tier.',
-      'Built enterprise RBAC with area- and election-scoped role assignments, smart-delete approval workflows, and audit logging across every hierarchy level.',
-      'Replaced thousands of serial per-row queries with bulk subtree materialization, cutting MP hierarchy load from minutes to seconds on a remote database.',
-      'Rebuilt oneisok.co on Next.js 14 with a centralised lead management system, role-based dashboards (Super Admin, HR, Office), and an influencer portal with KYC uploads and review workflows.',
-      'Built legal.oneisok.co, a zero-build static site with 35+ data-driven service pages that deploys unchanged to Vercel and cPanel.',
-      'Deliver CMS and multilingual UI features end to end, improve performance, technical SEO, and security, and own production deployment workflows.',
+      'TejViral - Built tejviral.com, a local-business discovery and commerce platform with separate customer, vendor, partner, and admin workspaces on Next.js 16, Express 5, and Supabase PostgreSQL 17.',
+      'TejViral - Delivered category, subcategory, PIN-code, and radius-based business search, plus intent-aware Daily Needs search with suggestions and missed-search analytics.',
+      'TejViral - Developed SMS, email, and WhatsApp campaign automation (WhatsApp Cloud API and a QR-linked device service) with gateways, contacts, templates, workflows, and reports.',
+      'TejViral - Shipped hosted vCards and WhatsApp stores, an online shop with cart, coupons, shipping, and vendor commissions, and Razorpay payments.',
+      'TejViral - Run it in production on AWS EC2 with Nginx, PM2, and a GitHub Actions CI/CD pipeline; secured with HTTP-only cookies, CSRF checks, role-based access, and Row Level Security.',
+      'Voteniti - Built voteniti.in, a full-stack Election Management System covering MP, MLA, Panchayat, and Municipal elections, down to constituency, block, ward, and booth.',
+      'Voteniti - Implemented RBAC with election- and area-specific permissions, smart-delete approval workflows, audit logs, and performance tracking.',
+      'Voteniti - Designed hierarchical area management with on-demand loading of large geographic datasets (~255k Gram Panchayats and ~97k urban Wards), so the database stays small.',
+      'Voteniti - Replaced thousands of serial per-row queries with bulk subtree loading, cutting MP hierarchy load from minutes to seconds.',
+      'Voteniti - Added an admin-managed CMS for blogs, team, testimonials, and per-page SEO on the public site.',
+      'Oneisok website - Rebuilt oneisok.co on Next.js 14 with a centralised lead management system, role-based dashboards (Super Admin, HR, Office), and an influencer portal with KYC uploads and review workflows.',
+      'OneisOk Legal - Built legal.oneisok.co, a zero-build static site with 35+ data-driven service pages that deploys unchanged to Vercel and cPanel.',
+      'Across projects - Deliver CMS and multilingual UI features end to end, improve performance, technical SEO, and security, and own production deployment workflows.',
     ],
     metrics: [
-      'TejViral: 97-table migration verified with zero mismatches',
       'TejViral: customer, vendor, partner, and admin workspaces live',
-      '543 Lok Sabha constituencies modeled as Area Master records',
-      '85+ SQL migrations authored and shipped',
-      'MP hierarchy load cut from minutes to seconds',
+      'Voteniti: elections managed from MP level down to booth level',
+      'Oneisok website: lead management, role-based dashboards, and influencer portal',
     ],
     tech: [
       'Next.js 16',
@@ -172,7 +180,7 @@ const Experience = () => {
 
         <div
           ref={stackRef}
-          className="relative mx-auto mt-10 max-w-3xl"
+          className="relative mx-auto mt-10 max-w-5xl"
           style={reduceMotion ? undefined : { height: `${(experienceData.length + 1) * 55}vh` }}
         >
           <div
@@ -216,6 +224,17 @@ const cardLines = [
   'from-sky-400 via-cyan-400 to-emerald-400',
   'from-emerald-400 via-teal-400 to-sky-400',
   'from-fuchsia-400 via-violet-400 to-sky-400',
+] as const
+/** Tinted highlights panel and its icon colour, per role. */
+const panelTints = [
+  'border-sky-200/80 bg-sky-50/70 dark:border-sky-400/20 dark:bg-sky-500/[0.06]',
+  'border-emerald-200/80 bg-emerald-50/70 dark:border-emerald-400/20 dark:bg-emerald-500/[0.06]',
+  'border-fuchsia-200/80 bg-fuchsia-50/70 dark:border-fuchsia-400/20 dark:bg-fuchsia-500/[0.06]',
+] as const
+const panelIcons = [
+  'text-sky-500 dark:text-sky-300',
+  'text-emerald-500 dark:text-emerald-300',
+  'text-fuchsia-500 dark:text-fuchsia-300',
 ] as const
 
 type StackedExperienceCardProps = {
@@ -294,7 +313,7 @@ const StackedExperienceCard = ({
       >
         <div
           className={clsx(
-            'relative overflow-hidden rounded-[26px] border-2 bg-white p-5 shadow-[0_-18px_50px_-30px_rgba(15,23,42,0.35),0_30px_70px_-45px_rgba(15,23,42,0.45)] dark:bg-[#0b1220] dark:shadow-[0_-18px_50px_-30px_rgba(0,0,0,0.9)] sm:p-7',
+            'relative overflow-hidden rounded-[28px] border-2 bg-white p-5 shadow-[0_-18px_50px_-30px_rgba(15,23,42,0.35),0_30px_70px_-45px_rgba(15,23,42,0.45)] dark:bg-[#0b1220] dark:shadow-[0_-18px_50px_-30px_rgba(0,0,0,0.9)] sm:p-7 lg:p-8',
             cardAccents[index % cardAccents.length]
           )}
         >
@@ -312,6 +331,13 @@ const StackedExperienceCard = ({
             {pad(index + 1)}
           </span>
 
+          {/*
+            Phones: single column (as before). From md: details on the left,
+            a tinted highlights panel on the right that fills the wider card
+            with the role's key outcomes.
+          */}
+          <div className="relative grid gap-6 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] md:gap-8">
+          <div className="min-w-0">
           <div className="relative flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div className="max-w-xl">
               <div className="flex flex-wrap items-center gap-2">
@@ -331,7 +357,7 @@ const StackedExperienceCard = ({
               </p>
             </div>
 
-            <div className="flex flex-wrap gap-2 text-xs text-gray-500 dark:text-gray-400 sm:flex-col sm:items-end">
+            <div className="flex flex-wrap gap-2 text-xs text-gray-500 dark:text-gray-400 sm:flex-col sm:items-end md:hidden">
               <span className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 dark:border-gray-700 dark:bg-gray-800">
                 <Calendar size={13} />
                 {experience.period}
@@ -384,6 +410,43 @@ const StackedExperienceCard = ({
                 <ChevronRight size={16} className="shrink-0 text-white/90 transition group-hover:translate-x-1" />
               </button>
             )}
+          </div>
+          </div>
+
+          {/* Highlights panel (tablet/desktop) */}
+          <aside
+            className={clsx(
+              'relative hidden flex-col rounded-[22px] border p-5 md:flex lg:p-6',
+              panelTints[index % panelTints.length]
+            )}
+          >
+            <div className="flex flex-wrap gap-2 text-xs text-gray-600 dark:text-gray-300">
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/80 px-3 py-1.5 dark:border-white/10 dark:bg-white/5">
+                <Calendar size={13} />
+                {experience.period}
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/80 px-3 py-1.5 dark:border-white/10 dark:bg-white/5">
+                <MapPin size={13} />
+                {experience.location}
+              </span>
+            </div>
+
+            <p className="mt-5 inline-flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-gray-500 dark:text-gray-400">
+              <Sparkles size={13} className={panelIcons[index % panelIcons.length]} />
+              Highlights
+            </p>
+            <ul className="mt-3 space-y-3">
+              {experience.metrics.slice(0, 4).map((metric) => (
+                <li key={metric} className="flex items-start gap-2.5 text-sm leading-snug text-gray-700 dark:text-gray-200">
+                  <CheckCircle2
+                    size={17}
+                    className={clsx('mt-0.5 shrink-0', panelIcons[index % panelIcons.length])}
+                  />
+                  <span>{metric}</span>
+                </li>
+              ))}
+            </ul>
+          </aside>
           </div>
         </div>
       </motion.article>
