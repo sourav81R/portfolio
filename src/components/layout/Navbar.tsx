@@ -88,6 +88,9 @@ const menuItemVariants: Variants = {
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
+  // Hide-on-scroll: down hides the bar, up brings it back.
+  const [scrollHidden, setScrollHidden] = useState(false)
+  const [focusWithin, setFocusWithin] = useState(false)
   const [active, setActive] = useState('home')
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     const saved = localStorage.getItem('theme') as 'dark' | 'light' | null
@@ -324,6 +327,46 @@ const Navbar = () => {
     }
   }, [])
 
+  /*
+   * Hide the navbar while scrolling down, show it again on any upward
+   * scroll. A small threshold ignores trackpad jitter and Lenis easing tails,
+   * and it is always shown near the top of the page.
+   */
+  useEffect(() => {
+    const SHOW_NEAR_TOP = 120
+    const THRESHOLD = 8
+    let lastY = window.scrollY
+    let raf = 0
+
+    const update = () => {
+      raf = 0
+      const y = window.scrollY
+      if (y < SHOW_NEAR_TOP) {
+        setScrollHidden(false)
+        lastY = y
+        return
+      }
+      const delta = y - lastY
+      if (Math.abs(delta) < THRESHOLD) return
+      setScrollHidden(delta > 0)
+      lastY = y
+    }
+
+    const onScroll = () => {
+      if (raf !== 0) return
+      raf = window.requestAnimationFrame(update)
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      if (raf !== 0) window.cancelAnimationFrame(raf)
+    }
+  }, [])
+
+  // Never hide while the mobile menu is open or a keyboard user is inside it.
+  const navHidden = scrollHidden && !isOpen && !focusWithin
+
   return (
     <>
       {/*
@@ -350,11 +393,35 @@ const Navbar = () => {
 
       <nav
         ref={navRef}
-        className="fixed inset-x-0 z-50 px-4 sm:px-6"
-        style={{ top: 'calc(var(--banner-offset, 0px) + 0.75rem)' }}
+        data-hidden={navHidden || undefined}
+        className={`fixed inset-x-0 z-50 px-4 sm:px-6 ${
+          reduceMotion ? '' : 'transition-transform duration-300 ease-out'
+        } ${navHidden ? 'pointer-events-none' : ''}`}
+        style={{
+          top: 'calc(var(--banner-offset, 0px) + 0.75rem)',
+          // Slide fully above the viewport, including the top gap.
+          transform: navHidden
+            ? 'translateY(calc(-100% - var(--banner-offset, 0px) - 1.5rem))'
+            : undefined,
+        }}
+        // Only keyboard focus pins the bar; a mouse click leaves focus on the
+        // link and would otherwise stop it hiding after the jump.
+        onFocus={(event) => {
+          const target = event.target as HTMLElement
+          setFocusWithin(target.matches(':focus-visible'))
+        }}
+        onBlur={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+            setFocusWithin(false)
+          }
+        }}
       >
       <div
-        className={`relative mx-auto w-full max-w-5xl overflow-hidden border border-emerald-200/80 bg-gradient-to-r from-white/95 via-emerald-50/95 to-cyan-50/95 shadow-[0_24px_60px_-32px_rgba(15,23,42,0.6)] backdrop-blur-md dark:border-emerald-500/25 dark:bg-gradient-to-r dark:from-gray-900/95 dark:via-gray-950/95 dark:to-slate-900/95 ${
+        className={`relative mx-auto w-full max-w-5xl overflow-hidden border border-emerald-200/80 bg-gradient-to-r from-white/95 via-emerald-50/95 to-cyan-50/95 transition-shadow duration-300 ${
+          active === 'home'
+            ? 'shadow-[0_12px_36px_-30px_rgba(15,23,42,0.5)] dark:shadow-[0_12px_36px_-28px_rgba(0,0,0,0.7)]'
+            : 'shadow-[0_24px_60px_-24px_rgba(15,23,42,0.62),0_8px_24px_-18px_rgba(16,185,129,0.28)] dark:shadow-[0_24px_60px_-22px_rgba(0,0,0,0.95),0_8px_24px_-18px_rgba(16,185,129,0.2)]'
+        } backdrop-blur-md dark:border-emerald-500/25 dark:bg-gradient-to-r dark:from-gray-900/95 dark:via-gray-950/95 dark:to-slate-900/95 ${
           isOpen ? 'rounded-2xl' : 'rounded-2xl sm:rounded-full'
         }`}
       >
@@ -385,9 +452,9 @@ const Navbar = () => {
                   aria-current={active === item ? 'true' : undefined}
                     className={`relative whitespace-nowrap text-[13.5px] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${
                       active === item
-                      ? sectionTextColors[item]
-                      : 'text-gray-600 dark:text-gray-400 hover:text-green-500'
-                  }`}
+                        ? `${sectionTextColors[item]} isolate before:absolute before:-inset-x-3 before:-inset-y-1.5 before:-z-10 before:rounded-full before:bg-emerald-500/10 before:shadow-[0_0_0_1px_rgba(16,185,129,0.14),0_5px_16px_-8px_rgba(16,185,129,0.55)] dark:before:bg-emerald-400/10 dark:before:shadow-[0_0_0_1px_rgba(52,211,153,0.16),0_5px_18px_-8px_rgba(52,211,153,0.5)]`
+                        : 'text-gray-600 dark:text-gray-400 hover:text-green-500'
+                    }`}
                 >
                   {sectionLabels[item]}
                   <span
@@ -395,8 +462,8 @@ const Navbar = () => {
                       active === item ? 'scale-x-100' : ''
                     }`}
                     style={{
-                      backgroundColor:
-                        active === item ? 'currentColor' : 'transparent',
+                      backgroundColor: active === item ? 'currentColor' : 'transparent',
+                      boxShadow: active === item ? '0 0 8px currentColor' : undefined,
                     }}
                   />
                 </a>

@@ -43,7 +43,14 @@ body,
 #root {
   width: 100%;
   min-height: 100%;
+  /*
+   * `clip` crops sideways overflow like `hidden` but does not turn these
+   * elements into scroll containers, which would silently break every
+   * `position: sticky` on the page (the pinned certifications carousel relies
+   * on it). Browsers without `clip` keep the `hidden` fallback.
+   */
   overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {

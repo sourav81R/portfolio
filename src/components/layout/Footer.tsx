@@ -238,15 +238,17 @@ const Footer = () => {
               Get Started
             </h2>
 
-            <div className="mt-5 space-y-3">
+            {/* Side by side on phones; stacked from sm, where this footer column
+                is only half the width. */}
+            <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-1">
               <a
                 href={RESUME_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => recordClick('footer-resume')}
-                className="flex items-center gap-3 rounded-xl border border-emerald-200/80 bg-white px-4 py-2.5 shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-400 hover:shadow-md dark:border-emerald-500/25 dark:bg-gray-900"
+                className="flex items-center gap-2 rounded-xl border border-emerald-200/80 bg-white px-3 py-2.5 shadow-sm sm:gap-3 sm:px-4 transition hover:-translate-y-0.5 hover:border-emerald-400 hover:shadow-md dark:border-emerald-500/25 dark:bg-gray-900"
               >
-                <FileText size={22} className="shrink-0 text-emerald-500" />
+                <FileText size={22} className="h-5 w-5 shrink-0 text-emerald-500 sm:h-[22px] sm:w-[22px]" />
                 <span className="min-w-0">
                   <span className="block text-[10px] uppercase tracking-wider text-gray-500 dark:text-gray-500">
                     Download my
@@ -260,9 +262,9 @@ const Footer = () => {
               <Link
                 to="/dashboard"
                 onClick={() => recordClick('footer-dashboard')}
-                className="flex items-center gap-3 rounded-xl border border-emerald-200/80 bg-white px-4 py-2.5 shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-400 hover:shadow-md dark:border-emerald-500/25 dark:bg-gray-900"
+                className="flex items-center gap-2 rounded-xl border border-emerald-200/80 bg-white px-3 py-2.5 shadow-sm sm:gap-3 sm:px-4 transition hover:-translate-y-0.5 hover:border-emerald-400 hover:shadow-md dark:border-emerald-500/25 dark:bg-gray-900"
               >
-                <LayoutDashboard size={22} className="shrink-0 text-emerald-500" />
+                <LayoutDashboard size={22} className="h-5 w-5 shrink-0 text-emerald-500 sm:h-[22px] sm:w-[22px]" />
                 <span className="min-w-0">
                   <span className="block text-[10px] uppercase tracking-wider text-gray-500 dark:text-gray-500">
                     Explore the

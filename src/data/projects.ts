@@ -52,6 +52,12 @@ export type ProjectRecord = {
   /** Omitted for closed-source professional work, which links to the live product instead. */
   github?: string
   liveUrl?: string
+  /**
+   * false when the live site sends X-Frame-Options / frame-ancestors that forbid
+   * embedding; the modal then shows the cover with an "Open live site" button
+   * instead of an iframe that would only render the browser's blocked page.
+   */
+  embeddable?: boolean
   bgImage: string
   caseStudySlug?: string
   recruiterPriority: number
@@ -112,6 +118,7 @@ export const projects: ProjectRecord[] = [
     category: 'Web',
     type: 'Software',
     featured: true,
+    embeddable: false,
     liveUrl: 'https://tejviral.com',
     bgImage: resolvePublicAsset('/images/tejviral.webp'),
     recruiterPriority: 20,
@@ -151,6 +158,7 @@ export const projects: ProjectRecord[] = [
     category: 'Web',
     type: 'Full Stack',
     featured: true,
+    embeddable: false,
     liveUrl: 'https://satyanarayan-travel.vercel.app',
     bgImage: resolvePublicAsset('/images/satyanarayan-travel.webp'),
     recruiterPriority: 17,
@@ -260,6 +268,7 @@ export const projects: ProjectRecord[] = [
     category: 'Web',
     type: 'Frontend',
     featured: true,
+    embeddable: false,
     liveUrl: 'https://legal.oneisok.co',
     bgImage: resolvePublicAsset('/images/oneisok-legal.webp'),
     recruiterPriority: 14,

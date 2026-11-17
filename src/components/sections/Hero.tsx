@@ -10,10 +10,13 @@ import {
 import { motion, useReducedMotion } from 'framer-motion'
 import {
   ArrowUpRight,
+  Briefcase,
+  Code2,
   FileText,
   Github,
   Linkedin,
   Mail,
+  Rocket,
   Sparkles,
   Terminal as TerminalIcon,
 } from 'lucide-react'
@@ -158,6 +161,18 @@ const headlineWords = [
   'API-led products',
   'dashboard experiences',
 ]
+
+/**
+ * Hero stats (tablet/desktop). Every project is live; '5' counts only the
+ * client products. TejViral, Voteniti and the Oneisok website are Oneisok
+ * in-house products, not client work. The label says 'client' rather than
+ * 'live' because every project is live. Keep in step with the About stats.
+ */
+const heroStats = [
+  { value: '1+ yr', label: 'Experience', icon: Briefcase },
+  { value: '5', label: 'Client products', icon: Rocket },
+  { value: '15+', label: 'Projects built', icon: Code2 },
+] as const
 
 const quickCommands = ['about', 'projects', 'contact'] as const
 
@@ -401,10 +416,12 @@ const Hero = () => {
 
       <motion.div
         {...sectionRevealProps}
-        className="relative z-10 mx-auto flex w-full max-w-[1120px] flex-col gap-8 pt-0 sm:gap-9 sm:pt-1 lg:gap-10 lg:pt-2"
+        className="relative z-10 mx-auto flex w-full max-w-5xl flex-col gap-8 pt-0 sm:gap-9 sm:pt-1 lg:gap-10 lg:pt-2"
       >
-        <div className="grid w-full gap-8 lg:min-h-[480px] lg:grid-cols-[0.96fr_0.9fr] lg:items-center lg:gap-10">
-          <div className="relative max-w-[32rem]">
+        {/* Phones: single column (unchanged). From md the hero is two columns so
+            tablets and laptops do not leave the right half empty. */}
+        <div className="grid w-full gap-8 md:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] md:items-center md:gap-8 lg:min-h-[480px] lg:gap-12">
+          <div className="relative max-w-[32rem] md:max-w-none">
             <motion.div
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
@@ -440,7 +457,7 @@ const Hero = () => {
               initial={{ opacity: 0, y: 22 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="display-poster poster-shadow mt-4 whitespace-nowrap text-[2.95rem] uppercase leading-[0.9] text-gray-950 dark:text-white sm:text-[4rem] lg:text-[4.75rem]"
+              className="display-poster poster-shadow mt-4 whitespace-nowrap text-[2.95rem] uppercase leading-[0.9] text-gray-950 dark:text-white sm:text-[4rem] md:text-[3.15rem] lg:text-[4.25rem] xl:text-[4.75rem]"
             >
               <span className="inline-block -skew-x-6">Sourav Chowdhury</span>
             </motion.h1>
@@ -457,6 +474,53 @@ const Hero = () => {
               <span className="text-emerald-600 dark:text-emerald-300">
                 <WordCycle words={headlineWords} />
               </span>
+            </motion.div>
+
+            {/* Tablet/desktop only: fills the text column with what a recruiter
+                needs first. Phones keep the original, tighter hero. Figures
+                match the resume summary and the About stats. */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.32 }}
+              className="hidden md:block"
+            >
+              <p className="mt-5 max-w-xl text-base leading-relaxed text-gray-600 dark:text-gray-300 lg:text-[1.05rem]">
+                I build and ship production web platforms with{' '}
+                <span className="font-semibold text-gray-900 dark:text-white">
+                  Next.js, React, TypeScript, Node.js
+                </span>{' '}
+                and{' '}
+                <span className="font-semibold text-gray-900 dark:text-white">PostgreSQL</span>
+                {' '}- from business discovery and e-commerce to election management.
+              </p>
+              <dl className="mt-6 grid max-w-xl grid-cols-3 gap-3">
+                {heroStats.map((stat) => (
+                  <div
+                    key={stat.label}
+                    className="group relative flex flex-col overflow-hidden rounded-2xl border border-gray-200/80 bg-white/70 p-3 shadow-[0_18px_40px_-30px_rgba(15,23,42,0.35)] backdrop-blur-md transition-colors hover:border-sky-300/70 dark:border-white/10 dark:bg-white/[0.04] dark:hover:border-sky-400/40 lg:p-4"
+                  >
+                    {/* Thin accent line along the top edge. */}
+                    <span
+                      aria-hidden="true"
+                      className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-sky-500 via-emerald-400 to-transparent opacity-70"
+                    />
+                    <dt className="order-2 mt-1 font-mono text-[10px] uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400">
+                      {stat.label}
+                    </dt>
+                    <dd className="order-1 flex items-center justify-between gap-2">
+                      <span className="bg-gradient-to-r from-sky-600 to-emerald-500 bg-clip-text text-2xl font-extrabold tracking-tight text-transparent dark:from-sky-300 dark:to-emerald-300 lg:text-[1.7rem]">
+                        {stat.value}
+                      </span>
+                      <stat.icon
+                        size={18}
+                        aria-hidden="true"
+                        className="shrink-0 text-sky-500/70 transition-colors group-hover:text-emerald-500 dark:text-sky-300/70"
+                      />
+                    </dd>
+                  </div>
+                ))}
+              </dl>
             </motion.div>
 
             <motion.div
@@ -496,14 +560,13 @@ const Hero = () => {
                   Resume
                 </motion.button>
               </MagneticButton>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.44 }}
-              className="mt-4 flex flex-wrap items-center gap-3"
-            >
+              {/* Profiles share the CTA row from sm up as icon buttons. On
+                  phones they drop to their own row with labels, as before. */}
+              <div
+                role="group"
+                aria-label="Profiles"
+                className="mt-1 flex w-full flex-wrap items-center gap-3 sm:ml-1 sm:mt-0 sm:w-auto sm:gap-2 sm:border-l sm:border-gray-200 sm:pl-4 dark:sm:border-white/10"
+              >
               {socialLinks.map((link) => {
                 const Icon = link.icon
 
@@ -522,20 +585,22 @@ const Hero = () => {
                     }
                     whileHover={reduceMotion ? undefined : { y: -3, scale: 1.02 }}
                     whileTap={reduceMotion ? undefined : { scale: 0.98 }}
-                    className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/74 px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-[0_18px_42px_-30px_rgba(15,23,42,0.26)] backdrop-blur-md dark:bg-white/7 dark:text-gray-200"
+                    title={link.label}
+                    className="inline-flex items-center justify-center gap-2 rounded-full border border-white/12 bg-white/74 px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-[0_18px_42px_-30px_rgba(15,23,42,0.26)] backdrop-blur-md transition-colors hover:text-sky-600 dark:bg-white/7 dark:text-gray-200 dark:hover:text-sky-300 sm:h-12 sm:w-12 sm:gap-0 sm:border-gray-200/80 sm:px-0 sm:py-0 dark:sm:border-white/12"
                     onClick={() =>
                       recordClick(`hero-social-${link.label.toLowerCase()}`)
                     }
                   >
-                    <Icon size={16} />
-                    {link.label}
+                    <Icon size={16} className="sm:h-[18px] sm:w-[18px]" />
+                    <span className="sm:sr-only">{link.label}</span>
                   </motion.a>
                 )
               })}
+              </div>
             </motion.div>
           </div>
 
-          <div className="relative flex items-start justify-center pt-2 lg:-mt-14 lg:justify-end">
+          <div className="relative flex items-start justify-center pt-2 md:items-center md:pt-0">
             <div className="pointer-events-none absolute inset-0 hidden lg:block">
               <motion.div
                 className="absolute right-[14%] top-[8%] h-[2px] w-28 origin-left bg-gradient-to-r from-white/10 via-sky-300/90 to-transparent"
@@ -561,8 +626,46 @@ const Hero = () => {
               initial={{ opacity: 0, x: 24, y: 14 }}
               animate={{ opacity: 1, x: 0, y: 0 }}
               transition={{ delay: 0.32 }}
-              className="relative w-full max-w-[18rem] lg:max-w-[19rem]"
+              className="relative w-full max-w-[18rem] md:max-w-[16.5rem] lg:max-w-[19rem]"
             >
+              {/* Floating glass badges (tablet/desktop only). They sit outside
+                  the photo frame so they never cover the face, and stay still
+                  under reduced motion. */}
+              <motion.div
+                aria-hidden="true"
+                initial={{ opacity: 0, x: -12 }}
+                animate={reduceMotion ? { opacity: 1, x: 0 } : { opacity: 1, x: 0, y: [0, -6, 0] }}
+                transition={
+                  reduceMotion
+                    ? { delay: 0.6 }
+                    : { opacity: { delay: 0.6 }, x: { delay: 0.6 }, y: { duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.6 } }
+                }
+                className="absolute -left-6 -top-5 z-20 hidden items-center gap-2.5 rounded-2xl border border-white/60 bg-white/85 px-3 py-2 shadow-[0_20px_45px_-25px_rgba(15,23,42,0.45)] backdrop-blur-md dark:border-white/10 dark:bg-gray-900/80 md:flex lg:-left-12"
+              >
+                <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-sky-500 to-emerald-500 text-white">
+                  <Sparkles size={16} />
+                </span>
+                <span className="leading-tight">
+                  <span className="block text-sm font-bold text-gray-900 dark:text-white">MERN + AI</span>
+                  <span className="block font-mono text-[10px] uppercase tracking-[0.14em] text-gray-500 dark:text-gray-400">Full stack developer</span>
+                </span>
+              </motion.div>
+              <motion.div
+                aria-hidden="true"
+                initial={{ opacity: 0, x: 12 }}
+                animate={reduceMotion ? { opacity: 1, x: 0 } : { opacity: 1, x: 0, y: [0, 6, 0] }}
+                transition={
+                  reduceMotion
+                    ? { delay: 0.75 }
+                    : { opacity: { delay: 0.75 }, x: { delay: 0.75 }, y: { duration: 5.5, repeat: Infinity, ease: 'easeInOut', delay: 0.75 } }
+                }
+                className="absolute -right-3 bottom-8 z-20 hidden items-center gap-2 rounded-2xl border border-white/60 bg-white/85 px-3 py-2 shadow-[0_20px_45px_-25px_rgba(15,23,42,0.45)] backdrop-blur-md dark:border-white/10 dark:bg-gray-900/80 md:flex lg:-right-10"
+              >
+                <Code2 size={16} className="text-emerald-500" />
+                <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-700 dark:text-gray-200">
+                  React · Node.js · OpenAI
+                </span>
+              </motion.div>
               <div className="absolute inset-x-[12%] top-[10%] h-[72%] rounded-full bg-gradient-to-br from-sky-500/18 via-emerald-500/16 to-transparent blur-[85px]" />
 
               <div className="absolute inset-x-8 top-4 h-[calc(100%-1.5rem)] rounded-[26px] border border-white/14 bg-white/8 backdrop-blur-[2px] dark:bg-white/4" />
@@ -577,8 +680,16 @@ const Hero = () => {
                     ? undefined
                     : { duration: 4.4, repeat: Infinity, ease: 'easeInOut' }
                 }
-                className="tech-frame relative overflow-hidden rounded-[26px] border border-white/16 bg-white/85 p-2.5 shadow-[0_40px_110px_-52px_rgba(15,23,42,0.6)] dark:bg-[#08111a]/88"
+                className="relative"
               >
+                {/* Gradient ring (tablet/desktop). It lives inside the floating
+                    wrapper so it moves with the photo, and sits behind the
+                    frame so only a thin rim shows. */}
+                <div
+                  aria-hidden="true"
+                  className="absolute -inset-[3px] hidden rounded-[29px] bg-gradient-to-br from-sky-400 via-emerald-400 to-cyan-300 opacity-90 shadow-[0_0_40px_-8px_rgba(16,185,129,0.45)] dark:from-sky-500 dark:via-emerald-500 dark:to-cyan-400 dark:opacity-70 md:block"
+                />
+              <div className="tech-frame relative overflow-hidden rounded-[26px] border border-white/16 bg-white/85 p-2.5 shadow-[0_40px_110px_-52px_rgba(15,23,42,0.6)] dark:bg-[#08111a]/88">
                 <div className="overflow-hidden rounded-[20px] border border-white/14 bg-gradient-to-br from-sky-100 via-white to-emerald-50 dark:from-[#0d1724] dark:via-[#0a121b] dark:to-[#0f171f]">
                   <div className="relative aspect-[0.92]">
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(14,165,233,0.18),transparent_58%)] dark:bg-[radial-gradient(circle_at_center,rgba(14,165,233,0.22),transparent_58%)]" />
@@ -619,7 +730,7 @@ const Hero = () => {
                     <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#020617]/85 via-[#020617]/25 to-transparent" />
                   </div>
                 </div>
-
+              </div>
               </motion.div>
             </motion.div>
           </div>

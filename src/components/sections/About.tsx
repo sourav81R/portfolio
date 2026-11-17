@@ -37,10 +37,11 @@ const stats: StatItem[] = [
     countTo: 15,
     suffix: '+',
     // "Built" counts every project in the Projects section (client and
-    // personal). The summary above says "Shipped 5 live products", which are
-    // only the live client products - the note ties the two numbers together.
+    // personal); every one of them is live. The 5 are client products only -
+    // TejViral, Voteniti and the Oneisok website are Oneisok in-house
+    // products. Same wording as the hero stats.
     label: 'Projects Built',
-    note: 'incl. 5 live client products',
+    note: 'incl. 5 client products',
     color: 'text-emerald-500 dark:text-emerald-300',
     bg: 'bg-emerald-500/12',
   },
@@ -185,11 +186,11 @@ const About = () => {
               business-discovery, election-management and admin platforms.
             </p>
 
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-8 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-3">
               {tags.map((tag) => (
                 <span
                   key={tag}
-                  className="premium-chip rounded-full border border-white/12 bg-white/78 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-gray-700 shadow-[0_18px_42px_-32px_rgba(15,23,42,0.24)] backdrop-blur-md dark:bg-white/7 dark:text-gray-200"
+                  className="premium-chip flex items-center justify-center rounded-2xl border border-white/12 bg-white/78 px-3 py-2 text-center text-[10px] font-semibold uppercase leading-snug tracking-[0.12em] sm:rounded-full sm:px-4 sm:text-[11px] sm:tracking-[0.18em] text-gray-700 shadow-[0_18px_42px_-32px_rgba(15,23,42,0.24)] backdrop-blur-md dark:bg-white/7 dark:text-gray-200"
                 >
                   {tag}
                 </span>
@@ -198,7 +199,7 @@ const About = () => {
           </div>
         </motion.div>
 
-        <div className="mt-10 grid gap-4 lg:grid-cols-4">
+        <div className="mt-10 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           {stats.map((stat, index) => (
             <motion.article
               key={stat.label}
@@ -206,19 +207,26 @@ const About = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.14 }}
               transition={{ duration: 0.28, delay: 0.1 + index * 0.06 }}
-              className="premium-panel soft-panel rounded-[24px] border border-white/12 bg-white/78 p-5 backdrop-blur-md dark:bg-[#07111a]/78"
+              className="premium-panel soft-panel rounded-[24px] border border-white/12 bg-white/78 p-4 backdrop-blur-md sm:p-5 dark:bg-[#07111a]/78"
             >
-              <div className={`inline-flex rounded-2xl p-3 ${stat.bg} ${stat.color}`}>
-                <stat.icon size={22} />
+              {/* Heading left, icon right on one row; min-w-0 lets a long
+                  value truncate instead of pushing the icon out. */}
+              <div className="flex items-center justify-between gap-2 sm:gap-3">
+                <h3 className="min-w-0 break-words text-xl font-bold sm:text-2xl text-gray-900 dark:text-white">
+                  {typeof stat.countTo === 'number' ? (
+                    <CountUp to={stat.countTo} suffix={stat.suffix} />
+                  ) : (
+                    stat.value
+                  )}
+                </h3>
+                <div
+                  aria-hidden="true"
+                  className={`inline-flex shrink-0 rounded-xl p-2 sm:rounded-2xl sm:p-2.5 ${stat.bg} ${stat.color}`}
+                >
+                  <stat.icon size={20} className="h-[18px] w-[18px] sm:h-5 sm:w-5" />
+                </div>
               </div>
-              <h3 className="mt-4 text-2xl font-bold text-gray-900 dark:text-white">
-                {typeof stat.countTo === 'number' ? (
-                  <CountUp to={stat.countTo} suffix={stat.suffix} />
-                ) : (
-                  stat.value
-                )}
-              </h3>
-              <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.22em] text-gray-500 dark:text-gray-400">
+              <p className="mt-2 font-mono text-[10px] uppercase leading-relaxed tracking-[0.14em] sm:tracking-[0.22em] text-gray-500 dark:text-gray-400">
                 {stat.label}
               </p>
               {stat.note && (
@@ -247,11 +255,11 @@ const About = () => {
               interface decisions connect with performance, scale, and product
               clarity.
             </p>
-            <div className="mt-6 flex flex-wrap gap-3">
+            <div className="mt-6 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-3">
               {focusAreas.map((item) => (
                 <span
                   key={item}
-                  className="premium-chip rounded-full border border-emerald-400/18 bg-emerald-500/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-emerald-700 dark:text-emerald-300"
+                  className="premium-chip flex items-center justify-center rounded-2xl border border-emerald-400/18 bg-emerald-500/10 px-3 py-2 text-center text-[10px] font-semibold uppercase leading-snug tracking-[0.12em] sm:rounded-full sm:px-4 sm:text-[11px] sm:tracking-[0.2em] text-emerald-700 dark:text-emerald-300"
                 >
                   {item}
                 </span>
@@ -292,15 +300,18 @@ const About = () => {
               transition={{ duration: 0.3, delay: 0.2 + index * 0.06 }}
               className="premium-panel soft-panel rounded-[28px] border border-white/12 bg-white/74 p-6 backdrop-blur-md dark:bg-[#07111a]/74"
             >
-              <div
-                className={`inline-flex h-14 w-14 items-center justify-center rounded-[20px] ${quality.bg} ${quality.color}`}
-              >
-                <quality.icon size={24} />
+              <div className="flex items-center justify-between gap-4">
+                <h3 className="min-w-0 text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+                  {quality.title}
+                </h3>
+                <div
+                  aria-hidden="true"
+                  className={`inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-[18px] ${quality.bg} ${quality.color}`}
+                >
+                  <quality.icon size={22} />
+                </div>
               </div>
-              <h3 className="mt-5 text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-                {quality.title}
-              </h3>
-              <p className="mt-3 text-sm leading-7 text-gray-600 dark:text-gray-300">
+              <p className="mt-4 text-sm leading-7 text-gray-600 dark:text-gray-300">
                 {quality.description}
               </p>
             </motion.article>

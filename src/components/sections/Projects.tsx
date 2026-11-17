@@ -150,17 +150,15 @@ const Projects = () => {
     >
       <AnimatedBorder>
         <div className="mx-auto max-w-6xl p-4 sm:p-6 md:p-10">
-          <div className="mb-10 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-            <div className="max-w-2xl">
-              <p className="mb-3 text-xs uppercase tracking-[0.26em] text-sky-600 dark:text-sky-400">
-                Projects System
-              </p>
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">
-                Searchable, draggable, recruiter-aware project showcase
-              </h2>
-            </div>
-            <p className="max-w-xl text-sm leading-relaxed text-gray-600 dark:text-gray-400 sm:text-base">
-              This section now acts like a product surface: smart filtering, drag-and-drop ordering, recruiter prioritization, and richer previews.
+          <div className="mb-6 sm:mb-8">
+            <p className="mb-2 text-xs uppercase tracking-[0.26em] text-sky-600 dark:text-sky-400">
+              Projects
+            </p>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">
+              Selected work
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm text-gray-600 dark:text-gray-400 sm:text-base">
+              Live client products, platforms, and personal builds.
             </p>
           </div>
 
@@ -299,10 +297,12 @@ const Projects = () => {
                           <span className="rounded-full border border-white/20 bg-black/60 backdrop-blur-sm px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-white/90">
                             {projectTypeLabels[project.type]}
                           </span>
+                          {!isCoarsePointer && (
                           <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/60 backdrop-blur-sm px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-white/90">
                             <GripVertical size={12} />
                             Drag
                           </span>
+                          )}
                         </div>
                         <div className="absolute bottom-0 left-0 right-0 p-4">
                           <h3 className="text-2xl font-bold text-white">{project.title}</h3>
@@ -613,6 +613,31 @@ const ProjectModal = ({
             {project.previewVideo ? (
               <div className="overflow-hidden rounded-2xl border border-gray-200 bg-black dark:border-gray-800">
                 <video src={project.previewVideo} controls className="h-full w-full" />
+              </div>
+            ) : project.liveUrl && project.embeddable === false ? (
+              <div className="relative h-[56vh] overflow-hidden rounded-2xl border border-gray-200 bg-gray-900 dark:border-gray-800">
+                <img
+                  src={project.bgImage}
+                  alt={`${project.title} homepage`}
+                  loading="lazy"
+                  decoding="async"
+                  onError={handleCoverError}
+                  className="h-full w-full object-cover object-top"
+                />
+                <div className="absolute inset-0 flex flex-col items-center justify-end gap-3 bg-gradient-to-t from-black/85 via-black/40 to-transparent p-6 text-center">
+                  <p className="max-w-md text-sm text-white/85">
+                    This site blocks embedded previews for security, so open it in a new tab to explore it live.
+                  </p>
+                  <a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 shadow-lg transition hover:bg-sky-50"
+                  >
+                    <ExternalLink size={15} />
+                    Open live site
+                  </a>
+                </div>
               </div>
             ) : project.liveUrl ? (
               <div className="relative h-[56vh] overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-black">

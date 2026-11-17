@@ -1,12 +1,17 @@
 import { useRef, useState } from 'react'
 import clsx from 'clsx'
 import { Briefcase, Calendar, ChevronRight, FileBadge2, MapPin } from 'lucide-react'
-import { motion, useReducedMotion, useScroll, useSpring } from 'framer-motion'
-import AnimatedBorder from '../common/AnimatedBorder'
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+  type MotionValue,
+} from 'framer-motion'
 import ExperienceModal, {
   type ExperienceEntry,
 } from '../common/ExperienceModal'
-import { getSectionRevealProps, MOTION_TOKENS } from '../../lib/motion'
+import { getSectionRevealProps } from '../../lib/motion'
 import { resolvePublicAsset } from '../../lib/publicAsset'
 
 const experienceData: ExperienceEntry[] = [
@@ -17,8 +22,14 @@ const experienceData: ExperienceEntry[] = [
     location: 'Kolkata, India (Onsite)',
     badge: 'Current Role',
     summary:
-      'Building and maintaining client and company platforms end to end - a nationwide election operations platform, the company website with its own admin CMS, and the OneisOk Legal consultancy site.',
+      'Building and maintaining company platforms end to end - TejViral, a local-business discovery and commerce platform; Voteniti, a nationwide election operations platform; the company website with its own admin CMS; and the OneisOk Legal consultancy site.',
     description: [
+      'Built TejViral (tejviral.com), a local-business discovery and commerce platform with separate customer, vendor, partner, and admin workspaces on Next.js 16, Express 5, and Supabase PostgreSQL 17.',
+      'Delivered category, subcategory, PIN-code, and radius-based business search, plus intent-aware Daily Needs search with suggestions and missed-search analytics.',
+      'Developed SMS, email, and WhatsApp campaign automation (WhatsApp Cloud API and a QR-linked device service) with gateways, contacts, templates, workflows, and reports.',
+      'Shipped hosted vCards and WhatsApp stores, an online shop with cart, coupons, shipping, and vendor commissions, and Razorpay payments.',
+      'Migrated a 97-table, 61,767-row legacy database to Supabase PostgreSQL 17, verified with 616,365 cell comparisons and zero mismatches, while keeping the mobile app API and existing logins working.',
+      'Run TejViral in production on AWS EC2 with Nginx, PM2, and a GitHub Actions CI/CD pipeline; secured with HTTP-only cookies, CSRF checks, role-based access, and Row Level Security.',
       'Engineer Voteniti, a full-stack Election Management System covering MP, MLA, Municipal, and Panchayat election hierarchies across India.',
       'Designed an on-demand area-data layer that serves ~255k Gram Panchayats and ~97k urban Wards from bundled NDJSON files, materializing rows into Postgres only on use so the database stays inside a 500 MB tier.',
       'Built enterprise RBAC with area- and election-scoped role assignments, smart-delete approval workflows, and audit logging across every hierarchy level.',
@@ -28,6 +39,8 @@ const experienceData: ExperienceEntry[] = [
       'Deliver CMS and multilingual UI features end to end, improve performance, technical SEO, and security, and own production deployment workflows.',
     ],
     metrics: [
+      'TejViral: 97-table migration verified with zero mismatches',
+      'TejViral: customer, vendor, partner, and admin workspaces live',
       '543 Lok Sabha constituencies modeled as Area Master records',
       '85+ SQL migrations authored and shipped',
       'MP hierarchy load cut from minutes to seconds',
@@ -39,7 +52,10 @@ const experienceData: ExperienceEntry[] = [
       'Node.js',
       'Express',
       'PostgreSQL',
+      'Supabase',
       'MongoDB',
+      'Razorpay',
+      'AWS EC2',
       'Tailwind CSS',
       'TanStack Query',
       'Zod',
@@ -123,180 +139,59 @@ type ActiveModalState =
 const Experience = () => {
   const reduceMotion = useReducedMotion()
   const sectionRevealProps = getSectionRevealProps(reduceMotion)
-  const sectionRef = useRef<HTMLDivElement>(null)
+  const stackRef = useRef<HTMLDivElement>(null)
   const [activeModal, setActiveModal] = useState<ActiveModalState>(null)
+  // 0 when the first card pins, 1 when the last one has covered the stack.
   const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start 82%', 'end 62%'],
-  })
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 60,
-    damping: 18,
+    target: stackRef,
+    offset: ['start start', 'end end'],
   })
 
   return (
     <>
+      {/*
+        No AnimatedBorder here: its overflow-hidden would stop the cards from
+        sticking. Sticky also relies on html/body/#root using overflow-x: clip
+        (see index.css).
+      */}
       <motion.div
         {...sectionRevealProps}
-        className="px-4 py-16 sm:px-6 sm:py-20 lg:py-24"
+        className="px-4 py-16 text-gray-900 dark:text-white sm:px-6 sm:py-20 lg:py-24"
       >
-        <AnimatedBorder>
+        <div className="mx-auto max-w-xl text-center">
+          <p className="text-[11px] uppercase tracking-[0.4em] text-gray-500 dark:text-gray-400">
+            Real Work Timeline
+          </p>
+          <h2 className="mt-3 text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
+            Experience
+          </h2>
+          <p className="mt-3 text-xs leading-relaxed text-gray-600 dark:text-gray-400 sm:text-sm">
+            Scroll through my roles - each one stacks over the last.
+          </p>
+        </div>
+
+        <div
+          ref={stackRef}
+          className="relative mx-auto mt-10 max-w-3xl"
+          style={reduceMotion ? undefined : { height: `${(experienceData.length + 1) * 55}vh` }}
+        >
           <div
-            ref={sectionRef}
-            className="relative mx-auto max-w-5xl px-4 py-10 text-gray-900 dark:text-white sm:px-5 sm:py-12 lg:px-8"
+            className={reduceMotion ? 'space-y-6' : 'sticky grid items-start'}
+            style={reduceMotion ? undefined : { top: STACK_TOP }}
           >
-            <div className="relative z-10">
-              <div className="mx-auto max-w-xl text-center">
-                <p className="text-[11px] uppercase tracking-[0.4em] text-gray-500 dark:text-gray-400">
-                  Real Work Timeline
-                </p>
-                <h2 className="mt-3 text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
-                  Experience
-                </h2>
-                <p className="mt-3 text-xs leading-relaxed text-gray-600 dark:text-gray-400 sm:text-sm">
-                  Compact internship cards first, with deeper proof and certificate access
-                  only when someone asks for it.
-                </p>
-              </div>
-
-              <div className="relative mx-auto mt-10 max-w-4xl">
-                <div className="absolute bottom-0 left-5 top-0 w-px bg-gray-200 dark:bg-gray-800 md:left-1/2 md:-translate-x-1/2" />
-                <motion.div
-                  className="absolute bottom-0 left-5 top-0 w-px bg-emerald-400 md:left-1/2 md:-translate-x-1/2"
-                  style={{
-                    scaleY: reduceMotion ? 1 : smoothProgress,
-                    transformOrigin: 'top',
-                  }}
-                />
-
-                <div className="space-y-6 md:space-y-10">
-                  {experienceData.map((experience, index) => {
-                    const alignsLeft = index % 2 === 0
-
-                    return (
-                      <motion.article
-                        key={`${experience.company}-${experience.period}`}
-                        initial={
-                          reduceMotion
-                            ? false
-                            : { opacity: 0, x: alignsLeft ? -36 : 36, y: 20 }
-                        }
-                        whileInView={{ opacity: 1, x: 0, y: 0 }}
-                        viewport={{ once: true, margin: '-60px' }}
-                        transition={{
-                          duration: MOTION_TOKENS.durations.medium,
-                          ease: MOTION_TOKENS.easing,
-                        }}
-                        className={clsx(
-                          'relative flex',
-                          alignsLeft ? 'md:justify-start' : 'md:justify-end'
-                        )}
-                      >
-                        <div className="absolute left-5 top-8 h-3 w-3 -translate-x-1/2 rounded-full bg-emerald-400 ring-4 ring-white dark:ring-[#0b1220] md:left-1/2" />
-
-                        <div
-                          className={clsx(
-                            'ml-10 w-full md:ml-0 md:w-[calc(50%-2.25rem)]',
-                            alignsLeft ? 'md:mr-auto' : 'md:ml-auto'
-                          )}
-                        >
-                          <div className="rounded-[24px] border border-gray-200 bg-gray-50/70 p-4 shadow-sm transition duration-300 hover:border-emerald-500/35 hover:shadow-[0_18px_45px_-34px_rgba(16,185,129,0.28)] dark:border-gray-800 dark:bg-gray-900/50 sm:p-5">
-                            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                              <div className="max-w-xl">
-                                <div className="flex flex-wrap items-center gap-2">
-                                  <span className="inline-flex rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-700 dark:text-emerald-200">
-                                    {experience.badge}
-                                  </span>
-                                </div>
-                                <h3 className="mt-3 text-xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white sm:text-2xl">
-                                  {experience.role}
-                                </h3>
-                                <p className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 dark:text-emerald-300 sm:text-[15px]">
-                                  <Briefcase size={15} className="text-emerald-500 dark:text-emerald-400" />
-                                  {experience.company}
-                                </p>
-                              </div>
-
-                              <div className="flex flex-col gap-2 text-xs text-gray-500 dark:text-gray-400 sm:items-end">
-                                <span className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 dark:border-gray-700 dark:bg-gray-800">
-                                  <Calendar size={13} />
-                                  {experience.period}
-                                </span>
-                                <span className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 dark:border-gray-700 dark:bg-gray-800">
-                                  <MapPin size={13} />
-                                  {experience.location}
-                                </span>
-                              </div>
-                            </div>
-
-                            <p className="mt-4 text-sm leading-relaxed text-gray-700 dark:text-gray-400">
-                              {experience.summary}
-                            </p>
-
-                            <div className="mt-4 flex flex-wrap gap-2">
-                              {experience.tech.slice(0, 4).map((tech) => (
-                                <span
-                                  key={tech}
-                                  className="rounded-full border border-gray-200 bg-gray-50 px-2.5 py-1 text-[11px] font-medium text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
-                                >
-                                  {tech}
-                                </span>
-                              ))}
-                            </div>
-
-                            <div
-                              className={clsx(
-                                'mt-5 grid gap-2.5',
-                                experience.credential && 'sm:grid-cols-2'
-                              )}
-                            >
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  setActiveModal({ view: 'details', experience })
-                                }
-                                className="group inline-flex min-h-[50px] w-full items-center justify-center gap-1.5 rounded-full border border-sky-300/35 bg-gradient-to-r from-sky-500 via-cyan-500 to-sky-400 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_18px_38px_-16px_rgba(14,165,233,0.85)] transition duration-200 hover:-translate-y-0.5 hover:from-sky-400 hover:via-cyan-400 hover:to-sky-300 hover:shadow-[0_22px_46px_-16px_rgba(56,189,248,1)] focus:outline-none focus:ring-2 focus:ring-sky-200/80 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-[#0b1220]"
-                              >
-                                <Briefcase
-                                  size={16}
-                                  className="shrink-0 text-white transition group-hover:scale-110"
-                                />
-                                <span>View Details</span>
-                                <ChevronRight
-                                  size={16}
-                                  className="shrink-0 text-white/90 transition group-hover:translate-x-1"
-                                />
-                              </button>
-                              {experience.credential && (
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  setActiveModal({ view: 'certificate', experience })
-                                }
-                                className="group inline-flex min-h-[50px] w-full items-center justify-center gap-1.5 rounded-full border border-emerald-300/35 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-400 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_18px_38px_-16px_rgba(16,185,129,0.82)] transition duration-200 hover:-translate-y-0.5 hover:from-emerald-400 hover:via-teal-400 hover:to-cyan-300 hover:shadow-[0_22px_46px_-16px_rgba(45,212,191,0.98)] focus:outline-none focus:ring-2 focus:ring-emerald-200/80 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-[#0b1220]"
-                              >
-                                <FileBadge2
-                                  size={16}
-                                  className="shrink-0 text-white transition group-hover:scale-110"
-                                />
-                                <span>View Certificate</span>
-                                <ChevronRight
-                                  size={16}
-                                  className="shrink-0 text-white/90 transition group-hover:translate-x-1"
-                                />
-                              </button>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </motion.article>
-                    )
-                  })}
-                </div>
-              </div>
-            </div>
+            {experienceData.map((experience, index) => (
+              <StackedExperienceCard
+                key={`${experience.company}-${experience.period}`}
+                experience={experience}
+                index={index}
+                total={experienceData.length}
+                progress={scrollYProgress}
+                reduceMotion={Boolean(reduceMotion)}
+                onOpen={(view) => setActiveModal({ view, experience })}
+              />
+            ))}
           </div>
-        </AnimatedBorder>
+        </div>
       </motion.div>
 
       <ExperienceModal
@@ -306,6 +201,192 @@ const Experience = () => {
         onClose={() => setActiveModal(null)}
       />
     </>
+  )
+}
+
+const pad = (value: number) => String(value).padStart(2, '0')
+
+/** One accent per role, as full class strings so Tailwind keeps them. */
+const cardAccents = [
+  'border-sky-400/70 dark:border-sky-400/50',
+  'border-emerald-400/70 dark:border-emerald-400/50',
+  'border-fuchsia-400/70 dark:border-fuchsia-400/50',
+] as const
+const cardLines = [
+  'from-sky-400 via-cyan-400 to-emerald-400',
+  'from-emerald-400 via-teal-400 to-sky-400',
+  'from-fuchsia-400 via-violet-400 to-sky-400',
+] as const
+
+type StackedExperienceCardProps = {
+  experience: ExperienceEntry
+  index: number
+  total: number
+  progress: MotionValue<number>
+  reduceMotion: boolean
+  onOpen: (view: 'details' | 'certificate') => void
+}
+
+/*
+ * Stacked scroll card.
+ *
+ * Every card is position: sticky and pins a little lower than the one before
+ * it (STACK_TOP + index * STACK_STEP), so the edges of the covered cards stay
+ * visible as a stack. Later cards come later in the DOM and paint on top, so
+ * scrolling down slides each new card over the previous one; scrolling up
+ * peels them back. The spacer after each card (except the last) is the scroll
+ * distance a card stays fully in view before the next one arrives.
+ *
+ * Covered cards shrink slightly as later cards arrive. Reduced motion keeps
+ * the stacking (it is scroll position, not animation) but drops the scaling.
+ */
+// Clears the fixed navbar (and the top banner while it is shown), so the
+// stack is never hidden behind the bar when it slides back in.
+const STACK_TOP = 'calc(var(--banner-offset, 0px) + 6.5rem)'
+const STACK_STEP = 18
+
+const StackedExperienceCard = ({
+  experience,
+  index,
+  total,
+  progress,
+  reduceMotion,
+  onOpen,
+}: StackedExperienceCardProps) => {
+  const isLast = index === total - 1
+  const targetScale = 1 - (total - 1 - index) * 0.04
+  const enterStart = index / (total + 1)
+  const enterEnd = (index + 1) / (total + 1)
+  const startY = typeof window === 'undefined' ? 600 : window.innerHeight * 0.72
+  const y = useTransform(
+    progress,
+    [enterStart, enterEnd],
+    [index === 0 ? 0 : startY, index * STACK_STEP]
+  )
+  const opacity = useTransform(
+    progress,
+    [enterStart, enterEnd],
+    [index === 0 ? 1 : 0, 1]
+  )
+  const scale = useTransform(
+    progress,
+    [enterEnd, 1],
+    [1, targetScale]
+  )
+
+  return (
+    // All cards are direct children of one stack container: sticky can only
+    // travel within its parent's content box, so a shared parent keeps every
+    // card pinned for the whole stack. The gap is a margin (inside the
+    // parent's content box), not padding, for the same reason.
+      <motion.article
+        style={reduceMotion ? undefined : {
+          y,
+          opacity,
+          zIndex: index + 1,
+          scale,
+        }}
+        className={clsx(
+          'origin-top',
+          reduceMotion ? 'relative' : 'col-start-1 row-start-1',
+          !reduceMotion && !isLast && 'mb-4'
+        )}
+      >
+        <div
+          className={clsx(
+            'relative overflow-hidden rounded-[26px] border-2 bg-white p-5 shadow-[0_-18px_50px_-30px_rgba(15,23,42,0.35),0_30px_70px_-45px_rgba(15,23,42,0.45)] dark:bg-[#0b1220] dark:shadow-[0_-18px_50px_-30px_rgba(0,0,0,0.9)] sm:p-7',
+            cardAccents[index % cardAccents.length]
+          )}
+        >
+          <span
+            aria-hidden="true"
+            className={clsx(
+              'absolute inset-x-0 top-0 h-1 bg-gradient-to-r',
+              cardLines[index % cardLines.length]
+            )}
+          />
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute -right-2 -top-5 select-none font-mono text-[7rem] font-black leading-none text-gray-900/[0.04] dark:text-white/[0.05] sm:text-[9rem]"
+          >
+            {pad(index + 1)}
+          </span>
+
+          <div className="relative flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div className="max-w-xl">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="inline-flex rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-700 dark:text-emerald-200">
+                  {experience.badge}
+                </span>
+                <span className="font-mono text-[11px] font-semibold tabular-nums text-gray-400 dark:text-gray-500">
+                  {pad(index + 1)} / {pad(total)}
+                </span>
+              </div>
+              <h3 className="mt-3 text-2xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white sm:text-3xl">
+                {experience.role}
+              </h3>
+              <p className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 dark:text-emerald-300 sm:text-base">
+                <Briefcase size={16} className="text-emerald-500 dark:text-emerald-400" />
+                {experience.company}
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-2 text-xs text-gray-500 dark:text-gray-400 sm:flex-col sm:items-end">
+              <span className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 dark:border-gray-700 dark:bg-gray-800">
+                <Calendar size={13} />
+                {experience.period}
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 dark:border-gray-700 dark:bg-gray-800">
+                <MapPin size={13} />
+                {experience.location}
+              </span>
+            </div>
+          </div>
+
+          <p className="relative mt-4 text-sm leading-relaxed text-gray-700 dark:text-gray-300 sm:text-[15px]">
+            {experience.summary}
+          </p>
+
+          <div className="relative mt-4 flex flex-wrap gap-2">
+            {experience.tech.slice(0, 6).map((tech) => (
+              <span
+                key={tech}
+                className="rounded-full border border-gray-200 bg-gray-50 px-2.5 py-1 text-[11px] font-medium text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
+
+          <div
+            className={clsx(
+              'relative mt-5 grid gap-2.5',
+              experience.credential && 'sm:grid-cols-2'
+            )}
+          >
+            <button
+              type="button"
+              onClick={() => onOpen('details')}
+              className="group inline-flex min-h-[48px] w-full items-center justify-center gap-1.5 rounded-full border border-sky-300/35 bg-gradient-to-r from-sky-500 via-cyan-500 to-sky-400 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_18px_38px_-16px_rgba(14,165,233,0.85)] transition duration-200 hover:-translate-y-0.5 hover:from-sky-400 hover:via-cyan-400 hover:to-sky-300 focus:outline-none focus:ring-2 focus:ring-sky-200/80 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-[#0b1220]"
+            >
+              <Briefcase size={16} className="shrink-0 text-white transition group-hover:scale-110" />
+              <span>View Details</span>
+              <ChevronRight size={16} className="shrink-0 text-white/90 transition group-hover:translate-x-1" />
+            </button>
+            {experience.credential && (
+              <button
+                type="button"
+                onClick={() => onOpen('certificate')}
+                className="group inline-flex min-h-[48px] w-full items-center justify-center gap-1.5 rounded-full border border-emerald-300/35 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-400 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_18px_38px_-16px_rgba(16,185,129,0.82)] transition duration-200 hover:-translate-y-0.5 hover:from-emerald-400 hover:via-teal-400 hover:to-cyan-300 focus:outline-none focus:ring-2 focus:ring-emerald-200/80 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-[#0b1220]"
+              >
+                <FileBadge2 size={16} className="shrink-0 text-white transition group-hover:scale-110" />
+                <span>View Certificate</span>
+                <ChevronRight size={16} className="shrink-0 text-white/90 transition group-hover:translate-x-1" />
+              </button>
+            )}
+          </div>
+        </div>
+      </motion.article>
   )
 }
 

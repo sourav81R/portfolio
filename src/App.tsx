@@ -62,10 +62,10 @@ const SECTION_MIN_HEIGHTS: Record<string, number> = {
   experience: 1900,
   skills: 3300,
   // Re-measured after adding the project-type and domain filter rows.
-  projects: 3850,
+  projects: 3400,
   github: 1150,
   education: 1350,
-  certifications: 1950,
+  certifications: 1850,
   contact: 1500,
 }
 
@@ -106,7 +106,7 @@ function App() {
   // Restores the homepage title and canonical URL when returning from a
   // case study, which sets its own.
   usePageMetadata({
-    title: 'Sourav Chowdhury | Full Stack Developer (MERN, Next.js)',
+    title: 'Sourav Chowdhury | Full Stack Developer (MERN + AI)',
     description:
       'Sourav Chowdhury is a Full Stack Developer at Oneisok Digital Solution in Kolkata, India, building production systems with Next.js, React, TypeScript, Node.js and PostgreSQL - including Voteniti, an election management platform used across India.',
     path: '/',

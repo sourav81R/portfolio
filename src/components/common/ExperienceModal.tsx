@@ -112,7 +112,13 @@ const ExperienceModal = ({
             <div className="flex items-start justify-between gap-4 border-b border-white/10 bg-[#040816]/95 px-4 py-4 backdrop-blur-sm sm:px-5">
               <div className="min-w-0">
                 <p className="text-[10px] uppercase tracking-[0.26em] text-emerald-300">
-                  {view === 'details' ? 'Internship Details' : 'Internship Certificate'}
+                  {/* The current full-time role is not an internship; only
+                      entries that carry a certificate are internships. */}
+                  {view === 'details'
+                    ? experience.credential
+                      ? 'Internship Details'
+                      : 'Role Details'
+                    : 'Internship Certificate'}
                 </p>
                 <h2 className="mt-2 text-base font-semibold text-white sm:text-xl">
                   {experience.role}
