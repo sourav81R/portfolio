@@ -64,7 +64,7 @@ const SECTION_MIN_HEIGHTS: Record<string, number> = {
   // Re-measured after adding the project-type and domain filter rows.
   projects: 3400,
   github: 1150,
-  education: 1350,
+  education: 2350,
   certifications: 1850,
   contact: 1500,
 }

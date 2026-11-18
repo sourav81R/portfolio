@@ -220,6 +220,11 @@ const cardAccents = [
   'border-emerald-400/70 dark:border-emerald-400/50',
   'border-fuchsia-400/70 dark:border-fuchsia-400/50',
 ] as const
+const cardTints = [
+  'bg-sky-50/80 dark:bg-sky-500/[0.07]',
+  'bg-emerald-50/80 dark:bg-emerald-500/[0.07]',
+  'bg-fuchsia-50/80 dark:bg-fuchsia-500/[0.07]',
+] as const
 const cardLines = [
   'from-sky-400 via-cyan-400 to-emerald-400',
   'from-emerald-400 via-teal-400 to-sky-400',
@@ -313,8 +318,9 @@ const StackedExperienceCard = ({
       >
         <div
           className={clsx(
-            'relative overflow-hidden rounded-[28px] border-2 bg-white p-5 shadow-[0_-18px_50px_-30px_rgba(15,23,42,0.35),0_30px_70px_-45px_rgba(15,23,42,0.45)] dark:bg-[#0b1220] dark:shadow-[0_-18px_50px_-30px_rgba(0,0,0,0.9)] sm:p-7 lg:p-8',
-            cardAccents[index % cardAccents.length]
+            'relative overflow-hidden rounded-[28px] border-2 p-5 shadow-[0_-18px_50px_-30px_rgba(15,23,42,0.35),0_30px_70px_-45px_rgba(15,23,42,0.45)] dark:shadow-[0_-18px_50px_-30px_rgba(0,0,0,0.9)] sm:p-7 lg:p-8',
+            cardAccents[index % cardAccents.length],
+            cardTints[index % cardTints.length]
           )}
         >
           <span
