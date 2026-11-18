@@ -150,14 +150,14 @@ const Projects = () => {
     >
       <AnimatedBorder>
         <div className="mx-auto max-w-6xl p-4 sm:p-6 md:p-10">
-          <div className="mb-6 sm:mb-8">
+          <div className="mb-6 text-center sm:mb-8">
             <p className="mb-2 text-xs uppercase tracking-[0.26em] text-sky-600 dark:text-sky-400">
               Projects
             </p>
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">
               Selected work
             </h2>
-            <p className="mt-2 max-w-2xl text-sm text-gray-600 dark:text-gray-400 sm:text-base">
+            <p className="mx-auto mt-2 max-w-2xl text-sm text-gray-600 dark:text-gray-400 sm:text-base">
               Live client products, platforms, and personal builds.
             </p>
           </div>
