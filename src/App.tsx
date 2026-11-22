@@ -17,6 +17,7 @@ import PwaInstallPrompt from './components/common/PwaInstallPrompt'
 import AmbientBackground from './components/common/AmbientBackground'
 import CursorSpiderEffect from './components/common/CursorSpiderEffect'
 import FloatingActions from './components/common/FloatingActions'
+import PortfolioAssistant from './components/common/PortfolioAssistant'
 import SectionErrorBoundary from './components/system/SectionErrorBoundary'
 import { useAppStore } from './store/useAppStore'
 import { useSmoothScroll } from './providers/SmoothScrollProvider'
@@ -212,6 +213,7 @@ function App() {
       <AmbientBackground />
       <CursorSpiderEffect />
       <FloatingActions />
+      <PortfolioAssistant />
       <div className="relative z-10">
         <OpenToWorkBanner />
         <Navbar />

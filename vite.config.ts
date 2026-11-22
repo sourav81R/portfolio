@@ -1,9 +1,18 @@
 import { defineConfig } from 'vitest/config'
+import { loadEnv } from 'vite'
 import sitemap from './scripts/sitemap'
+import { assistantDevApi } from './scripts/assistant-dev-api'
 
 // https://vite.dev/config/
-export default defineConfig({
-  plugins: [sitemap()],
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '')
+  if (mode === 'development') {
+    if (env.GROQ_API_KEY) process.env.GROQ_API_KEY = env.GROQ_API_KEY
+    if (env.GROQ_MODEL) process.env.GROQ_MODEL = env.GROQ_MODEL
+  }
+
+  return {
+  plugins: [sitemap(), assistantDevApi()],
   build: {
     // The certificate PDFs are large binaries that must stay as separate
     // cacheable files; inlining anything sizeable would push it into the JS
@@ -33,4 +42,5 @@ export default defineConfig({
     globals: true,
     setupFiles: './src/setupTests.ts',
   },
+  }
 })

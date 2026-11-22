@@ -1,0 +1,5 @@
+export { askAssistant, createAssistantMemory } from './engine'
+export type { AssistantMemory, AssistantReply, AssistantTurn } from './engine'
+export { useAssistant } from './assistant-context'
+export type { AssistantState, Caption, Message } from './assistant-context'
+export { isSpeechRecognitionSupported, isSpeechSynthesisSupported, isVoiceSupported } from './voice-service'

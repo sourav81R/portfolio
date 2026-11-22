@@ -21,6 +21,7 @@ in a single Vite app.
 - Canvas cursor effects, including a click burst that cycles through rainbow colours
 - Draggable WhatsApp contact widget and a back-to-top action
 - PWA manifest, service worker, and install prompt support
+- Portfolio assistant with local project and profile knowledge, text and voice input, spoken replies, and optional AI fallback
 - Section-level and app-level error boundaries
 - Build-time sitemap generation plus structured data for search
 
@@ -36,6 +37,12 @@ in a single Vite app.
 - Lucide React
 - Vite 7 via `rolldown-vite`
 - Vitest + Testing Library
+
+## Portfolio Assistant
+
+The assistant answers portfolio questions from its local knowledge base, remembers project context for follow-ups, supports browser speech recognition and spoken replies, and can navigate to portfolio sections. An optional Vercel serverless endpoint adds generative answers for questions the local brain cannot resolve.
+
+The local Vite server and Vercel function both use the same server-side fallback. Set `GROQ_API_KEY` in `.env` for local development and in the Vercel project's server environment variables for production. The key must stay server-side and must not use a `VITE_` prefix. `GROQ_MODEL` is optional; see [`.env.example`](./.env.example) for the default model. Without a key, the local assistant continues to answer known portfolio questions.
 
 ### A note on the Vite setup
 

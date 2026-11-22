@@ -409,3 +409,50 @@ html,
 body {
   overflow-anchor: auto;
 }
+
+/* Keep the mascot visually balanced inside the voice stage as the panel scales. */
+.assistant-mascot {
+  scale: 0.82;
+}
+
+@media (min-width: 640px) {
+  .assistant-mascot {
+    scale: 0.8;
+  }
+}
+
+@media (min-width: 1024px) {
+  .assistant-mascot {
+    scale: 0.78;
+  }
+}
+
+@media (max-width: 639px) and (max-height: 520px) {
+  .portfolio-assistant-panel {
+    height: calc(100dvh - 1rem);
+  }
+
+  .assistant-avatar-stage {
+    min-height: 5rem;
+  }
+
+  .assistant-mascot {
+    width: 5rem;
+    height: 5rem;
+  }
+
+  .assistant-voice-caption p {
+    max-height: 3.25rem;
+  }
+
+  .assistant-voice-controls {
+    gap: 0.375rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .assistant-voice-mic {
+    width: 3rem;
+    height: 3rem;
+  }
+}
