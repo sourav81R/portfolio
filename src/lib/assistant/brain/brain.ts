@@ -330,7 +330,7 @@ export const respond = (input: string, priorMemory: AssistantMemory = createAssi
 }
 
 export const welcomeReply = (): AssistantReply => makeReply(
-  `Hi! 👋 I’m Sourav’s portfolio assistant. I know his ${projects.length} projects, technology stack, experience, education and contact details. Ask a question, or try one of the suggestions below.`,
+  'Hi! 👋 Explore Sourav’s projects, technical strengths, and experience. Ask for his resume or contact details.',
   { speak: '', chips: ['Show his projects', 'His tech stack', 'Is he open to work?'], handler: 'welcome' }
 )
 
