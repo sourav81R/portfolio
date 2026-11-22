@@ -9,11 +9,14 @@ Disallow: /dashboard
 # person query, and the AI crawlers that increasingly answer "who is X".
 User-agent: Googlebot
 Allow: /
+Disallow: /dashboard
 
 User-agent: Googlebot-Image
 Allow: /
+Disallow: /dashboard
 
 User-agent: Bingbot
 Allow: /
+Disallow: /dashboard
 
 Sitemap: https://sourav.is-a.dev/sitemap.xml

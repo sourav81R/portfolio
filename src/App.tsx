@@ -21,6 +21,8 @@ import SectionErrorBoundary from './components/system/SectionErrorBoundary'
 import { useAppStore } from './store/useAppStore'
 import { useSmoothScroll } from './providers/SmoothScrollProvider'
 import { usePageMetadata } from './hooks/usePageMetadata'
+import useCoarsePointer from './hooks/useCoarsePointer'
+import useConstrainedNetwork from './hooks/useConstrainedNetwork'
 import { prefetchSection, sectionLoaders } from './lib/sectionLoaders'
 
 const About = lazy(sectionLoaders.about)
@@ -71,6 +73,8 @@ const SECTION_MIN_HEIGHTS: Record<string, number> = {
 
 const SectionFallback = ({ minHeight }: { minHeight?: number }) => {
   const reduceMotion = useReducedMotion()
+  const isConstrainedNetwork = useConstrainedNetwork()
+  const useStaticPlaceholder = reduceMotion || isConstrainedNetwork
 
   return (
     <div
@@ -79,9 +83,9 @@ const SectionFallback = ({ minHeight }: { minHeight?: number }) => {
     >
       <motion.div
         className="mx-auto h-24 max-w-6xl rounded-2xl border border-gray-200/70 bg-gray-100/60 dark:border-gray-800/70 dark:bg-gray-900/40"
-        animate={reduceMotion ? undefined : { opacity: [0.55, 0.95, 0.55] }}
+        animate={useStaticPlaceholder ? undefined : { opacity: [0.55, 0.95, 0.55] }}
         transition={
-          reduceMotion
+          useStaticPlaceholder
             ? undefined
             : { duration: 1.4, repeat: Infinity, ease: 'easeInOut' }
         }
@@ -102,6 +106,8 @@ function App() {
   const recordPageView = useAppStore((state) => state.recordPageView)
   const activeHash = location.hash.replace('#', '')
   const { scrollTo } = useSmoothScroll()
+  const isCoarsePointer = useCoarsePointer()
+  const isConstrainedNetwork = useConstrainedNetwork()
 
   // Restores the homepage title and canonical URL when returning from a
   // case study, which sets its own.
@@ -117,7 +123,9 @@ function App() {
   }, [location.pathname, recordPageView])
 
   /*
-   * Warm every section's chunk once the browser is idle.
+   * Warm every section's chunk once the browser is idle on an unconstrained
+   * connection. On slow/data-saver connections, wait until the section is
+   * approaching or the visitor explicitly navigates to it.
    *
    * Mounting still happens on intersection, so this changes nothing about
    * when a section renders - it only means the code is already in memory
@@ -131,6 +139,10 @@ function App() {
    * uses time the browser has spare.
    */
   useEffect(() => {
+    // Section imports are requested on approach instead, so optional prefetch
+    // traffic cannot compete with the initial page on 3G or data-saver plans.
+    if (isConstrainedNetwork || isCoarsePointer) return
+
     const idle =
       window.requestIdleCallback?.bind(window) ??
       ((cb: IdleRequestCallback) =>
@@ -160,7 +172,7 @@ function App() {
       cancelled = true
       cancelIdle(handle)
     }
-  }, [])
+  }, [isCoarsePointer, isConstrainedNetwork])
 
   useEffect(() => {
     if (!location.hash) return

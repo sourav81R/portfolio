@@ -43,8 +43,8 @@ const chartPalette = ['#0ea5e9', '#6366f1', '#8b5cf6', '#14b8a6', '#f59e0b']
 const timeRanges: TimeRange[] = ['24h', '7d', '30d', 'all']
 
 const DashboardView = () => {
-  // noIndex mirrors the robots.txt disallow: this is a personal analytics view
-  // with no search value, and indexing it would only dilute the site's ranking.
+  // This personal analytics view has no search value. The route is also
+  // excluded from robots.txt and the generated sitemap.
   usePageMetadata({
     title: 'Dashboard - Sourav Chowdhury',
     description: 'Personal analytics dashboard for the portfolio.',

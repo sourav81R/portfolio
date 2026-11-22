@@ -193,12 +193,6 @@ const EducationCard = ({
           aria-hidden="true"
           className={clsx('absolute inset-x-0 top-0 h-1 bg-gradient-to-r', accent.line)}
         />
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute -right-1 -top-7 select-none font-mono text-[9rem] font-black leading-none text-gray-900/[0.045] dark:text-white/[0.05] sm:text-[12rem]"
-        >
-          0{index + 1}
-        </span>
 
         <div className="relative z-10 flex h-full flex-col justify-between gap-8 sm:flex-row sm:items-center sm:gap-10">
           <div className="min-w-0 flex-1">
@@ -211,9 +205,6 @@ const EducationCard = ({
               >
                 <Sparkles size={12} />
                 {edu.status}
-              </span>
-              <span className="font-mono text-[11px] font-semibold tabular-nums text-gray-500 dark:text-gray-400">
-                0{index + 1} / 0{total}
               </span>
             </div>
 

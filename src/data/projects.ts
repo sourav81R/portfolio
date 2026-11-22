@@ -69,7 +69,8 @@ export type ProjectRecord = {
  * Display order is driven by `recruiterPriority` (highest first), not by the
  * position in this array - see `useProjectDiscovery`. The agreed order is:
  *   TejViral (20) > Voteniti (19) > Oneisok website (18) > Satyanarayan
- *   Travel (17) > Avatar Ink (16) > Sonam's Clothing (15) > OneisOk Legal (14)
+ *   Travel (17) > Avatar Ink (16) > Darjeeling Hair Company (15.5) >
+ *   Sonam's Clothing (15) > OneisOk Legal (14)
  * followed by earlier work at 10 and below. Keep gaps unique when reordering.
  */
 export const projects: ProjectRecord[] = [
@@ -274,6 +275,47 @@ export const projects: ProjectRecord[] = [
     recruiterPriority: 14,
     impact:
       'Zero-build, host-agnostic legal site with 35+ data-driven service pages and WCAG AA contrast throughout.',
+  },
+  {
+    slug: 'darjeeling-hair-company',
+    title: 'Darjeeling Hair Company',
+    role: 'Full Stack Developer',
+    description:
+      'Full-stack salon website and super admin for bookings, services, gallery, hero slides, and business settings.',
+    problem:
+      'The salon needed a polished way to present its services and work online, collect appointment requests, and keep everyday website content current without developer involvement.',
+    solution:
+      'Built a Next.js 16 salon website with a Firebase-authenticated super admin, MongoDB-backed content, and image uploads stored in GridFS. Admins can manage bookings, services, gallery items, homepage slides, contact details, and opening hours.',
+    points: [
+      'Built a responsive salon website with service discovery, gallery, contact details, and appointment requests',
+      'Created a protected super admin for managing bookings, hero slides, services, gallery, and site settings',
+      'Verified Firebase ID tokens on the server and restricted admin access to an explicit email allowlist',
+      'Resized and converted uploaded images to WebP in the browser before storing them in MongoDB GridFS',
+      'Added bundled starter content so the site remains presentable before the salon uploads its own photos and services',
+    ],
+    learnings: [
+      'Building a content-management workflow around the real tasks salon staff perform',
+      'Handling protected admin access with server-side identity verification and an email allowlist',
+      'Managing image uploads efficiently while keeping site content in MongoDB',
+    ],
+    tech: [
+      'Next.js 16',
+      'TypeScript',
+      'Tailwind CSS v4',
+      'Framer Motion',
+      'MongoDB',
+      'GridFS',
+      'Firebase Auth',
+    ],
+    category: 'Web',
+    type: 'Full Stack',
+    featured: true,
+    embeddable: false,
+    liveUrl: 'https://www.thedarjeelinghaircompanyunisexsalon.in/',
+    bgImage: resolvePublicAsset('/images/Darjeeling Salon.png'),
+    recruiterPriority: 15.5,
+    impact:
+      'Live salon website with a protected super admin for bookings, services, gallery, and MongoDB GridFS image uploads.',
   },
   {
     slug: 'voteniti',

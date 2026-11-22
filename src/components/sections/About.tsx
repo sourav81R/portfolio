@@ -37,11 +37,11 @@ const stats: StatItem[] = [
     countTo: 15,
     suffix: '+',
     // "Built" counts every project in the Projects section (client and
-    // personal); every one of them is live. The 5 are client products only -
-    // TejViral, Voteniti and the Oneisok website are Oneisok in-house
-    // products. Same wording as the hero stats.
+    // personal); every one of them is live. The six client products include
+    // Darjeeling Hair Company. TejViral, Voteniti and the Oneisok website are
+    // Oneisok in-house products.
     label: 'Projects Built',
-    note: 'incl. 5 client products',
+    note: 'incl. 6 client products',
     color: 'text-emerald-500 dark:text-emerald-300',
     bg: 'bg-emerald-500/12',
   },

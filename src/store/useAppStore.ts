@@ -115,7 +115,21 @@ export const useAppStore = create<AppState>()(
         const missingSlugs = nextSlugs.filter((slug) => !knownSlugs.has(slug))
 
         if (missingSlugs.length > 0) {
-          set({ projectOrder: [...currentOrder, ...missingSlugs] })
+          const mergedOrder = [...currentOrder]
+
+          missingSlugs.forEach((slug) => {
+            const canonicalIndex = nextSlugs.indexOf(slug)
+            const nextKnownSlug = nextSlugs
+              .slice(canonicalIndex + 1)
+              .find((candidate) => mergedOrder.includes(candidate))
+            const insertAt = nextKnownSlug
+              ? mergedOrder.indexOf(nextKnownSlug)
+              : mergedOrder.length
+
+            mergedOrder.splice(insertAt, 0, slug)
+          })
+
+          set({ projectOrder: mergedOrder })
         }
       },
       reorderProjects: (fromSlug, toSlug) =>

@@ -10,6 +10,7 @@ import {
 } from 'react'
 import Lenis from 'lenis'
 import { useReducedMotion } from 'framer-motion'
+import useConstrainedNetwork from '../hooks/useConstrainedNetwork'
 
 type ScrollTarget = string | number | HTMLElement
 
@@ -30,12 +31,19 @@ const NAV_OFFSET = -96
 export function SmoothScrollProvider({ children }: { children: ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null)
   const reduceMotion = useReducedMotion()
+  const isConstrainedNetwork = useConstrainedNetwork()
   // Re-render consumers once Lenis exists so they don't capture a null ref.
   const [, setReady] = useState(false)
 
   useEffect(() => {
-    // Respect the OS "reduce motion" setting: fall back to native scrolling.
-    if (reduceMotion) return
+    // Native scrolling has better touch inertia and uses no JS animation loop.
+    // It also keeps scrolling responsive on reduced-motion and slow/data-saver
+    // connections. CSS and scrollTo still provide smooth native movement.
+    const useNativeScroll =
+      reduceMotion ||
+      isConstrainedNetwork ||
+      window.matchMedia('(pointer: coarse)').matches
+    if (useNativeScroll) return
 
     const lenis = new Lenis({
       /*
@@ -75,7 +83,7 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
       lenisRef.current = null
       setReady(false)
     }
-  }, [reduceMotion])
+  }, [isConstrainedNetwork, reduceMotion])
 
   const scrollTo = useCallback<SmoothScrollContextValue['scrollTo']>(
     (target, options) => {
@@ -86,13 +94,16 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
         const element =
           typeof target === 'string' ? document.querySelector(target) : target
 
+        const behavior = options?.immediate || reduceMotion ? 'auto' : 'smooth'
         if (typeof target === 'number') {
-          window.scrollTo({ top: target, behavior: options?.immediate ? 'auto' : 'smooth' })
-        } else if (element instanceof HTMLElement) {
-          element.scrollIntoView({
-            behavior: options?.immediate ? 'auto' : 'smooth',
-            block: 'start',
+          window.scrollTo({
+            top: target + (options?.offset ?? NAV_OFFSET),
+            behavior,
           })
+        } else if (element instanceof HTMLElement) {
+          const offset = options?.offset ?? NAV_OFFSET
+          const top = window.scrollY + element.getBoundingClientRect().top + offset
+          window.scrollTo({ top, behavior })
         }
         return
       }
@@ -127,7 +138,7 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
         duration: Math.min(0.9, Math.max(0.45, 0.35 + distance / 9000)),
       })
     },
-    []
+    [reduceMotion]
   )
 
   const stop = useCallback(() => lenisRef.current?.stop(), [])

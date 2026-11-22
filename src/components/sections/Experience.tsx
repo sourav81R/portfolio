@@ -221,9 +221,9 @@ const cardAccents = [
   'border-fuchsia-400/70 dark:border-fuchsia-400/50',
 ] as const
 const cardTints = [
-  'bg-sky-50/80 dark:bg-sky-500/[0.07]',
-  'bg-emerald-50/80 dark:bg-emerald-500/[0.07]',
-  'bg-fuchsia-50/80 dark:bg-fuchsia-500/[0.07]',
+  'bg-sky-50 dark:bg-sky-950',
+  'bg-emerald-50 dark:bg-emerald-950',
+  'bg-fuchsia-50 dark:bg-fuchsia-950',
 ] as const
 const cardLines = [
   'from-sky-400 via-cyan-400 to-emerald-400',
@@ -289,7 +289,7 @@ const StackedExperienceCard = ({
   )
   const opacity = useTransform(
     progress,
-    [enterStart, enterEnd],
+    [enterStart, Math.min(enterStart + 0.01, enterEnd)],
     [index === 0 ? 1 : 0, 1]
   )
   const scale = useTransform(

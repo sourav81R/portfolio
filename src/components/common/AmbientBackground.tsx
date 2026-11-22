@@ -1,5 +1,6 @@
 import { motion, useReducedMotion } from 'framer-motion'
 import useCoarsePointer from '../../hooks/useCoarsePointer'
+import useConstrainedNetwork from '../../hooks/useConstrainedNetwork'
 
 type FloatingShape = {
   id: string
@@ -39,7 +40,8 @@ const AmbientBackground = () => {
    * actually costs frames on a mobile GPU - so they are dropped there.
    */
   const isCoarsePointer = useCoarsePointer()
-  const staticShapes = reduceMotion || isCoarsePointer
+  const isConstrainedNetwork = useConstrainedNetwork()
+  const staticShapes = reduceMotion || isCoarsePointer || isConstrainedNetwork
   /*
    * The three large orbs carry a 120-150px blur. Animating x/y/opacity on a
    * blurred element cannot be composited, so each frame re-rasterises a
@@ -48,7 +50,7 @@ const AmbientBackground = () => {
    * (they are the background's identity) but sit still on phones, where the
    * blur is rasterised once and then simply reused.
    */
-  const staticOrbs = reduceMotion || isCoarsePointer
+  const staticOrbs = reduceMotion || isCoarsePointer || isConstrainedNetwork
 
   return (
     <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">

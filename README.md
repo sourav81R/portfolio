@@ -14,7 +14,8 @@ in a single Vite app.
 - Single-page portfolio with lazy-mounted sections for faster first load
 - Dedicated routes for `/dashboard` and `/case-studies/:slug`
 - Theme-aware UI with Framer Motion transitions and reduced-motion support
-- Lenis smooth scrolling, with a native-scroll fallback for reduced motion
+- Lenis smooth scrolling on desktop pointers, with native smooth scrolling on
+  touch devices, reduced-motion settings, and constrained networks
 - Command palette (Ctrl/Cmd + K), recruiter mode, and interaction analytics
 - Searchable and reorderable projects with modal previews
 - Canvas cursor effects, including a click burst that cycles through rainbow colours
@@ -105,7 +106,8 @@ which is the part most likely to surprise you when editing a section:
 - [`src/components/common/ProjectFilterPanel.tsx`](./src/components/common/ProjectFilterPanel.tsx) is the projects filter UI: a segmented type control with live counts, search with clear/Escape, domain chips, a featured switch, and removable active-filter tags. It is purely presentational; all state stays in `Projects.tsx`.
 - [`src/hooks/useProjectDiscovery.ts`](./src/hooks/useProjectDiscovery.ts) centralizes project filtering and recommendation logic.
 - [`src/hooks/usePageMetadata.ts`](./src/hooks/usePageMetadata.ts) applies per-route title, description, and canonical URL.
-- [`src/providers/SmoothScrollProvider.tsx`](./src/providers/SmoothScrollProvider.tsx) wraps Lenis and exposes `scrollTo`.
+- [`src/providers/SmoothScrollProvider.tsx`](./src/providers/SmoothScrollProvider.tsx) uses Lenis for desktop pointers and native smooth scrolling for touch, reduced-motion, and constrained-network users.
+- [`src/hooks/useConstrainedNetwork.ts`](./src/hooks/useConstrainedNetwork.ts) detects data-saver and slow links so optional animation and idle chunk prefetching do not compete with page content.
 - [`src/store/useAppStore.ts`](./src/store/useAppStore.ts) stores recruiter mode, accent, analytics events, and project ordering.
 - [`scripts/sitemap.ts`](./scripts/sitemap.ts) is a Vite plugin that emits `sitemap.xml` at build time.
 - [`scripts/optimize-project-images.js`](./scripts/optimize-project-images.js) regenerates project covers from the sources in `assets/projects/`.

@@ -163,14 +163,14 @@ const headlineWords = [
 ]
 
 /**
- * Hero stats (tablet/desktop). Every project is live; '5' counts only the
- * client products. TejViral, Voteniti and the Oneisok website are Oneisok
+ * Hero stats (tablet/desktop). Every project is live; '6' counts client
+ * products. TejViral, Voteniti and the Oneisok website are Oneisok
  * in-house products, not client work. The label says 'client' rather than
  * 'live' because every project is live. Keep in step with the About stats.
  */
 const heroStats = [
   { value: '1+ yr', label: 'Experience', icon: Briefcase },
-  { value: '5', label: 'Client products', icon: Rocket },
+  { value: '6', label: 'Client products', icon: Rocket },
   { value: '15+', label: 'Projects built', icon: Code2 },
 ] as const
 

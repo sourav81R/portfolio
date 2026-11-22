@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useReducedMotion } from 'framer-motion'
 import useCoarsePointer from '../../hooks/useCoarsePointer'
+import useConstrainedNetwork from '../../hooks/useConstrainedNetwork'
 
 type RgbColor = readonly [number, number, number]
 
@@ -63,14 +64,13 @@ const CursorSpiderEffect = () => {
   // and stays desktop-only. The tap burst still fires on a phone, which is
   // where most of this effect is actually seen.
   const isCoarsePointer = useCoarsePointer()
+  const isConstrainedNetwork = useConstrainedNetwork()
   /*
-   * Only reduced-motion turns the effect off entirely. A coarse pointer keeps
-   * the canvas mounted for the tap burst but skips the trail, so the idle cost
-   * on a phone stays near zero: the rAF loop is demand-driven and only runs
-   * while a burst is on screen, which is the main-thread time the earlier
-   * blanket disable was actually protecting.
+   * Keep the tap burst for coarse-pointer phones on a regular connection.
+   * Skip the canvas entirely for reduced-motion and constrained connections,
+   * where decorative work should not compete with reading or loading content.
    */
-  const isDisabled = reduceMotion
+  const isDisabled = reduceMotion || isConstrainedNetwork
 
   useEffect(() => {
     if (isDisabled) return
@@ -81,7 +81,9 @@ const CursorSpiderEffect = () => {
     if (!context) return
 
     const resize = () => {
-      const ratio = window.devicePixelRatio || 1
+      // Cap raster work on high-density displays; a 3x canvas costs 9x the
+      // pixels without a meaningful improvement to this decorative effect.
+      const ratio = Math.min(window.devicePixelRatio || 1, 2)
       canvas.width = Math.floor(window.innerWidth * ratio)
       canvas.height = Math.floor(window.innerHeight * ratio)
       canvas.style.width = `${window.innerWidth}px`
