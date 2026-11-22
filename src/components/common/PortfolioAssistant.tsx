@@ -74,7 +74,7 @@ const PortfolioAssistant = () => {
     if (open) return
     const timer = window.setTimeout(() => {
       if (!nudgeDismissed.current) setShowNudge(true)
-    }, 2000)
+    }, 700)
     return () => window.clearTimeout(timer)
   }, [open])
 
@@ -83,7 +83,7 @@ const PortfolioAssistant = () => {
     const timer = window.setTimeout(() => {
       nudgeDismissed.current = true
       setShowNudge(false)
-    }, 4500)
+    }, 1500)
     return () => window.clearTimeout(timer)
   }, [showNudge])
 

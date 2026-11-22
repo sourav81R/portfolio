@@ -25,8 +25,31 @@ export type Caption = { text: string; source: 'visitor' | 'assistant' }
 
 const VOICE_KEY = 'sourav_assistant_voice_enabled'
 const MAX_HISTORY = 6
-const REMOTE_TIMEOUT_MS = 10000
+const REMOTE_TIMEOUT_MS = 6500
 const REMOTE_FAILURE_BUDGET = 2
+
+const conciseVoiceReply = (text: string): string => {
+  const plain = text
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    .replace(/https?:\/\/\S+/g, '')
+    .replace(/(?:^|\n)\s*[•*-]\s+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+  if (plain.length <= 260) return plain
+
+  const sentences = plain.match(/[^.!?]+[.!?]+|[^.!?]+$/g) ?? [plain]
+  let summary = ''
+  for (const sentence of sentences) {
+    const next = `${summary} ${sentence}`.trim()
+    if (next.length > 260) break
+    summary = next
+    if (summary.split(/\s+/).length >= 45) break
+  }
+  if (summary.length >= 60) return summary
+  const words = plain.split(/\s+/)
+  return `${words.slice(0, 40).join(' ')}${words.length > 40 ? '…' : ''}`
+}
 
 const readVoicePreference = (): boolean => {
   try { return window.localStorage.getItem(VOICE_KEY) !== 'false' } catch { return true }
@@ -116,7 +139,7 @@ export const useAssistant = (scrollTo: (target: string) => void) => {
     if (reply.action?.type === 'navigate') {
       window.setTimeout(() => scrollTo(`#${reply.action!.target}`), 350)
     }
-    if (voiceEnabled && reply.speak.trim()) speakReply(reply.speak)
+    if (voiceEnabled && reply.speak.trim()) speakReply(conciseVoiceReply(reply.speak))
     else setState('idle')
   }, [scrollTo, speakReply, voiceEnabled])
 
