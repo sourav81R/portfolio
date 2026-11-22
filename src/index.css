@@ -412,7 +412,7 @@ body {
 
 /* Keep the mascot visually balanced inside the voice stage as the panel scales. */
 .assistant-mascot {
-  scale: 0.82;
+  scale: 0.94;
 }
 
 @media (min-width: 640px) {
