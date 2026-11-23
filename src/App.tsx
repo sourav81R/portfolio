@@ -181,27 +181,13 @@ function App() {
     const targetId = location.hash.replace('#', '')
     if (!targetId) return
 
-    let timeoutId = 0
-    let attempts = 0
-    const maxAttempts = 18
-
-    const alignToHash = () => {
+    // Every section wrapper is present immediately, and lazy sections reserve
+    // their layout space below. Align once on initial deep-link navigation;
+    // repeatedly forcing scrollTo here fights the visitor's own scroll input.
+    const timeoutId = window.setTimeout(() => {
       const target = document.getElementById(targetId)
-      attempts += 1
-
-      if (target) {
-        // `immediate` on every attempt: this realigns repeatedly while lazy
-        // sections mount and shift layout, so an animated scroll would be
-        // restarted 18 times and visibly stutter.
-        scrollTo(target, { immediate: true })
-      }
-
-      if (attempts < maxAttempts) {
-        timeoutId = window.setTimeout(alignToHash, 80)
-      }
-    }
-
-    timeoutId = window.setTimeout(alignToHash, 0)
+      if (target) scrollTo(target, { immediate: true })
+    }, 0)
 
     return () => window.clearTimeout(timeoutId)
   }, [location.hash, scrollTo])
@@ -292,7 +278,15 @@ function LazySection({
   const reservedHeight = SECTION_MIN_HEIGHTS[id]
 
   return (
-    <section id={id} ref={sectionRef} className="relative">
+    <section
+      id={id}
+      ref={sectionRef}
+      className="relative"
+      // Keep the same vertical footprint after hydration as the lazy
+      // placeholder. If a section above the viewport collapses on mount, the
+      // browser's scroll anchoring can otherwise move the reader backwards.
+      style={reservedHeight ? { minHeight: reservedHeight } : undefined}
+    >
       {shouldRender ? (
         <SectionErrorBoundary title={title}>
           <Suspense fallback={<SectionFallback minHeight={reservedHeight} />}>

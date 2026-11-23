@@ -29,6 +29,7 @@ let recognitionWatchdog = 0
 let recognitionSession = 0
 let speechSession = 0
 let speaking = false
+let speechKeepAlive = 0
 
 export const isSpeechRecognitionSupported = (): boolean => {
   if (typeof window === 'undefined') return false
@@ -136,7 +137,7 @@ export const preloadVoices = (): Promise<SpeechSynthesisVoice[]> => new Promise(
   timeout = window.setTimeout(finish, 1400)
 })
 
-const speechChunks = (text: string, maxLength = 175): string[] => {
+const speechChunks = (text: string, maxLength = 160): string[] => {
   const readable = text
     .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
     .replace(/https?:\/\/\S+/g, 'link in the chat')
@@ -147,11 +148,24 @@ const speechChunks = (text: string, maxLength = 175): string[] => {
   const chunks: string[] = []
   let current = ''
   for (const sentence of sentences) {
-    const next = `${current} ${sentence}`.trim()
-    if (next.length > maxLength && current) {
-      chunks.push(current)
-      current = sentence.trim()
-    } else current = next
+    for (const word of sentence.trim().split(/\s+/)) {
+      if (!word) continue
+      if (current && current.length + word.length + 1 > maxLength) {
+        chunks.push(current)
+        current = ''
+      }
+      if (word.length > maxLength) {
+        for (let offset = 0; offset < word.length; offset += maxLength) {
+          const piece = word.slice(offset, offset + maxLength)
+          if (current) chunks.push(current)
+          current = piece
+          if (offset + maxLength < word.length) {
+            chunks.push(current)
+            current = ''
+          }
+        }
+      } else current = current ? `${current} ${word}` : word
+    }
   }
   if (current) chunks.push(current)
   return chunks.filter(Boolean)
@@ -169,10 +183,24 @@ export const speak = (
   const synth = window.speechSynthesis
   const chunks = speechChunks(text)
   let index = 0
+  let keepAliveTimer = 0
+  const stopKeepAlive = () => {
+    if (keepAliveTimer) window.clearInterval(keepAliveTimer)
+    keepAliveTimer = 0
+    speechKeepAlive = 0
+  }
+  const startKeepAlive = () => {
+    stopKeepAlive()
+    keepAliveTimer = window.setInterval(() => {
+      if (synth.speaking && synth.paused) synth.resume()
+    }, 5000)
+    speechKeepAlive = keepAliveTimer
+  }
   const next = () => {
     if (session !== speechSession) return
     if (index >= chunks.length) {
       speaking = false
+      stopKeepAlive()
       onEnd?.()
       return
     }
@@ -186,20 +214,38 @@ export const speak = (
       ?? voices.find((voice) => /^en[-_]gb$/i.test(voice.lang))
       ?? voices.find((voice) => /^en/i.test(voice.lang))
       ?? null
+    let settled = false
+    let started = false
+    let startWatchdog = 0
+    let chunkWatchdog = 0
+    const advance = () => {
+      if (session !== speechSession || settled) return
+      settled = true
+      window.clearTimeout(startWatchdog)
+      window.clearTimeout(chunkWatchdog)
+      window.setTimeout(next, 100)
+    }
+    startWatchdog = window.setTimeout(() => {
+      if (session !== speechSession || started || settled) return
+      synth.cancel()
+      advance()
+    }, 3000)
+    chunkWatchdog = window.setTimeout(() => {
+      if (session !== speechSession || settled) return
+      synth.cancel()
+      advance()
+    }, Math.max(20000, (chunk.length / 7) * 1000 + 6000))
     utterance.onstart = () => {
       if (session !== speechSession) return
+      started = true
+      window.clearTimeout(startWatchdog)
       speaking = true
+      startKeepAlive()
       onStart?.()
       options.onCaption?.(chunk)
     }
-    utterance.onend = () => {
-      if (session !== speechSession) return
-      window.setTimeout(next, 80)
-    }
-    utterance.onerror = () => {
-      if (session !== speechSession) return
-      window.setTimeout(next, 80)
-    }
+    utterance.onend = advance
+    utterance.onerror = advance
     synth.speak(utterance)
   }
   // Chrome can drop utterances queued in the same tick as cancel().
@@ -209,5 +255,7 @@ export const speak = (
 export const cancelSpeaking = (): void => {
   speechSession += 1
   speaking = false
+  if (speechKeepAlive && typeof window !== 'undefined') window.clearInterval(speechKeepAlive)
+  speechKeepAlive = 0
   if (isSpeechSynthesisSupported()) window.speechSynthesis.cancel()
 }

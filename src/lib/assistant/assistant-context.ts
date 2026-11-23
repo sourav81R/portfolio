@@ -28,29 +28,6 @@ const MAX_HISTORY = 6
 const REMOTE_TIMEOUT_MS = 6500
 const REMOTE_FAILURE_BUDGET = 2
 
-const conciseVoiceReply = (text: string): string => {
-  const plain = text
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-    .replace(/\*\*(.+?)\*\*/g, '$1')
-    .replace(/https?:\/\/\S+/g, '')
-    .replace(/(?:^|\n)\s*[•*-]\s+/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
-  if (plain.length <= 260) return plain
-
-  const sentences = plain.match(/[^.!?]+[.!?]+|[^.!?]+$/g) ?? [plain]
-  let summary = ''
-  for (const sentence of sentences) {
-    const next = `${summary} ${sentence}`.trim()
-    if (next.length > 260) break
-    summary = next
-    if (summary.split(/\s+/).length >= 45) break
-  }
-  if (summary.length >= 60) return summary
-  const words = plain.split(/\s+/)
-  return `${words.slice(0, 40).join(' ')}${words.length > 40 ? '…' : ''}`
-}
-
 const readVoicePreference = (): boolean => {
   try { return window.localStorage.getItem(VOICE_KEY) !== 'false' } catch { return true }
 }
@@ -113,7 +90,7 @@ export const useAssistant = (scrollTo: (target: string) => void) => {
   }, [])
 
   const speakReply = useCallback((text: string) => {
-    const maxDuration = Math.min(120000, (text.length / 10) * 1000 + 15000)
+    const maxDuration = Math.min(300000, (text.length / 10) * 1000 + 20000)
     const watchdog = window.setTimeout(() => {
       cancelSpeaking()
       setState('idle')
@@ -139,7 +116,7 @@ export const useAssistant = (scrollTo: (target: string) => void) => {
     if (reply.action?.type === 'navigate') {
       window.setTimeout(() => scrollTo(`#${reply.action!.target}`), 350)
     }
-    if (voiceEnabled && reply.speak.trim()) speakReply(conciseVoiceReply(reply.speak))
+    if (voiceEnabled && reply.speak.trim()) speakReply(reply.speak)
     else setState('idle')
   }, [scrollTo, speakReply, voiceEnabled])
 
@@ -187,10 +164,17 @@ export const useAssistant = (scrollTo: (target: string) => void) => {
   }, [processInput])
 
   const handleVoiceError = useCallback((error: VoiceError) => {
+    const pending = interimTranscript.current.trim()
+    const isDictation = textTranscript.current !== null
+    interimTranscript.current = ''
     setState('idle')
     setCaption(null)
+    if (pending && !isDictation) {
+      void processInput(pending)
+      return
+    }
     addSystemMessage(`${error.message} ${error.suggestion}`, 'error')
-  }, [addSystemMessage])
+  }, [addSystemMessage, processInput])
 
   const startVoiceInput = useCallback(() => {
     if (!voiceSupported) {
@@ -209,6 +193,12 @@ export const useAssistant = (scrollTo: (target: string) => void) => {
         void processInput(transcript)
       } else interimTranscript.current = transcript
     }, handleVoiceError, () => {
+      const pending = interimTranscript.current.trim()
+      if (pending && textTranscript.current === null) {
+        interimTranscript.current = ''
+        void processInput(pending)
+        return
+      }
       setState((current) => current === 'listening' ? 'idle' : current)
     })
   }, [addSystemMessage, handleVoiceError, processInput, voiceSupported])

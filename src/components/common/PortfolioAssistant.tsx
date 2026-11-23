@@ -106,6 +106,10 @@ const PortfolioAssistant = () => {
   }
 
   const latestAssistantMessage = [...messages].reverse().find((message) => message.role === 'assistant')
+  const latestVoiceError = [...messages].reverse().find((message) => message.role === 'system' && message.messageType === 'error')
+  const currentVoiceError = latestVoiceError && (!latestAssistantMessage || latestVoiceError.timestamp > latestAssistantMessage.timestamp)
+    ? latestVoiceError
+    : null
 
   return (
     <div className="pointer-events-none fixed bottom-6 right-6 z-[96] flex flex-col items-end">
@@ -160,7 +164,7 @@ const PortfolioAssistant = () => {
                 </div>
 
                 <div aria-live="polite" className="assistant-voice-caption shrink-0 border-b border-white/15 px-3 py-2 sm:px-4 sm:py-2.5">
-                  <p className="max-h-28 min-h-10 overflow-y-auto overscroll-contain whitespace-pre-wrap break-words rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-[13px] leading-relaxed text-slate-100">{caption?.text ?? (state === 'thinking' ? 'Thinking through the portfolio details…' : listening ? 'I’m listening. Ask me about Sourav’s work or projects.' : latestAssistantMessage?.text)}</p>
+                  <p className={`max-h-28 min-h-10 overflow-y-auto overscroll-contain whitespace-pre-wrap break-words rounded-xl border px-3 py-2 text-[13px] leading-relaxed ${currentVoiceError && state === 'idle' ? 'border-amber-400/30 bg-amber-400/[0.06] text-amber-100' : 'border-white/10 bg-white/[0.04] text-slate-100'}`}>{caption?.text ?? (state === 'thinking' ? 'Thinking through the portfolio details…' : listening ? 'I’m listening. Ask me about Sourav’s work or projects.' : state === 'idle' && currentVoiceError ? currentVoiceError.text : latestAssistantMessage?.text)}</p>
                 </div>
 
                 <div className="assistant-voice-controls flex shrink-0 flex-col items-center gap-1.5 px-3 py-2 sm:gap-2 sm:px-4 sm:py-3">
