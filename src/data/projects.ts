@@ -79,18 +79,19 @@ export const projects: ProjectRecord[] = [
     title: 'TejViral',
     role: 'Full Stack Developer',
     description:
-      'Local-business discovery and commerce platform for India, with customer, vendor, partner, and admin workspaces, marketing automation, and an online shop.',
+      'Built the current TejViral platform as a full-stack product for local-business discovery, customer and vendor services, marketing automation, digital storefronts, and online commerce.',
     problem:
-      'Local businesses across India are hard to find online and lack affordable tools to sell, advertise, and reach customers over SMS, WhatsApp, and email, while an existing platform with live data, a mobile app, and paying vendors had to be modernised without breaking any of it.',
+      'Local businesses needed one place to get discovered, reach nearby customers, market their services, and sell online. Since the product was already live, its data, customer accounts, URLs, and mobile-app API also had to keep working as the platform moved to a modern stack.',
     solution:
-      'Built a Next.js 16 and Express 5 platform on Supabase PostgreSQL with separate customer, vendor, partner, and admin workspaces, a campaign automation engine, hosted vCards and WhatsApp stores, and an online shop, deployed on AWS EC2 with GitHub Actions CI/CD.',
+      'Built the current platform with Next.js 16, React 19, TypeScript, Express 5, and Supabase PostgreSQL. Delivered customer, vendor, partner, and admin workspaces alongside business search, campaign automation, Mb24h storefronts, and online shopping, while preserving the existing customer and mobile-app experience.',
     points: [
-      'Built a business directory with category, subcategory, PIN-code, and radius-based search, plus intent-aware Daily Needs search with suggestions and missed-search analytics',
-      'Developed SMS, email, and WhatsApp campaign automation (WhatsApp Cloud API and a QR-linked device service) with gateways, contacts, templates, workflows, and reports',
-      'Shipped Mb24h hosted vCards and WhatsApp stores with themes, NFC cards, referrals, and AI card tools, alongside an online shop with cart, coupons, shipping, and vendor commissions',
-      'Migrated a 97-table, 61,767-row legacy database to Supabase PostgreSQL 17, verified with 616,365 cell comparisons and zero mismatches, while keeping the mobile app API contract and existing password hashes working',
-      'Secured the site with HTTP-only cookies, Origin-based CSRF checks, role-based admin access, and Row Level Security on public tables',
-      'Run production on AWS EC2 with Nginx, PM2, and a GitHub Actions pipeline that deploys reviewed main-branch commits',
+      'Built the business-discovery experience, including category and subcategory browsing, PIN-code and radius search, and Daily Needs suggestions informed by local searches.',
+      'Delivered separate customer, vendor, partner, and admin workspaces, including partner territories and the tools each role needs to manage its work.',
+      'Created SMS, email, and WhatsApp campaign workflows with provider gateways, contact lists, reusable templates, QR-linked WhatsApp devices, and reporting.',
+      'Launched Mb24h hosted vCards and WhatsApp stores, with themes, NFC cards, referrals, and AI-assisted card tools; also delivered the shop’s cart, coupons, shipping, payments, and vendor commissions.',
+      'Added HTTP-only session cookies, Origin-based CSRF protection, role-checked admin APIs, and PostgreSQL Row Level Security for public tables.',
+      'Deployed and operate the production platform on AWS EC2 with Nginx, PM2, and a GitHub Actions pipeline for reviewed releases.',
+      'Moved the live 97-table, 61,767-row database to PostgreSQL 17, checked 616,365 cell values with no mismatches, and preserved existing passwords and the mobile-app API contract.',
     ],
     learnings: [
       'Modernising a live system incrementally without breaking its mobile clients or existing user accounts',
@@ -124,7 +125,7 @@ export const projects: ProjectRecord[] = [
     bgImage: resolvePublicAsset('/images/tejviral.webp'),
     recruiterPriority: 20,
     impact:
-      'Multi-workspace commerce platform: 97-table migration with zero mismatches, campaign automation, stores, and payments on AWS.',
+      'Built and shipped a live, multi-workspace platform for local-business discovery, customer and vendor operations, marketing automation, digital storefronts, and online commerce.',
   },
   {
     slug: 'satyanarayan-travel',

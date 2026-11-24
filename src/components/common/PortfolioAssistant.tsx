@@ -33,18 +33,54 @@ const renderMessageText = (text: string) => {
   return parts
 }
 
-const AssistantWaveform = ({ reducedMotion }: { reducedMotion: boolean }) => (
-  <span className="relative flex h-7 items-center justify-center gap-[3px]" aria-hidden="true">
-    {[8, 14, 20, 15, 9].map((height, index) => (
-      <motion.span
-        key={index}
-        className="w-[2.5px] origin-center rounded-full bg-gradient-to-b from-cyan-100 via-cyan-300 to-sky-500 shadow-[0_0_9px_rgba(34,211,238,.95)]"
-        style={{ height }}
-        animate={reducedMotion ? undefined : { scaleY: [0.55, 1, 0.68, 0.92, 0.55], opacity: [0.65, 1, 0.78, 1, 0.65] }}
-        transition={reducedMotion ? undefined : { duration: 1.15, repeat: Infinity, delay: index * 0.09, ease: 'easeInOut' }}
-      />
-    ))}
-  </span>
+const AssistantMascot = () => (
+  <svg viewBox="0 0 240 240" className="h-full w-full overflow-visible" aria-hidden="true">
+    <defs>
+      <linearGradient id="assistant-shell" x1="0" y1="0" x2="1" y2="1"><stop stopColor="#fff" /><stop offset=".55" stopColor="#dce8f3" /><stop offset="1" stopColor="#8da9bf" /></linearGradient>
+      <linearGradient id="assistant-body" x1="0" y1="0" x2="1" y2="1"><stop stopColor="#f8fcff" /><stop offset="1" stopColor="#a7bfd0" /></linearGradient>
+      <linearGradient id="assistant-face" x1="0" y1="0" x2="0" y2="1"><stop stopColor="#07121f" /><stop offset="1" stopColor="#020811" /></linearGradient>
+      <filter id="assistant-cyan-glow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="5" result="blur" /><feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+      <filter id="assistant-shadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="9" stdDeviation="8" floodColor="#020617" floodOpacity=".55" /></filter>
+    </defs>
+    <ellipse cx="120" cy="222" rx="58" ry="8" fill="#22d3ee" opacity=".16" />
+    <g filter="url(#assistant-shadow)">
+      <path d="M54 106V88a66 66 0 0 1 132 0v18" fill="none" stroke="#dbe8f1" strokeWidth="12" strokeLinecap="round" />
+      <path d="M59 83a62 62 0 0 1 122-5" fill="none" stroke="#fff" strokeWidth="5" strokeLinecap="round" opacity=".9" />
+      <rect x="43" y="84" width="22" height="49" rx="11" fill="url(#assistant-shell)" stroke="#91aabd" strokeWidth="2" />
+      <rect x="175" y="84" width="22" height="49" rx="11" fill="url(#assistant-shell)" stroke="#91aabd" strokeWidth="2" />
+      <rect x="67" y="159" width="106" height="67" rx="30" fill="url(#assistant-body)" stroke="#d8e7f2" strokeWidth="2" />
+      <path d="M99 164v-8a21 21 0 0 1 42 0v8" fill="none" stroke="#27d7ee" strokeWidth="7" />
+      <rect x="96" y="169" width="48" height="14" rx="7" fill="#b8d5e4" />
+      <circle cx="120" cy="200" r="12" fill="#cffafe" stroke="#27d7ee" strokeWidth="4" filter="url(#assistant-cyan-glow)" />
+      <rect x="50" y="47" width="140" height="119" rx="49" fill="url(#assistant-shell)" stroke="#f8fdff" strokeWidth="3" />
+      <path d="M66 93c0-17 14-31 31-31h46c17 0 31 14 31 31v28c0 15-12 27-27 27H93c-15 0-27-12-27-27V93Z" fill="url(#assistant-face)" stroke="#71889a" strokeWidth="2" />
+      <motion.ellipse cx="96" cy="103" rx="10" ry="15" fill="#22d3ee" filter="url(#assistant-cyan-glow)" style={{ transformBox: 'fill-box', transformOrigin: 'center' }} animate={{ scaleY: [1, 1, 0.08, 1, 1] }} transition={{ duration: 2.6, repeat: Infinity, times: [0, 0.78, 0.82, 0.86, 1], ease: 'easeInOut' }} />
+      <motion.ellipse cx="144" cy="103" rx="10" ry="15" fill="#22d3ee" filter="url(#assistant-cyan-glow)" style={{ transformBox: 'fill-box', transformOrigin: 'center' }} animate={{ scaleY: [1, 1, 0.08, 1, 1] }} transition={{ duration: 2.6, repeat: Infinity, times: [0, 0.78, 0.82, 0.86, 1], ease: 'easeInOut' }} />
+      <path d="M108 124q12 12 24 0" fill="none" stroke="#38e7f5" strokeWidth="4" strokeLinecap="round" />
+      <path d="M189 112q18 3 16 19-2 13-20 15" fill="none" stroke="#dbe8f1" strokeWidth="7" strokeLinecap="round" />
+      <circle cx="202" cy="132" r="5" fill="#22d3ee" filter="url(#assistant-cyan-glow)" />
+      <path d="M80 55q40-20 80 0" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" opacity=".8" />
+    </g>
+  </svg>
+)
+
+const VoiceStageMascot = ({ listening }: { listening: boolean }) => (
+  <motion.div
+    aria-hidden="true"
+    className="assistant-mascot relative h-36 w-36 sm:h-40 sm:w-40 lg:h-48 lg:w-48"
+    animate={listening ? { y: [0, -7, 0], rotate: [0, 1.5, 0] } : { y: [0, -4, 0], rotate: [0, -1, 0] }}
+    transition={{ duration: listening ? 0.8 : 3.8, repeat: Infinity, ease: 'easeInOut' }}
+  >
+    <div className="absolute left-1/2 top-2 h-8 w-2 -translate-x-1/2 rounded-full bg-gradient-to-t from-blue-700 to-sky-300 shadow-[0_0_16px_rgba(96,165,250,.6)]" />
+    <div className="absolute left-1/2 top-0 h-5 w-5 -translate-x-1/2 rounded-full border border-sky-300/70 bg-sky-300 shadow-[0_0_20px_rgba(96,165,250,.75)]" />
+    <div className="absolute inset-x-2 bottom-1 top-8 rounded-[34%_34%_30%_30%] border border-blue-400/50 bg-[linear-gradient(125deg,#0b43a1_4%,#0757c9_36%,#063580_70%,#021d57)] shadow-[inset_8px_2px_18px_rgba(137,190,255,.38),inset_-10px_-12px_22px_rgba(0,8,37,.55),0_18px_35px_rgba(0,0,0,.5)]" />
+    <div className="absolute left-1/2 top-[28%] flex h-[40%] w-[80%] -translate-x-1/2 items-center justify-center gap-5 rounded-[24%] border border-slate-500/70 bg-[#07111f] shadow-[inset_0_0_20px_rgba(0,0,0,.9),0_4px_8px_rgba(0,0,0,.45)]">
+      <motion.span className="relative h-8 w-8 rounded-full bg-gradient-to-br from-white via-slate-200 to-slate-500 shadow-[0_0_12px_rgba(125,211,252,.4)] sm:h-10 sm:w-10" animate={listening ? { scaleY: [1, 0.72, 1, 0.08, 1] } : { scaleY: [1, 1, 0.08, 1, 1] }} transition={{ duration: listening ? 0.9 : 2.6, repeat: Infinity, times: listening ? [0, 0.24, 0.45, 0.49, 1] : [0, 0.78, 0.82, 0.86, 1], ease: 'easeInOut' }}><i className="absolute left-[28%] top-[20%] h-2.5 w-2.5 rounded-full bg-white shadow-[0_0_8px_white]" /></motion.span>
+      <motion.span className="relative h-8 w-8 rounded-full bg-gradient-to-br from-white via-slate-200 to-slate-500 shadow-[0_0_12px_rgba(125,211,252,.4)] sm:h-10 sm:w-10" animate={listening ? { scaleY: [1, 0.72, 1, 0.08, 1] } : { scaleY: [1, 1, 0.08, 1, 1] }} transition={{ duration: listening ? 0.9 : 2.6, repeat: Infinity, delay: 0.12, times: listening ? [0, 0.24, 0.45, 0.49, 1] : [0, 0.78, 0.82, 0.86, 1], ease: 'easeInOut' }}><i className="absolute left-[28%] top-[20%] h-2.5 w-2.5 rounded-full bg-white shadow-[0_0_8px_white]" /></motion.span>
+      <span className="absolute bottom-[14%] left-1/2 h-1 w-5 -translate-x-1/2 rounded-full bg-sky-200/70" />
+    </div>
+    <div className="absolute right-0 top-[40%] h-14 w-5 rotate-[-15deg] rounded-r-2xl bg-gradient-to-r from-blue-800 to-blue-500 shadow-md" />
+  </motion.div>
 )
 
 const PortfolioAssistant = () => {
@@ -121,11 +157,11 @@ const PortfolioAssistant = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 10, scale: 0.98 }}
             transition={{ duration: 0.18 }}
-            className={`portfolio-assistant-panel pointer-events-auto flex flex-col overflow-hidden rounded-[1.4rem] border border-white/80 bg-[#101820] text-gray-100 shadow-2xl shadow-black/50 ring-1 ring-black/30 ${expanded ? 'fixed inset-2 z-[101] h-auto w-auto sm:inset-3' : 'fixed inset-x-3 bottom-3 z-[101] h-[min(40rem,88dvh)] max-h-[calc(100dvh-1.5rem)] w-auto sm:relative sm:inset-auto sm:mb-3 sm:h-[min(37rem,calc(100dvh-7rem))] sm:max-h-none sm:w-[min(25rem,calc(100vw-2rem))]'}`}
+            className={`portfolio-assistant-panel pointer-events-auto flex flex-col overflow-hidden rounded-[1.4rem] border border-cyan-100/45 bg-[#0b1420] text-gray-100 shadow-[0_24px_80px_rgba(0,0,0,.62),0_0_36px_rgba(34,211,238,.12)] ring-1 ring-white/10 ${expanded ? 'fixed inset-2 z-[101] h-auto w-auto sm:inset-3' : 'fixed inset-x-3 bottom-3 z-[101] h-[min(40rem,88dvh)] max-h-[calc(100dvh-1.5rem)] w-auto sm:relative sm:inset-auto sm:mb-3 sm:h-[min(37rem,calc(100dvh-7rem))] sm:max-h-none sm:w-[min(25rem,calc(100vw-2rem))]'}`}
           >
-            <header className="flex shrink-0 items-center justify-between border-b border-white/15 bg-[#131e28] px-3 py-2 sm:px-4 sm:py-2.5">
+            <header className="flex shrink-0 items-center justify-between border-b border-cyan-100/15 bg-[linear-gradient(115deg,#101e2b_0%,#101923_58%,#102c35_100%)] px-3 py-2 sm:px-4 sm:py-2.5">
               <div className="flex min-w-0 items-center gap-3">
-                <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-emerald-400/50 bg-gradient-to-br from-sky-950 to-black text-cyan-300 shadow-inner sm:h-10 sm:w-10"><Bot size={21} /><span className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-[#131e28] bg-emerald-400" /></span>
+                <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-[14px] border border-cyan-200/35 bg-gradient-to-br from-cyan-300/20 to-emerald-400/10 text-cyan-200 shadow-[inset_0_1px_0_rgba(255,255,255,.16),0_0_18px_rgba(34,211,238,.12)] sm:h-10 sm:w-10"><Bot size={21} /><span className="absolute -bottom-1 -right-1 h-3 w-3 rounded-full border-2 border-[#101923] bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,.8)]" /></span>
                 <div className="min-w-0">
                   <h2 className="truncate text-sm font-bold text-white sm:text-base">Sourav&apos;s Assistant</h2>
                   <p className="text-xs text-slate-400">Online · Portfolio guide</p>
@@ -138,28 +174,18 @@ const PortfolioAssistant = () => {
               </div>
             </header>
 
-            <div role="tablist" aria-label="Assistant mode" className="grid h-11 shrink-0 grid-cols-2 border-b border-white/15 bg-[#101820] sm:h-12">
-              <button type="button" role="tab" aria-selected={chatMode === 'voice'} onClick={() => setChatMode('voice')} className={`flex items-center justify-center gap-2 border-b-2 text-sm font-semibold transition ${chatMode === 'voice' ? 'border-emerald-400 bg-emerald-400/[0.08] text-emerald-300' : 'border-transparent text-slate-400 hover:text-slate-200'}`}><Mic size={17} />Voice</button>
-              <button type="button" role="tab" aria-selected={chatMode === 'text'} onClick={() => { stopVoiceInput(); setChatMode('text') }} className={`flex items-center justify-center gap-2 border-b-2 text-sm font-semibold transition ${chatMode === 'text' ? 'border-emerald-400 bg-emerald-400/[0.08] text-emerald-300' : 'border-transparent text-slate-400 hover:text-slate-200'}`}><MessageSquareText size={17} />Text</button>
+            <div role="tablist" aria-label="Assistant mode" className="grid h-11 shrink-0 grid-cols-2 border-b border-white/10 bg-[#0b1420] sm:h-12">
+              <button type="button" role="tab" aria-selected={chatMode === 'voice'} onClick={() => setChatMode('voice')} className={`flex items-center justify-center gap-2 border-b-2 text-sm font-semibold transition ${chatMode === 'voice' ? 'border-cyan-300 bg-cyan-300/[0.08] text-cyan-200' : 'border-transparent text-slate-400 hover:bg-white/[0.03] hover:text-slate-200'}`}><Mic size={17} />Voice</button>
+              <button type="button" role="tab" aria-selected={chatMode === 'text'} onClick={() => { stopVoiceInput(); setChatMode('text') }} className={`flex items-center justify-center gap-2 border-b-2 text-sm font-semibold transition ${chatMode === 'text' ? 'border-cyan-300 bg-cyan-300/[0.08] text-cyan-200' : 'border-transparent text-slate-400 hover:bg-white/[0.03] hover:text-slate-200'}`}><MessageSquareText size={17} />Text</button>
             </div>
 
             {chatMode === 'voice' ? (
               <div className="flex min-h-0 flex-1 flex-col">
-                <div className="assistant-avatar-stage relative flex min-h-[7rem] flex-1 items-center justify-center overflow-hidden border-b border-white/20 bg-[radial-gradient(ellipse_at_50%_48%,rgba(16,185,129,0.18),transparent_60%),linear-gradient(145deg,#131e28,#101820)] sm:min-h-[10rem]">
-                  <div className="absolute inset-0 opacity-40" aria-hidden="true" style={{ backgroundImage: 'radial-gradient(circle, #92c5ff 1px, transparent 1.5px)', backgroundSize: '73px 61px', maskImage: 'linear-gradient(to bottom, transparent, black 20%, black 85%, transparent)' }} />
-                  <motion.div aria-hidden="true" className="assistant-mascot relative h-36 w-36 sm:h-40 sm:w-40 lg:h-48 lg:w-48" animate={listening || isSpeaking ? { y: [0, -7, 0], rotate: [0, 1.5, 0] } : { y: [0, -4, 0], rotate: [0, -1, 0] }} transition={{ duration: listening ? 0.8 : 3.8, repeat: Infinity, ease: 'easeInOut' }}>
-                    <div className="absolute left-1/2 top-2 h-8 w-2 -translate-x-1/2 rounded-full bg-gradient-to-t from-blue-700 to-sky-300 shadow-[0_0_16px_rgba(96,165,250,.6)]" />
-                    <div className="absolute left-1/2 top-0 h-5 w-5 -translate-x-1/2 rounded-full border border-sky-300/70 bg-sky-300 shadow-[0_0_20px_rgba(96,165,250,.75)]" />
-                    <div className="absolute inset-x-2 bottom-1 top-8 rounded-[34%_34%_30%_30%] border border-blue-400/50 bg-[linear-gradient(125deg,#0b43a1_4%,#0757c9_36%,#063580_70%,#021d57)] shadow-[inset_8px_2px_18px_rgba(137,190,255,.38),inset_-10px_-12px_22px_rgba(0,8,37,.55),0_18px_35px_rgba(0,0,0,.5)]" />
-                    <div className="absolute left-1/2 top-[28%] flex h-[40%] w-[80%] -translate-x-1/2 items-center justify-center gap-5 rounded-[24%] border border-slate-500/70 bg-[#07111f] shadow-[inset_0_0_20px_rgba(0,0,0,.9),0_4px_8px_rgba(0,0,0,.45)]">
-                      <motion.span className="relative h-8 w-8 rounded-full bg-gradient-to-br from-white via-slate-200 to-slate-500 shadow-[0_0_12px_rgba(125,211,252,.4)] sm:h-10 sm:w-10" animate={listening ? { scaleY: [1, 0.65, 1] } : { scaleY: [1, 0.96, 1] }} transition={{ duration: listening ? 0.45 : 4, repeat: Infinity }}><i className="absolute left-[28%] top-[20%] h-2.5 w-2.5 rounded-full bg-white shadow-[0_0_8px_white]" /></motion.span>
-                      <motion.span className="relative h-8 w-8 rounded-full bg-gradient-to-br from-white via-slate-200 to-slate-500 shadow-[0_0_12px_rgba(125,211,252,.4)] sm:h-10 sm:w-10" animate={listening ? { scaleY: [1, 0.65, 1] } : { scaleY: [1, 0.96, 1] }} transition={{ duration: listening ? 0.45 : 4, repeat: Infinity, delay: 0.12 }}><i className="absolute left-[28%] top-[20%] h-2.5 w-2.5 rounded-full bg-white shadow-[0_0_8px_white]" /></motion.span>
-                      <span className="absolute bottom-[14%] left-1/2 h-1 w-5 -translate-x-1/2 rounded-full bg-sky-200/70" />
-                    </div>
-                    <div className="absolute right-0 top-[40%] h-14 w-5 rotate-[-15deg] rounded-r-2xl bg-gradient-to-r from-blue-800 to-blue-500 shadow-md" />
-                  </motion.div>
+                <div className="assistant-avatar-stage relative flex min-h-[7rem] flex-1 items-center justify-center overflow-hidden border-b border-white/10 bg-[radial-gradient(ellipse_at_50%_64%,rgba(34,211,238,.12),transparent_48%),radial-gradient(ellipse_at_50%_0%,rgba(16,185,129,.10),transparent_58%),linear-gradient(145deg,#101e2a,#0b1420)] sm:min-h-[10rem]">
+                  <div className="absolute inset-0 opacity-35" aria-hidden="true" style={{ backgroundImage: 'radial-gradient(circle, #67e8f9 1px, transparent 1.5px)', backgroundSize: '73px 61px', maskImage: 'linear-gradient(to bottom, transparent, black 20%, black 85%, transparent)' }} />
+                  <VoiceStageMascot listening={listening || isSpeaking} />
                   <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-1.5" aria-hidden="true">
-                    {[0, 1, 2, 3, 4].map((bar) => <motion.span key={bar} className="w-1 rounded-full bg-emerald-300" animate={listening || isSpeaking ? { height: [8, 23 + (bar % 3) * 6, 8], opacity: [0.5, 1, 0.5] } : { height: [7, 11 + (bar % 2) * 3, 7], opacity: 0.65 }} transition={{ duration: 0.65, repeat: Infinity, delay: bar * 0.08 }} />)}
+                    {[0, 1, 2, 3, 4].map((bar) => <motion.span key={bar} className="w-1 rounded-full bg-cyan-300 shadow-[0_0_8px_rgba(34,211,238,.7)]" animate={listening || isSpeaking ? { height: [8, 23 + (bar % 3) * 6, 8], opacity: [0.5, 1, 0.5] } : { height: [7, 11 + (bar % 2) * 3, 7], opacity: 0.65 }} transition={{ duration: 0.65, repeat: Infinity, delay: bar * 0.08 }} />)}
                   </div>
                 </div>
 
@@ -180,12 +206,12 @@ const PortfolioAssistant = () => {
               </div>
             ) : (
               <>
-                <div ref={listRef} role="log" aria-live="polite" className="flex-1 space-y-4 overflow-y-auto bg-[radial-gradient(ellipse_at_50%_0%,rgba(16,185,129,.08),transparent_55%)] px-3 py-3 sm:px-4 sm:py-4">
+                <div ref={listRef} data-lenis-prevent role="log" aria-live="polite" aria-label="Conversation messages" tabIndex={0} className="min-h-0 flex-1 touch-pan-y space-y-4 overflow-y-auto overscroll-contain bg-[radial-gradient(ellipse_at_50%_0%,rgba(16,185,129,.08),transparent_55%)] px-3 py-3 sm:px-4 sm:py-4">
                   {messages.map((message) => (
                     <div key={message.id} className={`flex gap-3 ${message.role === 'visitor' ? 'justify-end' : 'justify-start'}`}>
                       {message.role === 'assistant' && <span className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-sky-400/60 bg-sky-950/80 text-sky-300"><Bot size={17} /></span>}
                       <div className="flex max-w-[86%] flex-col items-start gap-2">
-                        <div className={`rounded-2xl border px-3.5 py-2.5 ${message.role === 'visitor' ? 'rounded-br-md border-emerald-400/35 bg-emerald-950/45 text-gray-100' : 'rounded-bl-md border-white/10 bg-slate-800/80 text-gray-100'}`}>
+                        <div className={`rounded-2xl border px-3.5 py-2.5 shadow-[0_8px_24px_rgba(0,0,0,.12)] ${message.role === 'visitor' ? 'rounded-br-md border-emerald-300/30 bg-gradient-to-br from-emerald-700 to-teal-800 text-white' : 'rounded-bl-md border-sky-200/10 bg-gradient-to-br from-slate-800 to-slate-900 text-slate-100'}`}>
                           <p className="whitespace-pre-line text-[13px] leading-relaxed sm:text-sm">{renderMessageText(message.text)}</p>
                           <time className="mt-2 block text-[10px] text-slate-400">{new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' }).format(message.timestamp)}</time>
                           {message.action?.type === 'navigate' && <button type="button" onClick={() => scrollTo(`#${message.action?.target ?? ''}`)} className="mt-2 text-xs font-semibold text-cyan-300 underline underline-offset-2">Open {message.action.target} section</button>}
@@ -197,12 +223,12 @@ const PortfolioAssistant = () => {
                   {state === 'thinking' && <div className="flex items-center gap-2 pl-12 text-sm text-slate-400"><LoaderCircle size={16} className="animate-spin" /> Looking through Sourav’s portfolio…</div>}
                 </div>
 
-                <form onSubmit={(event) => { event.preventDefault(); submitMessage(draft) }} className="shrink-0 border-t border-white/20 bg-[#131e28] px-3 py-2.5 sm:px-4 sm:py-3">
+                <form onSubmit={(event) => { event.preventDefault(); submitMessage(draft) }} className="shrink-0 border-t border-cyan-100/10 bg-[linear-gradient(180deg,#101b27,#0c151f)] px-3 py-2.5 sm:px-4 sm:py-3">
                   <div className="mb-2 flex justify-start">
                     <button type="button" onClick={toggleVoice} className="inline-flex items-center gap-2 rounded-full px-2 py-1 text-sm text-emerald-300 transition hover:bg-emerald-400/10" aria-label={voiceEnabled ? 'Turn spoken answers off' : 'Turn spoken answers on'}>{voiceEnabled ? <Volume2 size={17} /> : <VolumeX size={17} />}{voiceEnabled ? 'Voice On' : 'Voice Off'}</button>
                   </div>
                   <div className="flex items-center gap-2">
-                    <input value={draft} onChange={(event) => setDraft(event.target.value)} aria-label="Ask the portfolio assistant" placeholder="Ask me anything…" className="h-11 min-w-0 flex-1 rounded-xl border border-white/35 bg-[#101820] px-3 text-[13px] text-white outline-none placeholder:text-slate-400 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/35 sm:px-3.5" />
+                    <input value={draft} onChange={(event) => setDraft(event.target.value)} aria-label="Ask the portfolio assistant" placeholder="Ask me anything…" className="h-11 min-w-0 flex-1 rounded-xl border border-slate-500/60 bg-[#0a121b] px-3 text-[13px] text-white outline-none placeholder:text-slate-400 transition focus:border-cyan-300 focus:ring-2 focus:ring-cyan-300/25 sm:px-3.5" />
                     <button type="button" onClick={() => listening ? stopVoiceInput() : startVoiceToText(setDraft)} aria-label={listening ? 'Stop voice input' : 'Dictate a message'} title={voiceSupported ? 'Dictate a message' : 'Voice input is not supported in this browser'} className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/15 transition ${listening ? 'bg-emerald-600 text-white' : 'bg-white/5 text-slate-200 hover:bg-white/10'} disabled:opacity-40`} disabled={!voiceSupported}>{listening ? <MicOff size={18} /> : <Mic size={18} />}</button>
                     <button type="submit" disabled={!draft.trim()} aria-label="Send message" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-emerald-300/40 bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-[0_4px_0_rgba(255,255,255,.12)] transition hover:from-emerald-400 hover:to-teal-500 disabled:cursor-not-allowed disabled:opacity-40"><Send size={17} /></button>
                   </div>
@@ -231,10 +257,19 @@ const PortfolioAssistant = () => {
         title="Ask Sourav's AI portfolio assistant"
         whileHover={reducedMotion ? undefined : { scale: 1.055, y: -2 }}
         whileTap={reducedMotion ? undefined : { scale: 0.96 }}
-        className="group relative isolate pointer-events-auto flex h-14 w-14 items-center justify-center rounded-full border border-emerald-100 bg-[#0b1720] text-emerald-200 shadow-[0_10px_28px_rgba(8,15,30,.4),0_0_24px_rgba(16,185,129,.35)] ring-1 ring-slate-950/20 transition duration-300 before:absolute before:inset-[3px] before:-z-10 before:rounded-full before:bg-[radial-gradient(circle_at_35%_25%,rgba(30,64,64,.98),rgba(7,10,16,1)_60%)] after:absolute after:-inset-1 after:-z-20 after:rounded-full after:border after:border-emerald-400/85 after:shadow-[0_0_16px_rgba(16,185,129,.35)] after:content-[''] after:transition-colors hover:border-emerald-100 hover:shadow-[0_14px_36px_rgba(8,15,30,.46),0_0_34px_rgba(16,185,129,.48)] hover:after:border-cyan-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-500"
+        className="group relative isolate pointer-events-auto flex h-14 w-14 items-center justify-center rounded-full border-2 border-cyan-100 bg-[#071823] text-cyan-100 shadow-[0_10px_30px_rgba(2,8,23,.65),0_0_28px_rgba(34,211,238,.5)] ring-1 ring-cyan-100/35 transition duration-300 before:absolute before:inset-[3px] before:-z-10 before:rounded-full before:bg-[radial-gradient(circle_at_35%_25%,rgba(16,70,82,.98),rgba(4,12,22,1)_68%)] after:absolute after:-inset-1 after:-z-20 after:rounded-full after:border after:border-cyan-300 after:shadow-[0_0_20px_rgba(34,211,238,.58)] after:content-[''] after:transition-colors hover:border-white hover:shadow-[0_14px_36px_rgba(8,15,30,.5),0_0_36px_rgba(34,211,238,.72)] hover:after:border-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300"
       >
-        {!open && !reducedMotion && <motion.span aria-hidden="true" className="absolute -inset-1 -z-10 rounded-full border border-emerald-400/65" animate={{ scale: [1, 1.12, 1], opacity: [0.8, 0.24, 0.8] }} transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }} />}
-        {open ? <X size={21} className="text-emerald-200" /> : <AssistantWaveform reducedMotion={Boolean(reducedMotion)} />}
+        {!open && !reducedMotion && <motion.span aria-hidden="true" className="absolute -inset-1 -z-10 rounded-full border border-cyan-200/85" animate={{ scale: [1, 1.16, 1], opacity: [0.92, 0.32, 0.92] }} transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }} />}
+        {open ? <X size={21} className="text-cyan-100" /> : (
+          <motion.span
+            aria-hidden="true"
+            className="relative z-10 flex h-14 w-14 items-center justify-center drop-shadow-[0_0_14px_rgba(34,211,238,.62)]"
+            animate={reducedMotion ? undefined : { y: [0, -1.5, 0] }}
+            transition={reducedMotion ? undefined : { duration: 2.8, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            <AssistantMascot />
+          </motion.span>
+        )}
       </motion.button>
       </div>
     </div>
