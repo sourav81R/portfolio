@@ -26,7 +26,8 @@ export type Caption = { text: string; source: 'visitor' | 'assistant' }
 const VOICE_KEY = 'sourav_assistant_voice_enabled'
 const MAX_HISTORY = 6
 const REMOTE_TIMEOUT_MS = 6500
-const REMOTE_FAILURE_BUDGET = 2
+const REMOTE_RETRY_BASE_MS = 1500
+const REMOTE_RETRY_MAX_MS = 15000
 
 const readVoicePreference = (): boolean => {
   try { return window.localStorage.getItem(VOICE_KEY) !== 'false' } catch { return true }
@@ -75,6 +76,8 @@ export const useAssistant = (scrollTo: (target: string) => void) => {
   const memory = useRef<AssistantMemory>(createAssistantMemory())
   const history = useRef<Array<{ role: 'user' | 'assistant'; content: string }>>([])
   const remoteFailures = useRef(0)
+  const remoteDisabled = useRef(false)
+  const remoteRetryAfter = useRef(0)
   const interimTranscript = useRef('')
   const textTranscript = useRef<((text: string) => void) | null>(null)
   const sequence = useRef(1)
@@ -136,13 +139,19 @@ export const useAssistant = (scrollTo: (target: string) => void) => {
       memory.current = turn.memory
       let reply = turn.reply
 
-      if (reply.needsAI && remoteFailures.current < REMOTE_FAILURE_BUDGET) {
+      if (reply.needsAI && !remoteDisabled.current && Date.now() >= remoteRetryAfter.current) {
         const remote = await askRemote(text, previousHistory, reply.context)
         if (remote.text) {
           remoteFailures.current = 0
+          remoteRetryAfter.current = 0
           reply = { ...reply, text: remote.text, speak: remote.text, needsAI: false, handler: 'llm:fallback' }
         } else {
-          remoteFailures.current = remote.disabled ? REMOTE_FAILURE_BUDGET : remoteFailures.current + 1
+          if (remote.disabled) {
+            remoteDisabled.current = true
+          } else {
+            remoteFailures.current += 1
+            remoteRetryAfter.current = Date.now() + Math.min(REMOTE_RETRY_MAX_MS, REMOTE_RETRY_BASE_MS * (2 ** (remoteFailures.current - 1)))
+          }
         }
       }
       addAssistantReply(reply)
@@ -257,6 +266,8 @@ export const useAssistant = (scrollTo: (target: string) => void) => {
     memory.current = createAssistantMemory()
     history.current = []
     remoteFailures.current = 0
+    remoteDisabled.current = false
+    remoteRetryAfter.current = 0
     setCaption(null)
     setState('idle')
     cancelSpeaking()

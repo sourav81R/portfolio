@@ -318,12 +318,6 @@ const Hero = () => {
     return () => window.clearTimeout(timeout)
   }, [activeTerminalChar, activeTerminalLine, isTerminalReady, reduceMotion])
 
-  useEffect(() => {
-    if (isTerminalReady) {
-      terminalInputRef.current?.focus()
-    }
-  }, [isTerminalReady])
-
   const handleTerminalCommand = useCallback(
     (value: string) => {
       const trimmedValue = value.trim()
@@ -755,6 +749,9 @@ const Hero = () => {
               </div>
             </div>
 
+            {/* Focus the terminal only after an explicit tap/click. Autofocus
+                when the typing animation finishes makes mobile browsers scroll
+                back to this input even while the visitor is reading below. */}
             <div
               className="mt-4 min-h-[156px] space-y-2.5 overflow-hidden text-[16px]"
               onClick={() => terminalInputRef.current?.focus()}

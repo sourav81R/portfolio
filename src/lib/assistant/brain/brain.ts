@@ -4,20 +4,24 @@ import {
   CERTIFICATION_FACTS,
   EDUCATION_FACTS,
   EXPERIENCE_FACTS,
+  getPortfolioCards,
   getProjectByText,
   normalize,
+  normalizeSearch,
+  portfolioSearchConfidence,
   PORTFOLIO_OWNER,
   searchPortfolio,
   SKILL_GROUPS,
 } from './knowledge'
 
-export type FollowUpAspect = 'why' | 'tech' | 'features' | 'link' | 'summary' | null
+export type FollowUpAspect = 'why' | 'tech' | 'features' | 'link' | 'learning' | 'summary' | null
 
 export interface AssistantMemory {
   turn: number
   lastProjectSlug: string | null
   lastAspect: FollowUpAspect
   lastTopic: string | null
+  lastCardId: string | null
   shownProjects: string[]
 }
 
@@ -42,6 +46,7 @@ export const createAssistantMemory = (): AssistantMemory => ({
   lastProjectSlug: null,
   lastAspect: null,
   lastTopic: null,
+  lastCardId: null,
   shownProjects: [],
 })
 
@@ -77,12 +82,20 @@ const sectionNames: Record<string, string> = {
 
 const projectAnswer = (project: ProjectRecord, aspect: FollowUpAspect): AssistantReply => {
   const title = project.title
+  const projectLinks = [
+    project.liveUrl && `[Live project](${project.liveUrl})`,
+    project.github && `[Source code](${project.github})`,
+  ].filter(Boolean).join(' · ')
   if (aspect === 'tech') return makeReply(
     `${title} uses ${project.tech.join(', ')}.`,
     { chips: [`What does ${title} do?`, `Why was ${title} built?`, 'Show another project'], action: { type: 'navigate', target: 'projects' } }
   )
   if (aspect === 'why') return makeReply(
-    `${title} addresses this problem: ${project.problem}\n\nThe approach was to ${project.solution}`,
+    `**The problem:** ${project.problem}\n\n**Sourav's approach:** ${project.solution}`,
+    { chips: [`${title} tech stack`, `${title} features`, 'Show another project'], action: { type: 'navigate', target: 'projects' } }
+  )
+  if (aspect === 'learning') return makeReply(
+    `While building ${title}, Sourav focused on:\n${project.learnings.map((item) => `• ${item}`).join('\n')}`,
     { chips: [`${title} tech stack`, `${title} features`, 'Show another project'], action: { type: 'navigate', target: 'projects' } }
   )
   if (aspect === 'features') return makeReply(
@@ -95,9 +108,15 @@ const projectAnswer = (project: ProjectRecord, aspect: FollowUpAspect): Assistan
       chips: [`${title} tech stack`, `${title} features`, 'Show another project'], action: { type: 'navigate', target: 'projects' },
     })
   }
-  const links = [project.liveUrl && `[Live site](${project.liveUrl})`, project.github && `[Source code](${project.github})`].filter(Boolean)
   return makeReply(
-    `**${title}**\n\n${project.description}\n\n${project.impact}\n\n**Stack:** ${project.tech.join(', ')}${links.length ? `\n\n${links.join(' · ')}` : ''}`,
+    [
+      `**${title}** — Sourav's role: ${project.role}.`,
+      project.description,
+      `**Impact:** ${project.impact}`,
+      `**Key work:**\n${project.points.slice(0, 4).map((point) => `• ${point}`).join('\n')}`,
+      `**Stack:** ${project.tech.join(', ')}`,
+      projectLinks,
+    ].filter(Boolean).join('\n\n'),
     { chips: [`Why was ${title} built?`, `${title} tech stack`, `${title} features`], action: { type: 'navigate', target: 'projects' } }
   )
 }
@@ -105,7 +124,7 @@ const projectAnswer = (project: ProjectRecord, aspect: FollowUpAspect): Assistan
 const projectListing = (filter: 'all' | 'ai' | 'web' | 'software' = 'all'): AssistantReply => {
   const selected = projects
     .filter((project) => filter === 'all'
-      || (filter === 'ai' && (/\bai\b|gemini|openai|llm|machine learning|ai-ml/i.test(`${project.description} ${project.impact} ${project.tech.join(' ')}`)))
+      || (filter === 'ai' && (project.category === 'AI' || /\bai\b|gemini|openai|llm|machine learning|ai-ml/i.test(`${project.description} ${project.impact} ${project.tech.join(' ')}`)))
       || (filter === 'web' && project.category === 'Web')
       || (filter === 'software' && project.type === 'Software'))
     .sort((a, b) => b.recruiterPriority - a.recruiterPriority)
@@ -119,7 +138,7 @@ const projectListing = (filter: 'all' | 'ai' | 'web' | 'software' = 'all'): Assi
 }
 
 const listTechnologies = (): AssistantReply => makeReply(
-  `Sourav's portfolio lists these technologies across his skills and projects:\n\n${allTechnologies().join(', ')}.`,
+  `Sourav's portfolio lists these technologies across his Skills section, experience, and projects:\n\n${allTechnologies().join(', ')}.`,
   { chips: ['Which projects use PostgreSQL?', 'Can he build backend systems?', 'Show projects'], action: { type: 'navigate', target: 'skills' } }
 )
 
@@ -133,24 +152,51 @@ const groupAnswer = (groupName: string): AssistantReply => {
 
 const experienceAnswer = (company?: string): AssistantReply => {
   const roles = company
-    ? EXPERIENCE_FACTS.filter((entry) => normalize(entry.company).includes(normalize(company)) || normalize(company).includes(normalize(entry.company)))
+    ? EXPERIENCE_FACTS.filter((entry) => {
+      const fullName = normalize(entry.company)
+      const requested = normalize(company)
+      return fullName.includes(requested) || requested.includes(fullName) ||
+        (requested.length >= 4 && fullName.split(' ').some((part) => part === requested))
+    })
     : EXPERIENCE_FACTS
   if (!roles.length) return makeReply('I could not find that company in Sourav’s portfolio experience. His listed roles are at Oneisok Digital Solution, Euphoria GenX, and Pinnacle Labs.', { action: { type: 'navigate', target: 'experience' } })
-  return makeReply(roles.map((entry) => `**${entry.role} — ${entry.company}** (${entry.period})\n${entry.description}\nTechnologies: ${entry.technologies.join(', ')}.`).join('\n\n'), {
+  return makeReply(roles.map((entry) => {
+    const relevantProjects = entry.company === 'Oneisok Digital Solution'
+      ? projects.filter((project) => ['tejviral', 'voteniti', 'oneisok-website', 'oneisok-legal'].includes(project.slug))
+      : entry.company === 'Euphoria GenX'
+        ? projects.filter((project) => project.slug === 'foodooza')
+        : []
+    const projectSummary = relevantProjects.length
+      ? `\nPortfolio examples: ${relevantProjects.map((project) => project.title).join(', ')}.`
+      : ''
+    return `**${entry.role} — ${entry.company}** (${entry.period})\n${entry.description}${projectSummary}\nTechnologies: ${entry.technologies.join(', ')}.`
+  }).join('\n\n'), {
     chips: ['Show his projects', 'What technologies does he use?', 'Contact Sourav'], action: { type: 'navigate', target: 'experience' },
   })
 }
 
 const techMention = (question: string): string | null => {
-  const normalized = normalize(question)
+  const normalized = normalizeSearch(question)
   return [...allTechnologies()].sort((a, b) => b.length - a.length).find((tech) => {
-    const value = normalize(tech)
+    const value = normalizeSearch(tech)
     return value.length > 2 && (` ${normalized} `).includes(` ${value} `)
   }) ?? null
 }
 
+const technologiesMentioned = (question: string): string[] => {
+  const normalized = normalizeSearch(question)
+  const found = [...allTechnologies()]
+    .sort((a, b) => b.length - a.length)
+    .filter((tech) => {
+      const value = normalizeSearch(tech)
+      return value.length > 2 && (` ${normalized} `).includes(` ${value} `)
+    })
+  return [...new Map(found.map((tech) => [normalizeSearch(tech), tech])).values()]
+}
+
 const projectUsesTechnology = (tech: string): AssistantReply => {
-  const found = projects.filter((project) => project.tech.some((item) => normalize(item).includes(normalize(tech)) || normalize(tech).includes(normalize(item))))
+  const normalizedTech = normalizeSearch(tech)
+  const found = projects.filter((project) => project.tech.some((item) => normalizeSearch(item) === normalizedTech))
   return makeReply(found.length
     ? `${found.map((project) => project.title).join(', ')} ${found.length === 1 ? 'uses' : 'use'} ${tech}.`
     : `I could not find a project listing ${tech} in its technology stack.`, {
@@ -177,20 +223,62 @@ const aspectFrom = (question: string): FollowUpAspect => {
   if (/\b(tech|stack|technology|built with|framework|database)\b/.test(question)) return 'tech'
   if (/\b(link|url|demo|live site|source|github|repository)\b/.test(question)) return 'link'
   if (/\b(feature|features|how does|what does|functionality)\b/.test(question)) return 'features'
+  if (/\b(learn|learning|takeaway|challenge|difficult)\b/.test(question)) return 'learning'
   if (/\b(more|detail|details|explain|tell me about)\b/.test(question)) return 'summary'
   return null
 }
 
 const hasCapabilityVerb = (question: string): boolean => /\b(know|knows|use|uses|used|using|experience|familiar|good at|proficient|build|builds|work with|worked with)\b/.test(question)
 
+const SEARCH_CONFIDENCE_FLOOR = 0.42
+const SEARCH_SCORE_FLOOR = 6
+
+const projectsNamedIn = (question: string): ProjectRecord[] => {
+  const normalized = normalizeSearch(question)
+  return [...projects]
+    .filter((project) => {
+      const title = normalizeSearch(project.title)
+      const slug = normalizeSearch(project.slug)
+      return normalized.includes(title) || normalized.replace(/\s/g, '').includes(slug.replace(/\s/g, ''))
+    })
+    .sort((a, b) => b.title.length - a.title.length)
+}
+
+const projectComparison = (first: ProjectRecord, second: ProjectRecord): AssistantReply => makeReply(
+  `**${first.title}**\n${first.description}\n\n**${second.title}**\n${second.description}\n\n**How they differ:** ${first.title} focuses on ${first.category.toLowerCase()} work, while ${second.title} focuses on ${second.category.toLowerCase()} work.\n\n**Stacks:** ${first.tech.join(', ')} / ${second.tech.join(', ')}.`,
+  {
+    chips: [`Tell me about ${first.title}`, `Tell me about ${second.title}`, 'Show all projects'],
+    action: { type: 'navigate', target: 'projects' },
+    handler: 'projects:compare',
+  }
+)
+
+const answerStrongestSkills = (): AssistantReply => {
+  const counts = new Map<string, { label: string; count: number }>()
+  for (const project of projects) {
+    for (const tech of new Set(project.tech.map(normalizeSearch))) {
+      const label = allTechnologies().find((item) => normalizeSearch(item) === tech) ?? tech
+      const current = counts.get(tech) ?? { label, count: 0 }
+      current.count += 1
+      counts.set(tech, current)
+    }
+  }
+  const repeated = [...counts.values()].sort((a, b) => b.count - a.count).slice(0, 5)
+  return makeReply(
+    `The portfolio shows Sourav using these technologies across the most projects: ${repeated.map((item) => `${item.label} (${item.count})`).join(', ')}. That is a count of documented project stacks, not a self-rated proficiency ranking.`,
+    { chips: ['Show his tech stack', 'Which projects use PostgreSQL?', 'Show his projects'], action: { type: 'navigate', target: 'skills' }, handler: 'skills:project-frequency' }
+  )
+}
+
 export const respond = (input: string, priorMemory: AssistantMemory = createAssistantMemory()): AssistantTurn => {
   const raw = input.trim()
   const q = normalize(raw)
   const memory: AssistantMemory = { ...priorMemory, turn: priorMemory.turn + 1, shownProjects: [...priorMemory.shownProjects] }
-  const finish = (reply: AssistantReply, topic?: string, project?: string | null, aspect?: FollowUpAspect): AssistantTurn => {
+  const finish = (reply: AssistantReply, topic?: string, project?: string | null, aspect?: FollowUpAspect, cardId: string | null = null): AssistantTurn => {
     if (topic !== undefined) memory.lastTopic = topic
     if (project !== undefined) memory.lastProjectSlug = project
     if (aspect !== undefined) memory.lastAspect = aspect
+    memory.lastCardId = cardId
     return { reply, memory }
   }
   if (!q) return finish(makeReply('Ask me about Sourav’s projects, skills, experience, education, or contact details.', { handler: 'help' }))
@@ -225,6 +313,10 @@ export const respond = (input: string, priorMemory: AssistantMemory = createAssi
   }
 
   const lastProject = currentProject(priorMemory)
+  const mentionedProjects = projectsNamedIn(raw)
+  if (/\b(compare|comparison|difference|differ|versus|vs\.?|between)\b/.test(q) && mentionedProjects.length >= 2) {
+    return finish(projectComparison(mentionedProjects[0], mentionedProjects[1]), 'projects')
+  }
   const another = /\b(another|next|different|other)\b/.test(q) && /\b(project|one|build|app)\b/.test(q)
   if (another) {
     const options = projects.filter((project) => !memory.shownProjects.includes(project.slug))
@@ -237,7 +329,7 @@ export const respond = (input: string, priorMemory: AssistantMemory = createAssi
   if (namedProject) {
     const aspect = aspectFrom(q)
     memory.shownProjects = [...new Set([...memory.shownProjects, namedProject.slug])]
-    return finish(projectAnswer(namedProject, aspect === 'summary' ? null : aspect), 'projects', namedProject.slug, aspect === 'summary' ? null : aspect)
+    return finish(projectAnswer(namedProject, aspect === 'summary' ? null : aspect), 'projects', namedProject.slug, aspect === 'summary' ? null : aspect, `project:${namedProject.slug}`)
   }
 
   if (lastProject && (/\b(it|its|this|that|same project|that project|the project)\b/.test(q) || /^(more|tell me more|why|tech stack|features|link|demo)$/.test(q))) {
@@ -245,40 +337,113 @@ export const respond = (input: string, priorMemory: AssistantMemory = createAssi
     return finish(projectAnswer(lastProject, aspect), 'projects', lastProject.slug, aspect)
   }
 
-  if (/\b(projects|portfolio|what has he built|his work samples|all projects|show projects)\b/.test(q)) {
+  if (priorMemory.lastCardId && /^(?:tell me more|more|more details|explain|elaborate|go on)[.!? ]*$/.test(q) && !lastProject) {
+    const previousCard = getPortfolioCards().find((card) => card.id === priorMemory.lastCardId)
+    if (previousCard) {
+      return finish(makeReply(`${previousCard.title}:\n${previousCard.body}`, {
+        action: previousCard.section ? { type: 'navigate', target: previousCard.section } : undefined,
+        context: [`${previousCard.title}\n${previousCard.body}`],
+        chips: ['Show his projects', 'His tech stack', 'Contact Sourav'],
+        handler: 'followup:knowledge-card',
+      }), previousCard.section ?? priorMemory.lastTopic ?? undefined, null, null, previousCard.id)
+    }
+  }
+
+  if (/\b(projects?|portfolio|what has he built|his work samples|all projects|show projects)\b/.test(q)) {
     const filter = /\b(ai|artificial intelligence|machine learning|ml)\b/.test(q) ? 'ai'
       : /\b(software|platforms|products)\b/.test(q) ? 'software'
         : /\b(websites|web apps)\b/.test(q) ? 'web' : 'all'
     return finish(projectListing(filter), 'projects', null, null)
   }
-  if (/\b(how many|number of|count of)\b/.test(q) && /\b(project|build|app)\b/.test(q)) {
+  if (/\b(how many|number of|count of)\b/.test(q) && /\b(projects?|builds?|apps?)\b/.test(q)) {
     return finish(makeReply(`Sourav’s portfolio currently lists ${projects.length} projects.`, { action: { type: 'navigate', target: 'projects' }, handler: 'count:projects' }), 'projects')
   }
 
-  const tech = techMention(q)
+  if (/\b(how many|number of|count of)\b/.test(q)) {
+    if (/\b(certifications?|certificates?|courses?)\b/.test(q)) return finish(makeReply(`Sourav's portfolio lists ${CERTIFICATION_FACTS.length} certifications.`, { action: { type: 'navigate', target: 'certifications' }, handler: 'count:certifications' }), 'certifications')
+    if (/\b(skills?|technolog(?:y|ies))\b/.test(q)) return finish(makeReply(`The Skills section lists ${SKILL_GROUPS.reduce((count, group) => count + group.skills.length, 0)} skills across ${SKILL_GROUPS.length} categories.`, { action: { type: 'navigate', target: 'skills' }, handler: 'count:skills' }), 'skills')
+    if (/\b(internships?|roles?|jobs?)\b/.test(q)) return finish(makeReply(`The portfolio lists ${EXPERIENCE_FACTS.length} work experiences: ${EXPERIENCE_FACTS.map((entry) => `${entry.role} at ${entry.company}`).join('; ')}.`, { action: { type: 'navigate', target: 'experience' }, handler: 'count:experience' }), 'experience')
+  }
+
+  if (/\b(open source|open-source|source code|repositories)\b/.test(q) && !getProjectByText(raw)) {
+    const openSource = projects.filter((project) => Boolean(project.github))
+    return finish(makeReply(`These projects have public source-code links in the portfolio:\n${openSource.map((project) => `• [${project.title}](${project.github})`).join('\n')}`, { action: { type: 'navigate', target: 'projects' }, chips: ['Show all projects', 'Show his GitHub profile'], handler: 'projects:open-source' }), 'projects')
+  }
+
+  if (/\b(best|flagship|standout|most impressive|recommend)\b/.test(q) && /\b(project|build|work)\b/.test(q)) {
+    const featured = [...projects].sort((a, b) => b.recruiterPriority - a.recruiterPriority)[0]
+    return finish(makeReply(`By the project priority used on this portfolio, **${featured.title}** is featured first. ${featured.description}\n\n**Impact:** ${featured.impact}\n\n**Stack:** ${featured.tech.join(', ')}.`, { action: { type: 'navigate', target: 'projects' }, chips: [`Why was ${featured.title} built?`, 'Compare TejViral and Voteniti', 'Show all projects'], handler: 'projects:flagship' }), 'projects', featured.slug)
+  }
+
+  if (/\b(latest|newest|most recent)\b/.test(q) && /\b(project|build|work)\b/.test(q)) {
+    const featured = [...projects].sort((a, b) => b.recruiterPriority - a.recruiterPriority)[0]
+    return finish(makeReply(`The portfolio does not include dates for every project, so I cannot reliably identify the newest one. The project currently featured first is **${featured.title}**.`, { action: { type: 'navigate', target: 'projects' }, chips: [`Tell me about ${featured.title}`, 'Show all projects'], handler: 'projects:latest-unavailable' }), 'projects')
+  }
+
+  const techs = technologiesMentioned(q)
+  const tech = techs[0] ?? techMention(q)
+  const asksWhichProjects = /\b(which|what)\b/.test(q) && /\bprojects?\b/.test(q)
+  if (techs.length > 1 && asksWhichProjects) {
+    const matchingProjects = projects.filter((project) => techs.every((item) => project.tech.some((tag) => normalizeSearch(tag) === normalizeSearch(item))))
+    return finish(makeReply(matchingProjects.length
+      ? `${matchingProjects.map((project) => project.title).join(', ')} ${matchingProjects.length === 1 ? 'uses' : 'use'} both ${techs.join(' and ')}.`
+      : `I could not find a project listing both ${techs.join(' and ')} together in its published stack.`, {
+      chips: matchingProjects.slice(0, 2).map((project) => `Tell me about ${project.title}`).concat(['Show his tech stack']),
+      action: { type: 'navigate', target: 'projects' }, handler: 'technology:projects-intersection',
+    }), 'projects')
+  }
+  if (techs.length > 1 && hasCapabilityVerb(q)) {
+    const details = techs.map((item) => {
+      const usedBy = projects.filter((project) => project.tech.some((tag) => normalizeSearch(tag) === normalizeSearch(item)))
+      return `${item}: listed in his skills${usedBy.length ? `; used in ${usedBy.slice(0, 4).map((project) => project.title).join(', ')}` : ''}`
+    })
+    return finish(makeReply(`Yes. ${details.join('. ')}.`, { action: { type: 'navigate', target: 'skills' }, chips: ['Show his full tech stack', 'Show projects'], handler: 'technology:multi-capability' }), 'skills')
+  }
   if (tech && /\b(which|what)\b/.test(q) && /\b(project|use|uses|built with|tech)\b/.test(q)) return finish(projectUsesTechnology(tech), 'projects')
   if (tech && hasCapabilityVerb(q)) {
-    const listed = allTechnologies().some((item) => normalize(item) === normalize(tech))
-    const projectsUsing = projects.filter((project) => project.tech.some((item) => normalize(item) === normalize(tech)))
+    const skillGroups = SKILL_GROUPS.filter((group) => group.skills.some((item) => normalizeSearch(item) === normalizeSearch(tech)))
+    const projectsUsing = projects.filter((project) => project.tech.some((item) => normalizeSearch(item) === normalizeSearch(tech)))
+    const rolesUsing = EXPERIENCE_FACTS.filter((role) => role.technologies.some((item) => normalizeSearch(item) === normalizeSearch(tech)))
+    const listed = skillGroups.length > 0 || projectsUsing.length > 0 || rolesUsing.length > 0
+    const evidence = [
+      skillGroups.length ? `listed under ${skillGroups.map((group) => group.name).join(', ')}` : '',
+      projectsUsing.length ? `used in ${projectsUsing.slice(0, 4).map((project) => project.title).join(', ')}` : '',
+      rolesUsing.length ? `listed in ${rolesUsing.map((role) => `${role.role} at ${role.company}`).join('; ')}` : '',
+    ].filter(Boolean).join('; ')
     return finish(makeReply(listed
-      ? `Yes. ${tech} appears in Sourav’s listed skills or project work${projectsUsing.length ? `, including ${projectsUsing.slice(0, 5).map((project) => project.title).join(', ')}` : ''}.`
-      : `I don’t see ${tech} listed in Sourav’s portfolio skills or project stacks.`, {
+      ? `Yes. ${tech} is documented in Sourav’s portfolio: ${evidence}.`
+      : `I don’t see ${tech} listed in Sourav’s portfolio skills, experience, or project stacks.`, {
       chips: projectsUsing.slice(0, 2).map((project) => `Tell me about ${project.title}`).concat(['Show all skills']),
       action: { type: 'navigate', target: 'skills' }, handler: 'technology:capability',
     }), 'skills')
   }
 
-  const skillGroup = SKILL_GROUPS.find((group) => normalize(q).includes(normalize(group.name))
+  if (!tech && hasCapabilityVerb(q)) {
+    const match = q.match(/\b(?:know|knows|use|uses|using|familiar with|work with|worked with|experience with|experience in|proficient in)\s+(.+)$/)
+    const target = match?.[1]?.replace(/[?.!,;]+$/g, '').trim()
+    const words = target?.split(/\s+/).filter(Boolean) ?? []
+    const looksLikeAThing = words.length > 0 && words.length <= 3 && !/^(?:a|an|the|my|your|our|this|that|him|her|team|people|projects?)$/.test(words[0])
+    if (target && looksLikeAThing) {
+      return finish(makeReply(`I don’t see **${target}** listed in Sourav’s published skills or project technology stacks, so I can’t confirm experience with it.`, { chips: ['Show his full tech stack', 'Show his projects', 'Contact Sourav'], action: { type: 'navigate', target: 'skills' }, handler: 'technology:not-listed' }), 'skills')
+    }
+  }
+
+  const skillGroup = SKILL_GROUPS.find((group) => normalizeSearch(q).includes(normalizeSearch(group.name))
     || (normalize(group.name).startsWith('languages') && /\b(programming languages|languages)\b/.test(q))
     || (normalize(group.name).startsWith('frontend') && /\b(frontend|front end|ui|user interface)\b/.test(q))
     || (normalize(group.name).startsWith('backend') && /\b(backend|back end|server side)\b/.test(q))
     || (normalize(group.name).startsWith('cloud') && /\b(cloud|devops|infrastructure|deployment)\b/.test(q))
     || (normalize(group.name).startsWith('databases') && /\b(database|databases|db)\b/.test(q))
-    || (normalize(group.name).startsWith('ai tools') && /\b(ai tools|ai stack)\b/.test(q)))
-  if (skillGroup && /\b(skill|skills|stack|know|experience|good at|can he|does he)\b/.test(q)) return finish(groupAnswer(skillGroup.name), 'skills')
+    || (normalize(group.name).startsWith('ai tools') && /\b(ai tools|ai stack|artificial intelligence)\b/.test(q)))
+  if (skillGroup && /\b(skills?|stack|know|experience|good at|can he|does he)\b/.test(q)) return finish(groupAnswer(skillGroup.name), 'skills')
+  if (/\b(ai|artificial intelligence|machine learning|llm)\b/.test(q) && /\b(skills?|stack|know|use|experience|good at|can he|does he)\b/.test(q)) return finish(groupAnswer('AI Tools'), 'skills')
   if (/\b(all skills|full tech stack|his skills|what are his skills|what technologies|tech stack|programming languages)\b/.test(q)) return finish(listTechnologies(), 'skills')
 
-  const company = EXPERIENCE_FACTS.find((entry) => q.includes(normalize(entry.company)))
+  const company = EXPERIENCE_FACTS.find((entry) => {
+    const companyName = normalize(entry.company)
+    const firstWord = companyName.split(' ')[0]
+    return q.includes(companyName) || (firstWord.length >= 4 && (` ${q} `).includes(` ${firstWord} `))
+  })
   if (company) return finish(experienceAnswer(company.company), 'experience')
   if (/\b(internship|internships|experience|career|work history|work experience|employer|job)\b/.test(q)) return finish(experienceAnswer(), 'experience')
 
@@ -299,6 +464,10 @@ export const respond = (input: string, priorMemory: AssistantMemory = createAssi
   if (/\bgithub\b/.test(q) && /\b(profile|code|repos|repository|contact|his|link|where)\b/.test(q)) return finish(makeReply(`[Sourav’s GitHub profile](${PORTFOLIO_OWNER.github})`, { action: { type: 'navigate', target: 'github' } }), 'github')
   if (/\b(contact|reach|connect|hire|message|socials)\b/.test(q)) return finish(makeReply(`You can contact Sourav at [${PORTFOLIO_OWNER.email}](mailto:${PORTFOLIO_OWNER.email}), visit his [LinkedIn](${PORTFOLIO_OWNER.linkedin}), or explore his code on [GitHub](${PORTFOLIO_OWNER.github}).`, { action: { type: 'navigate', target: 'contact' }, chips: ['Is he open to work?', 'Show his projects'] }), 'contact')
 
+  if (/\b(where (?:is|does) he (?:live|work)|where is sourav|which city|location|hometown|based in)\b/.test(q)) {
+    return finish(makeReply(`${PORTFOLIO_OWNER.name} is based in ${PORTFOLIO_OWNER.location}.`, { action: { type: 'navigate', target: 'about' }, chips: ['Show his experience', 'Contact Sourav'], handler: 'about:location' }), 'about', null, null, 'about:location')
+  }
+
   if (/\b(open to work|available|availability|freelance|hiring|hire him|opportunity|opportunities)\b/.test(q)) {
     return finish(makeReply('Sourav currently works as a Full Stack Developer at Oneisok Digital Solution. For a role, freelance engagement, or project opportunity, contact him directly to discuss availability.', { action: { type: 'navigate', target: 'contact' }, chips: ['Show his experience', 'Email Sourav', 'Show his projects'] }), 'contact')
   }
@@ -307,26 +476,34 @@ export const respond = (input: string, priorMemory: AssistantMemory = createAssi
   if (/\b(how old|his age|date of birth|birthday|when was he born)\b/.test(q)) return finish(makeReply('Sourav’s age and date of birth are not published on this portfolio. I can share his education or experience instead.', { action: { type: 'navigate', target: 'education' }, handler: 'privacy:age' }))
   if (/\b(salary|ctc|package|expected pay|notice period|hourly rate)\b/.test(q)) return finish(makeReply(`That information is not published here. Please ask Sourav directly at [${PORTFOLIO_OWNER.email}](mailto:${PORTFOLIO_OWNER.email}).`, { action: { type: 'navigate', target: 'contact' }, handler: 'privacy:career' }))
 
-  if (/\b(who is sourav|tell me about him|about sourav|introduce him|what does he do|what kind of developer|his background|summari[sz]e|overview)\b/.test(q)) {
+  if (/\b(who is sourav|tell me about (?:him|sourav)|about sourav|introduce (?:him|sourav)|what does (?:he|sourav) do|what kind of developer|what does he specialize in|what does he focus on|his background|his profile|summari[sz]e|overview)\b/.test(q)) {
     return finish(makeReply(`**${PORTFOLIO_OWNER.name}** is a ${PORTFOLIO_OWNER.role} at ${PORTFOLIO_OWNER.employer} in ${PORTFOLIO_OWNER.location}. He builds production web systems with TypeScript, React, Next.js, Node.js and PostgreSQL, including commerce and nationwide election operations platforms.`, { action: { type: 'navigate', target: 'about' }, chips: ['Show his projects', 'His experience', 'His tech stack'] }), 'about')
   }
 
   if (/\b(ai projects|machine learning|artificial intelligence projects|ai work)\b/.test(q)) return finish(projectListing('ai'), 'projects')
-  if (/\b(why should i hire|why hire|strongest|best skills)\b/.test(q)) {
+  if (/\b(strongest|best skills|top skills|most used skills)\b/.test(q)) return finish(answerStrongestSkills(), 'skills')
+  if (/\b(why should i hire|why hire|why choose|what makes him a good candidate)\b/.test(q)) {
     return finish(makeReply(`Sourav’s portfolio shows end-to-end experience across production systems: a nationwide election management platform, a local-business commerce platform, full-stack websites, and internship work. His recent stacks include TypeScript, React, Next.js, Node.js, PostgreSQL, Supabase, and AWS.`, { action: { type: 'navigate', target: 'experience' }, chips: ['Show Voteniti', 'Tell me about TejViral', 'Contact Sourav'] }), 'experience')
   }
 
+  if (/\b(fun fact|something interesting|surprise me|tell me something cool)\b/.test(q)) {
+    const project = projects.find((item) => item.slug === 'tejviral') ?? projects[0]
+    const fact = project.points.find((point) => /61,?767|97.table|616,?365/.test(point)) ?? project.points[0]
+    return finish(makeReply(`A notable detail from **${project.title}**: ${fact}`, { action: { type: 'navigate', target: 'projects' }, chips: [`Tell me about ${project.title}`, 'Show Voteniti', 'Show all projects'], handler: 'portfolio:fun-fact' }), 'projects', project.slug)
+  }
+
   const results = searchPortfolio(raw, 5)
-  if (results.length && results[0].score >= 7) {
+  const confidence = portfolioSearchConfidence(results)
+  if (results.length && (confidence >= SEARCH_CONFIDENCE_FLOOR || results[0].score >= SEARCH_SCORE_FLOOR)) {
     const best = results[0].card
     const related = results.slice(1, 4).map((entry) => entry.card.title)
-    return finish(makeReply(best.body, { confidence: Math.min(0.9, 0.55 + results[0].score / 30), action: best.section ? { type: 'navigate', target: best.section } : undefined, chips: related.length ? related.map((title) => `Tell me about ${title}`).slice(0, 3) : undefined, context: results.map((entry) => `${entry.card.title}\n${entry.card.body}`), handler: 'retrieval' }), best.section)
+    return finish(makeReply(best.body, { confidence, action: best.section ? { type: 'navigate', target: best.section } : undefined, chips: related.length ? related.map((title) => `Tell me about ${title}`).slice(0, 3) : undefined, context: results.slice(0, 4).map((entry) => `${entry.card.title}\n${entry.card.body}`), handler: 'retrieval' }), best.section, null, null, best.id)
   }
 
   const fallback = results.length
-    ? `I’m not certain about that. I can share what the portfolio says about ${results[0].card.title.toLowerCase()}: ${results[0].card.body}`
-    : 'I’m not sure from the information in Sourav’s portfolio. I can help with his projects, skills, experience, education, certifications, or contact details.'
-  return finish(makeReply(fallback, { confidence: 0.25, needsAI: true, context: results.map((entry) => `${entry.card.title}\n${entry.card.body}`), chips: ['Show his projects', 'His tech stack', 'Contact Sourav'], handler: 'fallback' }))
+    ? `I could not confidently match that question to a portfolio fact. I found related information about ${results[0].card.title.toLowerCase()} and will check it before answering.`
+    : 'I could not match that question confidently to a published portfolio fact. I will check the relevant profile and project details before answering.'
+  return finish(makeReply(fallback, { confidence, needsAI: true, context: results.slice(0, 4).map((entry) => `${entry.card.title}\n${entry.card.body}`), chips: ['Show his projects', 'His tech stack', 'Contact Sourav'], handler: 'fallback' }))
 }
 
 export const welcomeReply = (): AssistantReply => makeReply(

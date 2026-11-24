@@ -282,10 +282,6 @@ function LazySection({
       id={id}
       ref={sectionRef}
       className="relative"
-      // Keep the same vertical footprint after hydration as the lazy
-      // placeholder. If a section above the viewport collapses on mount, the
-      // browser's scroll anchoring can otherwise move the reader backwards.
-      style={reservedHeight ? { minHeight: reservedHeight } : undefined}
     >
       {shouldRender ? (
         <SectionErrorBoundary title={title}>
