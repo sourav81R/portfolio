@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
 export const SITE_URL = 'https://sourav.is-a.dev'
-const DEFAULT_TITLE = 'Sourav Chowdhury | Full Stack Developer (MERN + AI)'
+const DEFAULT_TITLE = 'Sourav Chowdhury | Full Stack Developer in Kolkata'
 
 type PageMetadata = {
   title: string

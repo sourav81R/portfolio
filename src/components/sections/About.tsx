@@ -152,7 +152,7 @@ const About = () => {
               {/* Mirrors the Professional Summary on the resume
                   (public/images/resume.pdf), including its bold phrases.
                   Update both together. */}
-              Full Stack Developer with{' '}
+              Kolkata-based Full Stack Developer with{' '}
               <span className="font-semibold text-gray-900 dark:text-white">
                 1+ year of development experience
               </span>
@@ -169,20 +169,21 @@ const About = () => {
               <span className="font-semibold text-gray-900 dark:text-white">
                 Pinnacle Labs
               </span>
-              . 2026 B.Tech (CSE) graduate skilled in{' '}
+              . 2026 B.Tech (CSE) graduate with skills in{' '}
               <span className="font-semibold text-gray-900 dark:text-white">
-                Next.js, React, TypeScript, Node.js
+                Next.js, React, TypeScript, Node.js, and NestJS
               </span>{' '}
-              and{' '}
+              , plus{' '}
               <span className="font-semibold text-gray-900 dark:text-white">
                 PostgreSQL/MongoDB
               </span>
-              , working across REST APIs, authentication, role-based access
-              control, payment integration, marketing automation and{' '}
+              . He works across REST APIs, authentication, role-based access
+              control, payment integration, marketing automation, and AI-enabled
+              product features, and deploys applications on{' '}
               <span className="font-semibold text-gray-900 dark:text-white">
                 AWS
               </span>{' '}
-              deployment. Shipped 5 live products, including
+              . He has shipped 5 live products, including
               business-discovery, election-management and admin platforms.
             </p>
 
